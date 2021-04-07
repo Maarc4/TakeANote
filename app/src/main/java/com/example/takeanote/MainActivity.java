@@ -1,5 +1,6 @@
 package com.example.takeanote;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.takeanote.model.Adapter;
@@ -15,6 +16,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import android.view.MenuItem;
@@ -73,33 +76,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
+            case R.id.add_note:
+                Intent intent = new Intent(this,AddNote.class);
+                startActivity(intent);
+                break;
             default:
                 Toast.makeText(this,"Comming soon.",Toast.LENGTH_SHORT).show();
         }
         return false;
     }
 
-   /* @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.settings_menu, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.settings_menu,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_settings){
+            Toast.makeText(this,"Settings Menu is Clicked.",Toast.LENGTH_SHORT).show();
         }
-
         return super.onOptionsItemSelected(item);
-    }*/
-
-
+    }
 }
