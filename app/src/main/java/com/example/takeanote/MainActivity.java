@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 
@@ -22,12 +23,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
+    RecyclerView listOfNotes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MaterialToolbar toolbar = findViewById(R.id.content_toolbar);
         setSupportActionBar(toolbar);
+
+        listOfNotes = findViewById(R.id.listOfNotes);
+
 
         drawerLayout = findViewById(R.id.drawer);
         nav_view = findViewById(R.id.nav_view);
