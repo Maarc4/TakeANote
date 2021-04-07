@@ -9,7 +9,7 @@
 
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/noteCard"
+        android:id="@+id/cardViewContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -44,13 +44,13 @@
                 android:textColor="#000"
                 android:textSize="15sp"
                 android:textStyle="normal|italic"
-                app:layout_constraintBottom_toTopOf="@+id/cardView"
+                app:layout_constraintBottom_toTopOf="@+id/cardViewTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardView"
+                android:id="@+id/cardViewTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="0dp"

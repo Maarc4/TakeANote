@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // FI SAMPLE DATA
         adapter = new Adapter(titles, content);
         // 2 per fila
-        listOfNotes.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        //listOfNotes.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         //LLISTA 1 per fila
-        //listOfNotes.setLayoutManager(new LinearLayoutManager(this));
+        listOfNotes.setLayoutManager(new LinearLayoutManager(this));
         listOfNotes.setAdapter(adapter);
 
 
