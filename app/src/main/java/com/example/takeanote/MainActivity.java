@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.View;
 
@@ -63,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         content.add("Third Note Content sample.");
         // FI SAMPLE DATA
         adapter = new Adapter(titles, content);
-        listOfNotes.setLayoutManager(new LinearLayoutManager(this));
+        // 2 per fila
+        listOfNotes.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        //LLISTA 1 per fila
+        //listOfNotes.setLayoutManager(new LinearLayoutManager(this));
         listOfNotes.setAdapter(adapter);
 
 
