@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/general_menu">
+        <menu>
+            <item
+                android:id="@+id/notes"
+                android:icon="@drawable/ic_notes_24dp"
+                android:title="@string/notes" />
+            <item
+                android:id="@+id/add_note"
+                android:icon="@drawable/ic_add_note_24dp"
+                android:title="@string/add_note" />
+            <item
+                android:id="@+id/sync"
+                android:icon="@drawable/ic_sync_24dp"
+                android:title="@string/sync_notes" />
+        </menu>
+
+    </item>
+    <item android:title="@string/log_out">
+        <menu>
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_logout_24dp"
+                android:title="@string/log_out" />
+        </menu>
+    </item>
+</menu>
