@@ -21,4 +21,5 @@
     <string name="close">close</string>
     <string name="sample_title">Sample Title</string>
     <string name="sample_content">Sample Content</string>
+    <string name="title_activity_note_details">NoteDetails</string>
 </resources>

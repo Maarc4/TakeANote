@@ -1,5 +1,6 @@
 package com.example.takeanote.model;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.takeanote.NoteDetails;
 import com.example.takeanote.R;
 import com.google.android.material.card.MaterialCardView;
 
@@ -41,7 +43,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "The item is clicked.", Toast.LENGTH_SHORT).show();
+                    //Al clicar una nota, es mou a una activity nova (details)
+                    Intent intent = new Intent(v.getContext(), NoteDetails.class);
+                    v.getContext().startActivity(intent);
                 }
             });
         }
