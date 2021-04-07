@@ -45,6 +45,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 public void onClick(View v) {
                     //Al clicar una nota, es mou a una activity nova (details)
                     Intent intent = new Intent(v.getContext(), NoteDetails.class);
+                    intent.putExtra("title", titles.get(position));
+                    intent.putExtra("content", content.get(position));
                     v.getContext().startActivity(intent);
                 }
             });

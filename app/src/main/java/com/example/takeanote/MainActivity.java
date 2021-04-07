@@ -14,11 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.View;
 
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -36,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MaterialToolbar toolbar = findViewById(R.id.content_toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.content_main_toolbar);
         setSupportActionBar(toolbar);
 
         listOfNotes = findViewById(R.id.listOfNotes);
@@ -70,15 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listOfNotes.setLayoutManager(new LinearLayoutManager(this));
         listOfNotes.setAdapter(adapter);
 
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
