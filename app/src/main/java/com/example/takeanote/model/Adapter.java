@@ -38,7 +38,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         if (titles != null && position < getItemCount()) {
             holder.noteTitle.setText(titles.get(position));
             holder.noteContent.setText(content.get(position));
-            //holder.mCardView.setCardBackgroundColor(holder.view.getResources().getRandomColor(),null);
+            //int code = getRandomColor();
+            //holder.mCardView.setCardBackgroundColor(holder.view.getResources().getColor(code,null));
 
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -47,6 +48,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     Intent intent = new Intent(v.getContext(), NoteDetails.class);
                     intent.putExtra("title", titles.get(position));
                     intent.putExtra("content", content.get(position));
+                    //intent.putExtra("code",code);
                     v.getContext().startActivity(intent);
                 }
             });

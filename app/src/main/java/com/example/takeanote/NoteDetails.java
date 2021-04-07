@@ -31,11 +31,13 @@ public class NoteDetails extends AppCompatActivity {
 
         //Aixo si es canvia a materialtextview segurament sha de canviar
         TextView content = findViewById(R.id.noteDetailsContent);
-        TextView title = findViewById(R.id.noteTitle);
+        TextView title = findViewById(R.id.noteDetailsTitle);
         content.setMovementMethod(new ScrollingMovementMethod());
 
         content.setText(data.getStringExtra("content"));
         title.setText(data.getStringExtra("title"));
+        //Aixo pel color de la nota al color de dins
+        //content.setBackgroundColor(getResources().getColor(data.getIntExtra("code",0));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
