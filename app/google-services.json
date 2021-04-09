@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "629234748133",
-    "project_id": "takeanote-e954f",
-    "storage_bucket": "takeanote-e954f.appspot.com"
+    "project_number": "631218698788",
+    "project_id": "takeanote-a0e9a",
+    "storage_bucket": "takeanote-a0e9a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:629234748133:android:20c2c81202c9c1e442a20c",
+        "mobilesdk_app_id": "1:631218698788:android:ccdc138f04909d3c8b36b1",
         "android_client_info": {
           "package_name": "com.example.takeanote"
         }
       },
       "oauth_client": [
         {
-          "client_id": "629234748133-j6ha78rpn4n1n9jlubrcb6nt14hr5q0h.apps.googleusercontent.com",
+          "client_id": "631218698788-5dpullfqck7bh7minqgrr2ve8kkc1iqp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCUHKCtTqD-AU_rhH9aq0cvLcwX5XghDbw"
+          "current_key": "AIzaSyA9rLolHP46QojyM14D3_Fn5aLKV0TOAtQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "629234748133-j6ha78rpn4n1n9jlubrcb6nt14hr5q0h.apps.googleusercontent.com",
+              "client_id": "631218698788-5dpullfqck7bh7minqgrr2ve8kkc1iqp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
