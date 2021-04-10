@@ -72,26 +72,7 @@ public class AddNote extends AppCompatActivity {
                     }
                 });
             }
-        });/*
-                Map<String, Object> city = new HashMap<>();
-                city.put("name", "Los Angeles");
-                city.put("state", "CA");
-                city.put("country", "USA");
-
-                db.collection("cities").document("LA")
-                        .set(city)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("ADDED ", "DocumentSnapshot successfully written!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("FAIL", "Error writing document", e);
-                            }
-                        });*/
+        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
