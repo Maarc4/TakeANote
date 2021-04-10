@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         db = FirebaseFirestore.getInstance();
 
         //de moment ordenat per titol a
-        Query query = db.collection("notes").orderBy("title", Query.Direction.DESCENDING);
+        Query query = db.collection("notes").orderBy("title", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<Note> allNotes = new FirestoreRecyclerOptions.Builder<Note>()
                 .setQuery(query,Note.class)
