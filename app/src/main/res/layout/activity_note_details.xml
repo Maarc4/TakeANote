@@ -18,7 +18,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.TakeANote.PopupOverlay">
 
-            <TextView
+            <EditText
                 android:id="@+id/noteDetailsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,6 +37,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:maxImageSize="30dp"
+        app:srcCompat="@drawable/ic_save_24dp" />
+
+    <ProgressBar
+        android:id="@+id/noteDetails_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/addNoteContent"
+        app:layout_constraintEnd_toEndOf="@+id/addNoteContent"
+        app:layout_constraintStart_toStartOf="@+id/addNoteContent"
+        app:layout_constraintTop_toTopOf="@+id/addNoteContent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
