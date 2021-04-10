@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class AddNote extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         noteContent = findViewById(R.id.addNoteContent);
         noteTitle = findViewById(R.id.addNoteTitle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //TODO: Fer que el fab sigui per escollir tipus de input(text,foto,audio...) o fer una bottombar
         //TODO: posar el save button a la top bar (amb share?)
@@ -73,6 +75,12 @@ public class AddNote extends AppCompatActivity {
                 });
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
