@@ -71,6 +71,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listOfNotes.setLayoutManager(new LinearLayoutManager(this));
         listOfNotes.setAdapter(adapter);
 
+        FloatingActionButton fab = findViewById(R.id.addNoteFab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(),AddNote.class);
+                startActivity(intent);
+            }
+        });
+
+
+
     }
 
     @Override
