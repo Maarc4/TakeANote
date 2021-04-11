@@ -8,6 +8,8 @@ import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,6 +31,8 @@ public class NoteDetails extends AppCompatActivity {
     Intent data;
     FirebaseFirestore db;
     ProgressBar progressBarSave;
+    FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,8 @@ public class NoteDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         db = FirebaseFirestore.getInstance();
+        progressBarSave = findViewById(R.id.noteDetails_progressBar);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         data = getIntent();
 
@@ -47,8 +53,6 @@ public class NoteDetails extends AppCompatActivity {
         EditText content = findViewById(R.id.noteDetailsContent);
         EditText title = findViewById(R.id.noteDetailsTitle);
         content.setMovementMethod(new ScrollingMovementMethod());
-
-        progressBarSave = findViewById(R.id.noteDetails_progressBar);
 
         content.setText(data.getStringExtra("content"));
         title.setText(data.getStringExtra("title"));
@@ -70,7 +74,7 @@ public class NoteDetails extends AppCompatActivity {
 
                 progressBarSave.setVisibility(View.VISIBLE);
                 //save note
-                DocumentReference docref = db.collection("notes").document(data.getStringExtra("noteId"));
+                DocumentReference docref = db.collection("notes").document(user.getUid()).collection( "myNotes" ).document(data.getStringExtra("noteId"));
 
                 Map<String, Object> note = new HashMap<>();
                 note.put("title",nTitle);

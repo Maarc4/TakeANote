@@ -34,6 +34,7 @@ public class LoadScreen extends AppCompatActivity {
                 // check if user is logged in
                 if(auth.getCurrentUser() != null){
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
                 }else{
                     // create new anonymous acount
                     auth.signInAnonymously().addOnSuccessListener( new OnSuccessListener<AuthResult>() {

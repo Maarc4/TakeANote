@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         user = auth.getCurrentUser();
 
         //de moment ordenat per titol a
-        Query query = db.collection("notes").orderBy("title", Query.Direction.ASCENDING);
+        Query query = db.collection("notes").document(user.getUid()).collection( "myNotes" ).orderBy("title", Query.Direction.ASCENDING);
+        // query notes > uuid > mynotes
 
         FirestoreRecyclerOptions<Note> allNotes = new FirestoreRecyclerOptions.Builder<Note>()
                 .setQuery(query,Note.class)
