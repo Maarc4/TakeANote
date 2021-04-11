@@ -1,8 +1,10 @@
 package com.example.takeanote;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.takeanote.auth.Register;
 import com.example.takeanote.model.Adapter;
 import com.example.takeanote.model.Note;
 import com.example.takeanote.notes.AddNote;
@@ -14,12 +16,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -160,10 +166,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent(this,AddNote.class);
                 startActivity(intent);
                 break;
+
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                checkUser();
+                break;
+
             default:
                 Toast.makeText(this,"Comming soon.",Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    private void checkUser() {
+        // if user is real or not
+        if(FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
+            displayAlert();
+        }else {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getApplicationContext(), LoadScreen.class));
+        }
+    }
+
+    private void displayAlert() {
+        AlertDialog.Builder warning = new AlertDialog.Builder(this)
+                .setTitle( "Are you sure?" )
+                .setMessage( "You are logged in with Temporary Account. Loggin out will Delete All the notes." )
+                .setPositiveButton( "Sync Note", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(getApplicationContext(), Register.class ));
+                        finish();
+                    }
+                } ).setNegativeButton( "Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO: delete all the notes created by the Anonymous user
+
+                        //TODO; delete the Anon user
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        user.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                startActivity(new Intent(getApplicationContext(),LoadScreen.class));
+                                finish();
+                            }
+                        } ).addOnFailureListener( new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        } );
+                        }
+                } );
+        warning.create();
     }
 
     @Override
