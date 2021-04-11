@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <com.google.android.material.appbar.MaterialToolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/addNote_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -22,13 +22,12 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:hint="@android:string/untitled"
+                android:inputType="textPersonName"
                 android:textColor="#fff"
                 android:textColorHint="#FFFFFF"
                 android:textStyle="bold" />
         </com.google.android.material.appbar.MaterialToolbar>
-
 
 
     </com.google.android.material.appbar.AppBarLayout>
