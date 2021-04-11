@@ -7,10 +7,13 @@ import com.example.takeanote.model.Adapter;
 import com.example.takeanote.model.Note;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -28,6 +31,8 @@ import android.view.View;
 
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +87,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
 
+                    ImageView menuIcon = noteViewHolder.view.findViewById(R.id.menuIcon);
+                    menuIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PopupMenu menu = new PopupMenu(v.getContext(),v);
+                            menu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    DocumentReference docRef = db.collection("notes").document(docId);
+                                    docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(MainActivity.this,"Note deleted.",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(MainActivity.this,"FAILED to delete the note.",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    return false;
+                                }
+                            });
+                            //TODO: potser afegir share i cambiar a material
+
+                            menu.show();
+                        }
+                    });
             }
 
             @NonNull
