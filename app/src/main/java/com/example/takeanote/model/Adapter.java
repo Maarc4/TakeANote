@@ -5,18 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.takeanote.NoteDetails;
+import com.example.takeanote.notes.NoteDetails;
 import com.example.takeanote.R;
-import com.google.android.material.card.MaterialCardView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     List<String> titles;

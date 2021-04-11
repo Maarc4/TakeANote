@@ -9,12 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TakeANote">
+        <activity android:name=".LoadScreen"></activity>
+        <activity android:name=".auth.Register" />
+        <activity android:name=".auth.Login" />
         <activity
-            android:name=".AddNote"
+            android:name=".notes.AddNote"
             android:label="@string/title_activity_add_note"
-            android:theme="@style/Theme.TakeANote.NoActionBar"></activity>
+            android:theme="@style/Theme.TakeANote.NoActionBar" />
         <activity
-            android:name=".NoteDetails"
+            android:name=".notes.NoteDetails"
             android:label="@string/title_activity_note_details"
             android:theme="@style/Theme.TakeANote.NoActionBar" />
         <activity
