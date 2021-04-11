@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,9 +49,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
     RecyclerView listOfNotes;
-    Adapter adapter;
     FirebaseFirestore db;
     FirestoreRecyclerAdapter<Note, NoteViewHolder> noteAdapter;
+    FirebaseUser user;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
 
         //de moment ordenat per titol a
         Query query = db.collection("notes").orderBy("title", Query.Direction.ASCENDING);
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        drawerLayout.closeDrawer( GravityCompat.START );
         switch(item.getItemId()){
             case R.id.add_note:
                 Intent intent = new Intent(this,AddNote.class);
@@ -168,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
+                //Mirem si l'usuari logejat és anonim o no i fem signout
                 checkUser();
                 break;
 
@@ -180,11 +185,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void checkUser() {
         // if user is real or not
-        if(FirebaseAuth.getInstance().getCurrentUser().isAnonymous()) {
+        if(user.isAnonymous()) {
             displayAlert();
         }else {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(), LoadScreen.class));
+            finish();
         }
     }
 
@@ -203,9 +209,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: delete all the notes created by the Anonymous user
 
-                        //TODO; delete the Anon user
-
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         user.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         } );
                         }
                 } );
-        warning.create();
+        warning.show();
     }
 
     @Override

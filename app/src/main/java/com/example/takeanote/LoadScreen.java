@@ -41,11 +41,13 @@ public class LoadScreen extends AppCompatActivity {
                         public void onSuccess(AuthResult authResult) {
                             Toast.makeText( LoadScreen.this, "Logged in With Temporary Account.", Toast.LENGTH_SHORT ).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
                         }
                     } ).addOnFailureListener( new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText( LoadScreen.this, "Error ! " + e.getMessage(), Toast.LENGTH_SHORT ).show();
+                            finish();
                         }
                     } );
                 }
