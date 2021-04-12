@@ -57,12 +57,13 @@ public class Register extends AppCompatActivity {
                 String userPass = pass.getText().toString();
                 String userConfPass = confPass.getText().toString();
                 //TODO: Cambiar a material
+                //TODO: posar metode per comprovació password i email
                 if(userName.isEmpty() || userEmail.isEmpty() || userPass.isEmpty() || userConfPass.isEmpty()){
                     Toast.makeText(Register.this,"All Fields Are Required",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(!userPass.equals(userConfPass)){
-                    confPass.setError("Password do not match");
+                    confPass.setError("Passwords do not match");
                 }
 
                 AuthCredential credential = EmailAuthProvider.getCredential(userEmail,userPass);
@@ -75,11 +76,9 @@ public class Register extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Register.this,"Failed to connect . Try again",Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(Register.this,"Error!" +e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
 
