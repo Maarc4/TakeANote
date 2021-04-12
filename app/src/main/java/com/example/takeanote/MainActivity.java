@@ -44,6 +44,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             menu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                 @Override
                                 public boolean onMenuItemClick(MenuItem item) {
-                                    DocumentReference docRef = db.collection("notes").document(docId);
+                                    DocumentReference docRef = db.collection("notes").document(user.getUid()).collection( "myNotes" ).document(docId);
                                     docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -150,6 +152,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //LLISTA 1 per fila
         listOfNotes.setLayoutManager(new LinearLayoutManager(this));
         listOfNotes.setAdapter(noteAdapter);
+
+        View headerView = nav_view.getHeaderView(0);
+        TextView username = headerView.findViewById(R.id.userDisplayName);
+        TextView email = headerView.findViewById(R.id.userDisplayEmail);
+
+        if(user.isAnonymous()){
+            email.setVisibility(View.INVISIBLE);
+            username.setText("Temporal account");
+        }
+        else{
+            email.setText(user.getEmail());
+            username.setText(user.getDisplayName());
+        }
+
+
+
+
 
         FloatingActionButton fab = findViewById(R.id.addNoteFab);
         fab.setOnClickListener(new View.OnClickListener() {
