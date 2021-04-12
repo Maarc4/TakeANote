@@ -90,6 +90,13 @@ public class Register extends AppCompatActivity {
             }
         });
 
+        loginAct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(v.getContext(),Login.class));
+            }
+        });
+
     }
 
     @Override

@@ -236,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } ).setNegativeButton( "Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO: delete all the notes created by the Anonymous user
 
                         user.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
                             @Override
