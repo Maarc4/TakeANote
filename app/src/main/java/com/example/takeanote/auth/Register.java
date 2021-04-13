@@ -3,13 +3,11 @@ package com.example.takeanote.auth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,16 +16,18 @@ import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class Register extends AppCompatActivity {
-    EditText name,email,pass,confPass;
+    TextInputEditText name, email, pwd, pwdConf;
+    TextInputLayout emailLayout, pwdConfLayout, pwdLayout, nameLayout;
     Button sync;
     TextView loginAct;
     ProgressBar progressBar;
@@ -42,8 +42,13 @@ public class Register extends AppCompatActivity {
 
         name = findViewById(R.id.userName);
         email = findViewById(R.id.userEmail);
-        pass = findViewById(R.id.password);
-        confPass = findViewById(R.id.passwordConfirm);
+        pwd = findViewById(R.id.password);
+        pwdConf = findViewById(R.id.passwordConfirm);
+
+        emailLayout = findViewById(R.id.emailLayout);
+        pwdConfLayout = findViewById(R.id.pwdConfirmLayout);
+        pwdLayout = findViewById(R.id.pwdLayout);
+        nameLayout = findViewById(R.id.nameLayout);
 
         sync = findViewById(R.id.createAccount);
         loginAct = findViewById(R.id.login);
@@ -56,35 +61,62 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 String userName = name.getText().toString();
                 String userEmail = email.getText().toString();
-                String userPass = pass.getText().toString();
-                String userConfPass = confPass.getText().toString();
-                //TODO: Cambiar a material
+                String userPass = pwd.getText().toString();
+                String userConfPass = pwdConf.getText().toString();
+                int errors = 0;
+                nameLayout.setError(null);
+                emailLayout.setError(null);
+                pwdLayout.setError(null);
+                pwdConfLayout.setError(null);
                 //TODO: posar metode per comprovació password i email
-                if(userName.isEmpty() || userEmail.isEmpty() || userPass.isEmpty() || userConfPass.isEmpty()){
-                    Toast.makeText(Register.this,"All Fields Are Required",Toast.LENGTH_SHORT).show();
-                    return;
+
+                // Comprovar i setejar errors
+                if (userName.isEmpty()) {
+                    nameLayout.setError("Cannot be empty.");
+                    errors++;
                 }
-                if(!userPass.equals(userConfPass)){
-                    confPass.setError("Passwords do not match");
+                //TODO: fer que error i toggle pwd no es sobreposin o posar un on text changed o algo aixi
+                if (userPass.isEmpty()) {
+                    pwdLayout.setError("Cannot be empty.");
+                    errors++;
+                }
+                if (userConfPass.isEmpty()) {
+                    pwdConfLayout.setError("Cannot be empty.");
+                    errors++;
                 }
 
-                AuthCredential credential = EmailAuthProvider.getCredential(userEmail,userPass);
+                if (!isEmailValid(userEmail)) {
+                    emailLayout.setError("Email not valid");
+                    errors++;
+                }
+                if (!userPass.equals(userConfPass)) {
+                    pwdConfLayout.setError("Passwords do not match");
+                    errors++;
+                }
+                if (errors != 0) return;
+                Toast.makeText(Register.this, "ESTA PASANT AMB ERROR REGISTER", Toast.LENGTH_SHORT).show();
+
+
+                AuthCredential credential = EmailAuthProvider.getCredential(userEmail, userPass);
                 auth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Toast.makeText(Register.this,"Notes are Syncced",Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        Toast.makeText(Register.this, "Notes are Syncced", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         FirebaseUser usr = auth.getCurrentUser();
                         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(userName)
                                 .build();
                         usr.updateProfile(request);
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Register.this,"Error!" +e.getMessage(),Toast.LENGTH_SHORT).show();
+                        //TODO: canviar per comprovar pwd abans
+                        if (e.getMessage().contains("email")) emailLayout.setError(e.getMessage());
+                        else if (e.getMessage().contains("password"))
+                            pwdLayout.setError(e.getMessage());
                     }
                 });
             }
@@ -93,7 +125,7 @@ public class Register extends AppCompatActivity {
         loginAct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(),Login.class));
+                startActivity(new Intent(v.getContext(), Login.class));
             }
         });
 
@@ -104,5 +136,9 @@ public class Register extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

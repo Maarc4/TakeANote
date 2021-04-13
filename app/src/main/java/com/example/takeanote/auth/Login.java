@@ -17,33 +17,40 @@ import android.widget.Toast;
 
 import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login extends AppCompatActivity {
-    EditText lEmail,lPassword;
+    TextInputEditText lEmail, lPassword;
+    TextInputLayout emailLayout, pwdLayout;
     Button loginNow;
-    TextView forgetPass,createAcc;
+    TextView forgetPass, createAcc;
     FirebaseAuth auth;
     FirebaseFirestore db;
     FirebaseUser user;
     ProgressBar progressBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Login to FireNotes");
+        getSupportActionBar().setTitle("Login to TakeANote");
 
         lEmail = findViewById(R.id.email);
         lPassword = findViewById(R.id.lPassword);
         loginNow = findViewById(R.id.loginBtn);
+
+        emailLayout = findViewById(R.id.emailLayout);
+        pwdLayout = findViewById(R.id.pwdLayout);
 
         progressBar = findViewById(R.id.progressBar3);
 
@@ -60,22 +67,31 @@ public class Login extends AppCompatActivity {
         loginNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int errors = 0;
                 String mEmail = lEmail.getText().toString();
                 String mPassword = lPassword.getText().toString();
-
-                if(mEmail.isEmpty() || mPassword.isEmpty()){
-                    Toast.makeText(Login.this, "Fields Are Required.", Toast.LENGTH_SHORT).show();
-                    return;
+                emailLayout.setError(null);
+                pwdLayout.setError(null);
+                if (mPassword.isEmpty()) {
+                    pwdLayout.setError("Cannot be empty.");
+                    errors++;
                 }
-
-                // delete notes first
+                if (!isEmailValid(mEmail)) {
+                    emailLayout.setError("Email is not valid.");
+                    errors++;
+                }
+                if (errors != 0) return;
+                Toast.makeText(Login.this, "ESTA PASANT AMB ERROR LOGIN", Toast.LENGTH_SHORT).show();
 
                 progressBar.setVisibility(View.VISIBLE);
+
                 //TODO: arreglar login fallit i intentar tornar a fer login
-                if(auth.getCurrentUser().isAnonymous()){
+                //TODO: mirar de fer que si el login sera ok, llavors borrar notes/user temp (POTSER s'arregla al def VMMV)
+                if (auth.getCurrentUser().isAnonymous()) {
+                    //delete temp notes
                     FirebaseUser user = auth.getCurrentUser();
 
-                    db.collection("notes").document(user.getUid()).delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                    db.collection("notes").document(user.getUid()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(Login.this, "All Temp Notes are Deleted.", Toast.LENGTH_SHORT).show();
@@ -83,7 +99,6 @@ public class Login extends AppCompatActivity {
                     });
 
                     // delete Temp user
-
                     user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -92,14 +107,15 @@ public class Login extends AppCompatActivity {
                     });
                 }
 
-                auth.signInWithEmailAndPassword(mEmail,mPassword).addOnSuccessListener( new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        Toast.makeText(Login.this, "Success !", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                auth.signInWithEmailAndPassword(mEmail, mPassword)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                Toast.makeText(Login.this, "Success !", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(Login.this, "Login Failed. " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -112,10 +128,17 @@ public class Login extends AppCompatActivity {
         createAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),Register.class));
+                startActivity(new Intent(getApplicationContext(), Register.class));
             }
         });
 
+        //TODO: Fer forgot password que envii un correu al user amb la pwd olvidada amb link per recuperar pwd al app(potser es molt dificil)
+        forgetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Login.this, "Coming soon.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -126,7 +149,7 @@ public class Login extends AppCompatActivity {
                 .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(),Register.class));
+                        startActivity(new Intent(getApplicationContext(), Register.class));
                         finish();
                     }
                 }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
@@ -138,10 +161,15 @@ public class Login extends AppCompatActivity {
 
         warning.show();
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         startActivity(new Intent(this, MainActivity.class));
         finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
