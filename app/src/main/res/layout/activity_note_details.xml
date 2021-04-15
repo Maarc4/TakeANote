@@ -18,13 +18,14 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.TakeANote.PopupOverlay">
 
-            <EditText
-                android:id="@+id/noteDetailsTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sample_title"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/noteDetailsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sample_title"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

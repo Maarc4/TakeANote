@@ -7,16 +7,5 @@
         android:title="@string/save"
         android:icon="@drawable/ic_save_24dp"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/delete"
-        android:icon="@drawable/ic_delete_24dp"
-        android:title="@string/delete"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/share"
-        android:title="@string/share"
-        android:icon="@drawable/ic_share_24dp"
-        app:showAsAction="ifRoom" />
 
 </menu>

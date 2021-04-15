@@ -3,7 +3,6 @@ package com.example.takeanote.notes;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,10 +29,12 @@ import java.util.Map;
 
 public class AddNote extends AppCompatActivity {
     FirebaseFirestore db;
+    //No canviar a TextInputEditText (hint surt i no volem q surti)
     EditText noteTitle, noteContent;
     ProgressBar progressBarSave;
     FirebaseUser user;
     MaterialToolbar toolbar;
+    Intent data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class AddNote extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        data = getIntent();
         noteContent = findViewById(R.id.addNoteContent);
         noteTitle = findViewById(R.id.addNoteTitle);
 
@@ -96,19 +98,12 @@ public class AddNote extends AppCompatActivity {
         });
     }
 
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //TODO: canviar aqui delete no
         switch (item.getItemId()) {
-            case R.id.delete:
-                Toast.makeText(this, "Delete button clicked.", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.share:
-                Toast.makeText(this, "Share button clicked.", Toast.LENGTH_SHORT).show();
-                break;
-
             case R.id.save:
-                Toast.makeText(this, "Save button clicked.", Toast.LENGTH_SHORT).show();
                 saveNote(noteTitle, noteContent);
                 break;
 
@@ -117,7 +112,8 @@ public class AddNote extends AppCompatActivity {
                 break;
 
             default:
-                throw new IllegalStateException("Unexpected value: " + item.getItemId());
+                Toast.makeText(this, "Comming soon.", Toast.LENGTH_SHORT).show();
+
         }
         return super.onOptionsItemSelected(item);
     }

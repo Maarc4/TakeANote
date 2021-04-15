@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirestoreRecyclerAdapter<Note, NoteViewHolder> noteAdapter;
     FirebaseUser user;
     FirebaseAuth auth;
+    String docId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     noteViewHolder.noteContent.setText(note.getContent());
                     //int code = getRandomColor();
                     //noteViewHolder.mCardView.setCardBackgroundColor(noteViewHolder.view.getResources().getColor(code,null));
-                    String docId = noteAdapter.getSnapshots().getSnapshot(i).getId();
+                    docId = noteAdapter.getSnapshots().getSnapshot(i).getId();
 
                     noteViewHolder.view.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -175,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AddNote.class);
+                intent.putExtra("docId",docId);
                 startActivity(intent);
             }
         });

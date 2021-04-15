@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -16,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -36,8 +36,9 @@ public class NoteDetails extends AppCompatActivity {
     ProgressBar progressBarSave;
     FirebaseUser user;
     MaterialToolbar toolbar;
-    EditText content, title;
+    TextInputEditText content, title;
 
+    //TODO: arreglar el delete
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +111,7 @@ public class NoteDetails extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete:
-                Toast.makeText(this, "Delete button clicked.", Toast.LENGTH_SHORT).show();
+                deleteNote();
                 break;
 
             case R.id.share:
@@ -132,10 +133,25 @@ public class NoteDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void deleteNote() {
+        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("docId"));
+        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(NoteDetails.this, "Note deleted.", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(NoteDetails.this, "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.add_note_top_bar, menu);
+        inflater.inflate(R.menu.details_top_bar, menu);
         return true;
     }
 }
