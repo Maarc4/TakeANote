@@ -42,7 +42,6 @@ public class NoteDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_details);
-        //TODO: CANVIAR A MATERIALTOOLBAR
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,7 +63,6 @@ public class NoteDetails extends AppCompatActivity {
         //Aixo pel color de la nota al color de dins
         //content.setBackgroundColor(getResources().getColor(data.getIntExtra("code",0));
 
-        //TODO: Segurament canviar a lo mateix que a addNote
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
