@@ -84,7 +84,6 @@ public class Register extends AppCompatActivity {
                     pwdConfLayout.setError("Cannot be empty.");
                     errors++;
                 }
-
                 if (!isEmailValid(userEmail)) {
                     emailLayout.setError("Email not valid");
                     errors++;

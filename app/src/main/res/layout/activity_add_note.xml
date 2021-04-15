@@ -14,7 +14,8 @@
             android:id="@+id/addNote_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary">
+            android:background="?attr/colorPrimary"
+            app:menu="@menu/add_note_top_bar">
 
             <EditText
                 android:id="@+id/addNoteTitle"

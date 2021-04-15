@@ -34,4 +34,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="sync_now">Sync Now</string>
     <string name="login_here">Login Here</string>
+    <string name="save">Save</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
 </resources>
