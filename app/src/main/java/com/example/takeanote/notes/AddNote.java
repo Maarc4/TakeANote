@@ -101,7 +101,6 @@ public class AddNote extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //TODO: canviar aqui delete no
         switch (item.getItemId()) {
             case R.id.save:
                 saveNote(noteTitle, noteContent);

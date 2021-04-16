@@ -32,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,7 +47,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
@@ -69,69 +70,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         user = auth.getCurrentUser();
 
         //de moment ordenat per titol a
-        Query query = db.collection("notes").document(user.getUid()).collection( "myNotes" ).orderBy("title", Query.Direction.ASCENDING);
+        Query query = db.collection("notes").document(user.getUid()).collection("myNotes").orderBy("title", Query.Direction.ASCENDING);
         // query notes > uuid > mynotes
 
         FirestoreRecyclerOptions<Note> allNotes = new FirestoreRecyclerOptions.Builder<Note>()
-                .setQuery(query,Note.class)
+                .setQuery(query, Note.class)
                 .build();
 
         noteAdapter = new FirestoreRecyclerAdapter<Note, NoteViewHolder>(allNotes) {
             @Override
             protected void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int i, @NonNull Note note) {
-                    noteViewHolder.noteTitle.setText(note.getTitle());
-                    noteViewHolder.noteContent.setText(note.getContent());
-                    //int code = getRandomColor();
-                    //noteViewHolder.mCardView.setCardBackgroundColor(noteViewHolder.view.getResources().getColor(code,null));
-                    docId = noteAdapter.getSnapshots().getSnapshot(i).getId();
+                noteViewHolder.noteTitle.setText(note.getTitle());
+                noteViewHolder.noteContent.setText(note.getContent());
+                //int code = getRandomColor();
+                //noteViewHolder.mCardView.setCardBackgroundColor(noteViewHolder.view.getResources().getColor(code,null));
+                docId = noteAdapter.getSnapshots().getSnapshot(i).getId();
 
-                    noteViewHolder.view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //Al clicar una nota, es mou a una activity nova (details)
-                            Intent intent = new Intent(v.getContext(), NoteDetails.class);
-                            intent.putExtra("title", note.getTitle());
-                            intent.putExtra("content", note.getContent());
-                            //intent.putExtra("code",code);
-                            intent.putExtra("noteId",docId);
-                            v.getContext().startActivity(intent);
-                        }
-                    });
+                noteViewHolder.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Al clicar una nota, es mou a una activity nova (details)
+                        Intent intent = new Intent(v.getContext(), NoteDetails.class);
+                        intent.putExtra("title", note.getTitle());
+                        intent.putExtra("content", note.getContent());
+                        //intent.putExtra("code",code);
+                        intent.putExtra("noteId", docId);
+                        v.getContext().startActivity(intent);
+                    }
+                });
 
-                    ImageView menuIcon = noteViewHolder.view.findViewById(R.id.menuIcon);
-                    menuIcon.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            PopupMenu menu = new PopupMenu(v.getContext(),v);
-                            menu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                                @Override
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    DocumentReference docRef = db.collection("notes").document(user.getUid()).collection( "myNotes" ).document(docId);
-                                    docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Toast.makeText(MainActivity.this,"Note deleted.",Toast.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(MainActivity.this,"FAILED to delete the note.",Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    return false;
-                                }
-                            });
-                            //TODO: potser afegir share i cambiar a material
+                ImageView menuIcon = noteViewHolder.view.findViewById(R.id.menuIcon);
+                menuIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PopupMenu menu = new PopupMenu(v.getContext(), v);
+                        menu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                Log.d("docId ->", docId);
+                                DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(docId);
+                                docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(MainActivity.this, "Note deleted.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(MainActivity.this, "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                return false;
+                            }
+                        });
+                        //TODO: potser afegir share dsp de noteDetails i cambiar a material
 
-                            menu.show();
-                        }
-                    });
+                        menu.show();
+                    }
+                });
             }
 
             @NonNull
             @Override
             public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout,parent,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout, parent, false);
                 return new NoteViewHolder(view);
             }
         };
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
 
-        toggle = new ActionBarDrawerToggle(this, drawerLayout,toolbar,R.string.open,R.string.close);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
@@ -158,17 +160,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView username = headerView.findViewById(R.id.userDisplayName);
         TextView email = headerView.findViewById(R.id.userDisplayEmail);
 
-        if(user.isAnonymous()){
+        if (user.isAnonymous()) {
             email.setVisibility(View.INVISIBLE);
             username.setText("Temporal account");
-        }
-        else{
+        } else {
             email.setText(user.getEmail());
             username.setText(user.getDisplayName());
         }
-
-
-
 
 
         FloatingActionButton fab = findViewById(R.id.addNoteFab);
@@ -176,30 +174,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AddNote.class);
-                intent.putExtra("docId",docId);
+                intent.putExtra("docId", docId);
                 startActivity(intent);
             }
         });
-
 
 
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        drawerLayout.closeDrawer( GravityCompat.START );
-        switch(item.getItemId()){
+        drawerLayout.closeDrawer(GravityCompat.START);
+        switch (item.getItemId()) {
             case R.id.add_note:
-                Intent intent = new Intent(this,AddNote.class);
+                Intent intent = new Intent(this, AddNote.class);
                 startActivity(intent);
                 break;
 
             case R.id.sync:
 
-                if(user.isAnonymous()){
-                    startActivity(new Intent(this,Register.class));
-                }else{
-                    Toast.makeText(this,"You are connected",Toast.LENGTH_SHORT).show();
+                if (user.isAnonymous()) {
+                    startActivity(new Intent(this, Register.class));
+                } else {
+                    Toast.makeText(this, "You are connected", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -209,16 +206,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Toast.makeText(this,"Comming soon.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Comming soon.", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
 
     private void checkUser() {
         // if user is real or not
-        if(user.isAnonymous()) {
+        if (user.isAnonymous()) {
             displayAlert();
-        }else {
+        } else {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(), LoadScreen.class));
             finish();
@@ -227,51 +224,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void displayAlert() {
         AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setTitle( "Are you sure?" )
-                .setMessage( "You are logged in with Temporary Account. Loggin out will Delete All the notes." )
-                .setPositiveButton( "Sync Note", new DialogInterface.OnClickListener() {
+                .setTitle("Are you sure?")
+                .setMessage("You are logged in with Temporary Account. Loggin out will Delete All the notes.")
+                .setPositiveButton("Sync Note", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(), Register.class ));
+                        startActivity(new Intent(getApplicationContext(), Register.class));
                         finish();
                     }
-                } ).setNegativeButton( "Logout", new DialogInterface.OnClickListener() {
+                }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        user.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                        user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                startActivity(new Intent(getApplicationContext(),LoadScreen.class));
+                                startActivity(new Intent(getApplicationContext(), LoadScreen.class));
                                 finish();
                             }
-                        } ).addOnFailureListener( new OnFailureListener() {
+                        }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
 
                             }
-                        } );
-                        }
-                } );
+                        });
+                    }
+                });
         warning.show();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.settings_menu,menu);
+        inflater.inflate(R.menu.settings_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.action_settings){
-            Toast.makeText(this,"Settings Menu is Clicked.",Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.action_settings) {
+            Toast.makeText(this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public class NoteViewHolder extends RecyclerView.ViewHolder{
+    public class NoteViewHolder extends RecyclerView.ViewHolder {
         TextView noteTitle, noteContent;
         View view;
         //Per cambiar els colors random
@@ -314,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStop() {
         super.onStop();
-        if(noteAdapter != null){
+        if (noteAdapter != null) {
             noteAdapter.stopListening();
         }
     }

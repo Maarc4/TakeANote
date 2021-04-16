@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,7 +39,6 @@ public class NoteDetails extends AppCompatActivity {
     MaterialToolbar toolbar;
     TextInputEditText content, title;
 
-    //TODO: arreglar el delete
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +85,7 @@ public class NoteDetails extends AppCompatActivity {
 
         progressBarSave.setVisibility(View.VISIBLE);
         //save note
-        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("noteId"));
+        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("docId"));
 
         Map<String, Object> note = new HashMap<>();
         note.put("title", nTitle);
@@ -134,11 +134,14 @@ public class NoteDetails extends AppCompatActivity {
     }
 
     public void deleteNote() {
-        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("docId"));
+        String docId = data.getStringExtra("noteId");
+
+        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(docId);
         docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(NoteDetails.this, "Note deleted.", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
