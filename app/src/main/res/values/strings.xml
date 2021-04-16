@@ -37,4 +37,6 @@
     <string name="save">Save</string>
     <string name="share">Share</string>
     <string name="delete">Delete</string>
+    <string name="add_image">Add Image</string>
+    <string name="add_audio">Add Audio</string>
 </resources>

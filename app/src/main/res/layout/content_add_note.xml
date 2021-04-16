@@ -9,6 +9,7 @@
     tools:context=".notes.AddNote"
     tools:showIn="@layout/activity_add_note">
 
+
     <EditText
         android:id="@+id/addNoteContent"
         android:layout_width="0dp"

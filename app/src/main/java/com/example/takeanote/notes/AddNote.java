@@ -27,6 +27,9 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+
 public class AddNote extends AppCompatActivity {
     FirebaseFirestore db;
     //No canviar a TextInputEditText (hint surt i no volem q surti)
@@ -55,11 +58,20 @@ public class AddNote extends AppCompatActivity {
 
         //TODO: Fer que el fab sigui per escollir tipus de input(text,foto,audio...) o fer una bottombar
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onClick(View view) {
-                saveNote(noteTitle, noteContent);
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                //TODO: Start some activity
+                switch (menuItem.getItemId()) {
+                    case R.id.action_audio:
+                        Toast.makeText(AddNote.this, "Add AUDIO clicked.", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.action_image:
+                        Toast.makeText(AddNote.this, "Add IMAGE clicked.", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return false;
             }
         });
     }
@@ -111,7 +123,7 @@ public class AddNote extends AppCompatActivity {
                 break;
 
             default:
-                Toast.makeText(this, "Comming soon.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Coming soon.", Toast.LENGTH_SHORT).show();
 
         }
         return super.onOptionsItemSelected(item);
