@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseUser user;
     FirebaseAuth auth;
     String docId;
-
+//TODO: conectar paint a l'app
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.sync:
-
                 if (user.isAnonymous()) {
                     startActivity(new Intent(this, Register.class));
                 } else {

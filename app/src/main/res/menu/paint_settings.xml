@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/save"
+        android:title="@string/save"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/normal"
+        android:title="@string/normal"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/emboss"
+        android:title="@string/emboss"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/blur"
+        android:title="@string/blur"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/clear"
+        android:title="@string/clear"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/eraser"
+        android:icon="@drawable/ic_eraser_24dp"
+        android:title="@string/eraser"
+        app:showAsAction="always" />
+    <item
+        android:icon="@drawable/ic_change_color_24dp"
+        android:title="@string/change_color"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/cRed"
+                android:icon="@drawable/ic_red_24dp"
+                android:title="@string/red" />
+            <item
+                android:id="@+id/cGreen"
+                android:icon="@drawable/ic_green_24dp"
+                android:title="@string/green" />
+            <item
+                android:id="@+id/cBlue"
+                android:icon="@drawable/ic_blue_24dp"
+                android:title="@string/blue" />
+            <item
+                android:id="@+id/cBlack"
+                android:icon="@drawable/ic_black_24dp"
+                android:title="@string/black" />
+        </menu>
+    </item>
+
+    <item
+        android:title="@string/change_brush_width"
+        android:icon="@drawable/ic_brush_24dp"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/br5"
+                android:title="@string/br5" />
+            <item
+                android:id="@+id/br10"
+                android:title="@string/br10" />
+            <item
+                android:id="@+id/br20"
+                android:title="@string/br20" />
+        </menu>
+    </item>
+
+</menu>

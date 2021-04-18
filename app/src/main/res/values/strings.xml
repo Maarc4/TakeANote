@@ -1,14 +1,7 @@
 <resources>
     <string name="app_name">TakeANote</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="sample_username">Sample username</string>
     <string name="sample_email">Sample@email.com</string>
     <string name="sample_description">Sample Description</string>
@@ -39,4 +32,23 @@
     <string name="delete">Delete</string>
     <string name="add_image">Add Image</string>
     <string name="add_audio">Add Audio</string>
+
+    <!-- PAINT -->
+    <string name="normal">Normal</string>
+    <string name="emboss">Emboss</string>
+    <string name="blur">Blur</string>
+    <string name="clear">Clear</string>
+    <string name="change_color">Change Color</string>
+    <string name="brush_width">Change brush width</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="black">Black</string>
+    <string name="blue">Blue</string>
+    <string name="br5">Set brush width to 5</string>
+    <string name="br10">Set brush width to 10</string>
+    <string name="br20">Set brush width to 20</string>
+    <string name="change_brush_width">Change brush width</string>
+    <string name="eraser">Eraser</string>
+    <string name="save_paint">Save as jpg</string>
+
 </resources>
