@@ -29,6 +29,22 @@
         android:title="@string/eraser"
         app:showAsAction="always" />
     <item
+        android:icon="@drawable/ic_brush_24dp"
+        android:title="@string/change_brush_width"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/br5"
+                android:title="@string/br5" />
+            <item
+                android:id="@+id/br10"
+                android:title="@string/br10" />
+            <item
+                android:id="@+id/br20"
+                android:title="@string/br20" />
+        </menu>
+    </item>
+    <item
         android:icon="@drawable/ic_change_color_24dp"
         android:title="@string/change_color"
         app:showAsAction="always">
@@ -52,21 +68,5 @@
         </menu>
     </item>
 
-    <item
-        android:title="@string/change_brush_width"
-        android:icon="@drawable/ic_brush_24dp"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/br5"
-                android:title="@string/br5" />
-            <item
-                android:id="@+id/br10"
-                android:title="@string/br10" />
-            <item
-                android:id="@+id/br20"
-                android:title="@string/br20" />
-        </menu>
-    </item>
 
 </menu>
