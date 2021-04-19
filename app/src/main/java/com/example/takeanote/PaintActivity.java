@@ -30,6 +30,7 @@ public class PaintActivity extends AppCompatActivity {
 
     private PaintView paintView;
     private int width;
+    private int color;
     MaterialToolbar toolbar;
 
     //Guillem
@@ -43,17 +44,19 @@ public class PaintActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
         paintView = findViewById(R.id.paintView);
         toolbar = findViewById(R.id.paintToolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         paintView.init(metrics);
         width = paintView.BRUSH_SIZE;
+        color = paintView.DEFAULT_COLOR;
         ActivityCompat.requestPermissions(PaintActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
@@ -64,7 +67,6 @@ public class PaintActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    //TODO: fer com color pero amb brush i que al clicarlo ja es posi a color i no en blnc si estas a la goma
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -83,41 +85,49 @@ public class PaintActivity extends AppCompatActivity {
                 break;
             case R.id.eraser:
                 paintView.setBrushColor(Color.WHITE);
-                paintView.setBrushWidth(25);
-                Toast.makeText(PaintActivity.this, "Eraser Clicked.", Toast.LENGTH_SHORT).show();
+                paintView.setBrushWidth(30);
                 break;
             case R.id.cRed:
-                paintView.setBrushColor(Color.RED);
+                color = Color.RED;
+                paintView.setBrushColor(color);
                 paintView.setBrushWidth(width);
                 break;
             case R.id.cGreen:
-                paintView.setBrushColor(Color.GREEN);
+                color = Color.GREEN;
+                paintView.setBrushColor(color);
                 paintView.setBrushWidth(width);
                 break;
             case R.id.cBlue:
-                paintView.setBrushColor(Color.BLUE);
+                color = Color.BLUE;
+                paintView.setBrushColor(color);
                 paintView.setBrushWidth(width);
                 break;
             case R.id.cBlack:
-                paintView.setBrushColor(Color.BLACK);
+                color = Color.BLACK;
+                paintView.setBrushColor(color);
                 paintView.setBrushWidth(width);
                 break;
             case R.id.br5:
                 width = 5;
                 paintView.setBrushWidth(width);
+                paintView.setBrushColor(color);
                 break;
             case R.id.br10:
                 width = 10;
                 paintView.setBrushWidth(width);
+                paintView.setBrushColor(color);
                 break;
             case R.id.br20:
                 width = 20;
                 paintView.setBrushWidth(width);
+                paintView.setBrushColor(color);
                 break;
             case R.id.save:
                 saveView();
                 break;
-
+            case android.R.id.home:
+                onBackPressed();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -127,13 +137,12 @@ public class PaintActivity extends AppCompatActivity {
 
     private void uploadImage() {
 
-        if(filePath != null)
-        {
+        if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
             ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -146,15 +155,15 @@ public class PaintActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(PaintActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PaintActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
         }
@@ -173,7 +182,7 @@ public class PaintActivity extends AppCompatActivity {
         filePath = imgSaved;
 
         if (imgSaved != null) {
-            Toast.makeText(this, "IMAGE SAVED: "+imgSaved, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT).show();
             uploadImage();
         } else {
             Toast.makeText(this, "ERROR NOT SAVED", Toast.LENGTH_SHORT).show();

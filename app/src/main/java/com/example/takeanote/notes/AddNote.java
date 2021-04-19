@@ -56,17 +56,11 @@ public class AddNote extends AppCompatActivity {
         progressBarSave = findViewById(R.id.addNote_progressBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //TODO: Fer que el fab sigui per escollir tipus de input(text,foto,audio...) o fer una bottombar
-
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                //TODO: Start some activity
                 switch (menuItem.getItemId()) {
-                    case R.id.action_audio:
-                        Toast.makeText(AddNote.this, "Add AUDIO clicked.", Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.action_image:
                         Toast.makeText(AddNote.this, "Add IMAGE clicked.", Toast.LENGTH_SHORT).show();
                         break;

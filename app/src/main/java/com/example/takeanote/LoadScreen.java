@@ -54,6 +54,6 @@ public class LoadScreen extends AppCompatActivity {
                 }
 
             }
-        },2000);
+        },1500);
     }
 }

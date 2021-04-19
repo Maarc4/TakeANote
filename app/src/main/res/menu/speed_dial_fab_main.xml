@@ -9,4 +9,8 @@
         android:id="@+id/action_paint"
         android:icon="@drawable/ic_paint_24dp"
         android:title="@string/add_paint" />
+    <item
+        android:id="@+id/action_audio"
+        android:icon="@drawable/ic_audio_24dp"
+        android:title="@string/add_audio"/>
 </menu>

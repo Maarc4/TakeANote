@@ -5,16 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PaintActivity">
+
     <include
-        android:layout_height="match_parent"
+        layout="@layout/content_paint"
         android:layout_width="match_parent"
-        layout="@layout/content_paint"/>
+        android:layout_height="match_parent" />
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/paintToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:menu="@menu/paint_settings"/>
+        app:menu="@menu/paint_settings">
+
+        <EditText
+            android:id="@+id/PaintTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:ems="10"
+            android:hint="@android:string/untitled"
+            android:inputType="textPersonName"
+            android:textColor="#fff"
+            android:textColorHint="#FFFFFF"
+            android:textStyle="bold" />
+    </com.google.android.material.appbar.MaterialToolbar>
 
 
 </RelativeLayout>

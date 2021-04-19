@@ -31,6 +31,9 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+
 public class NoteDetails extends AppCompatActivity {
     Intent data;
     FirebaseFirestore db;
@@ -64,11 +67,16 @@ public class NoteDetails extends AppCompatActivity {
         //Aixo pel color de la nota al color de dins
         //content.setBackgroundColor(getResources().getColor(data.getIntExtra("code",0));
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onClick(View view) {
-                saveNote(title, content);
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_image:
+                        Toast.makeText(NoteDetails.this, "Add IMAGE clicked.", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return false;
             }
         });
     }

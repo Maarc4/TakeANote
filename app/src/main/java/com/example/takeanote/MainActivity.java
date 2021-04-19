@@ -188,6 +188,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(MainActivity.this, "Add DRAW NOTE clicked.", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), PaintActivity.class));
                         break;
+                    case R.id.action_audio:
+                        //TODO: Hector, desde aqui vas a la teva clase audio
+                        Toast.makeText(MainActivity.this, "Add AUDIO NOTE clicked.", Toast.LENGTH_SHORT).show();
+                        //startActivity(new Intent(getApplicationContext(), NOM_CLASE_AUDIO_HECTOR.class));
+                        break;
                 }
                 return false;
             }
@@ -199,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
+
             case R.id.add_note:
                 Intent intent = new Intent(this, AddNote.class);
                 startActivity(intent);
