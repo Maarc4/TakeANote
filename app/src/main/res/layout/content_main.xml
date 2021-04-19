@@ -24,17 +24,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/content_main_toolbar" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addNoteFab"
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fab_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="@+id/listOfNotes"
+        app:fabGravity="bottom_end"
+        app:fabMenu="@menu/speed_dial_fab_main"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="30dp"
-        app:srcCompat="@drawable/ic_add_24dp" />
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,7 +33,6 @@ public class PaintView extends View {
     private int strokeWidth;
     private boolean emboss;
     private boolean blur;
-    private boolean eraser;
     private MaskFilter mEmboss;
     private MaskFilter mBlur;
     private Bitmap mBitmap;

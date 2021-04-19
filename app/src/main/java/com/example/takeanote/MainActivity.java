@@ -47,6 +47,9 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
@@ -169,16 +172,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        FloatingActionButton fab = findViewById(R.id.addNoteFab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //Escollir si nota dibuix o nota text
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_main);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AddNote.class);
-                intent.putExtra("docId", docId);
-                startActivity(intent);
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_text:
+                        Toast.makeText(MainActivity.this, "Add TEXT NOTE clicked.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), AddNote.class);
+                        intent.putExtra("docId", docId);
+                        startActivity(intent);
+                        break;
+                    case R.id.action_paint:
+                        Toast.makeText(MainActivity.this, "Add DRAW NOTE clicked.", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), PaintActivity.class));
+                        break;
+                }
+                return false;
             }
         });
-
 
     }
 

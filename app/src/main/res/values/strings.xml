@@ -50,5 +50,8 @@
     <string name="change_brush_width">Change brush width</string>
     <string name="eraser">Eraser</string>
     <string name="save_paint">Save as jpg</string>
+    <string name="add_paint">Draw note</string>
+    <string name="add_text">Add Text Note</string>
+    <string name="title_activity_paint_activity">DrawNote</string>
 
 </resources>
