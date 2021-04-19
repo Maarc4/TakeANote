@@ -55,8 +55,8 @@ public class PaintActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         paintView.init(metrics);
-        width = paintView.BRUSH_SIZE;
-        color = paintView.DEFAULT_COLOR;
+        width = PaintView.BRUSH_SIZE;
+        color = PaintView.DEFAULT_COLOR;
         ActivityCompat.requestPermissions(PaintActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
