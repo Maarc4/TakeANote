@@ -1,7 +1,9 @@
 package com.example.takeanote;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
@@ -14,7 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 
@@ -24,8 +32,18 @@ public class PaintActivity extends AppCompatActivity {
     private int width;
     MaterialToolbar toolbar;
 
+    //Guillem
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    String filePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Guillem
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
         paintView = findViewById(R.id.paintView);
@@ -104,6 +122,44 @@ public class PaintActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+// TODO Treure comentaris loco
+
+
+    private void uploadImage() {
+
+        if(filePath != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            ref.putFile(Uri.parse(filePath))
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(PaintActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(PaintActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
+    }
+
     //TODO: mirar de ferho sense depracated method
     public void saveView() {
 
@@ -112,8 +168,13 @@ public class PaintActivity extends AppCompatActivity {
         String imgSaved = MediaStore.Images.Media.insertImage(
                 getContentResolver(), paintView.getDrawingCache(),
                 UUID.randomUUID().toString() + ".jpg", "drawing");
+
+        //Guillem
+        filePath = imgSaved;
+
         if (imgSaved != null) {
             Toast.makeText(this, "IMAGE SAVED: "+imgSaved, Toast.LENGTH_SHORT).show();
+            uploadImage();
         } else {
             Toast.makeText(this, "ERROR NOT SAVED", Toast.LENGTH_SHORT).show();
         }
