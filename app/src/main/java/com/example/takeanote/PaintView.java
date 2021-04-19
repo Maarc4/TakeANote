@@ -40,7 +40,8 @@ public class PaintView extends View {
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
     public PaintView(Context context) {
-        this(context, null);
+        super(context);
+        new PaintView(context, null);
     }
 
     public PaintView(Context context, @Nullable AttributeSet attrs) {

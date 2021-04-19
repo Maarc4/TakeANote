@@ -14,19 +14,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.UUID;
 
 public class PaintActivity extends AppCompatActivity {
 
     private PaintView paintView;
     private int width;
-
+    MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
         paintView = findViewById(R.id.paintView);
+        toolbar = findViewById(R.id.paintToolbar);
+        setSupportActionBar(toolbar);
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -42,6 +46,7 @@ public class PaintActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //TODO: fer com color pero amb brush i que al clicarlo ja es posi a color i no en blnc si estas a la goma
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

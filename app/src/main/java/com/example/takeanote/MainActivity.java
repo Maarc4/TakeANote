@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseUser user;
     FirebaseAuth auth;
     String docId;
-//TODO: conectar paint a l'app
+//TODO: Crear card display per la nota de dibuix (potser poder afegir titol i eso)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

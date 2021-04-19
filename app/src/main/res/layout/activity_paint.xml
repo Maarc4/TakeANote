@@ -9,6 +9,12 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         layout="@layout/content_paint"/>
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/paintToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:menu="@menu/paint_settings"/>
 
 
 </RelativeLayout>
