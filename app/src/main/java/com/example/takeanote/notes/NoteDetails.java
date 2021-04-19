@@ -85,7 +85,7 @@ public class NoteDetails extends AppCompatActivity {
 
         progressBarSave.setVisibility(View.VISIBLE);
         //save note
-        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("docId"));
+        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("noteId"));
 
         Map<String, Object> note = new HashMap<>();
         note.put("title", nTitle);
