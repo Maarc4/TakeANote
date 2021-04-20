@@ -101,14 +101,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView username = headerView.findViewById(R.id.userDisplayName);
         TextView email = headerView.findViewById(R.id.userDisplayEmail);
 
-        /*
-        if (user.isAnonymous()) {
-            email.setVisibility(View.INVISIBLE);
-            username.setText("Temporal account");
-        } else {
-            email.setText(user.getEmail());
-            username.setText(user.getDisplayName());
-        }*/
+        viewModel.menuConf( email, username );
+
 
         //Escollir si nota dibuix o nota text
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_main);

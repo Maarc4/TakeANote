@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +25,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,5 +162,14 @@ public class MainActivityViewModel extends ViewModel {
         warning.show();
     }
 
+    public void menuConf(TextView email, TextView username) {
+        if (user.isAnonymous()) {
+            email.setVisibility( View.INVISIBLE);
+            username.setText("Temporal account");
+        } else {
+            email.setText(user.getEmail());
+            username.setText(user.getDisplayName());
+        }
+    }
 
 }

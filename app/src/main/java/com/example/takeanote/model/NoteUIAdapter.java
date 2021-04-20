@@ -41,7 +41,20 @@ public class NoteUIAdapter extends RecyclerView.Adapter<NoteUIAdapter.NoteUIView
     public void onBindViewHolder(@NonNull NoteUIViewHolder holder, int position) {
         NoteUI note = this.notes.get( position );
         holder.noteTitle.setText( note.getTitle() );
-        holder.noteContent.setText( note.getContent() );
+        String content = note.getContent();
+        if (content.length()>20 | content.contains( "\n" )){
+            String newContent = "";
+            char salto = '\n';
+            for(int i = 0; i < 20; i++) {
+                if (content.charAt( i ) == salto) {
+                    break;
+                }
+                newContent += content.charAt( i );
+            }
+            newContent += "...";
+            content = newContent;
+        }
+        holder.noteContent.setText( content );
         holder.view.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
