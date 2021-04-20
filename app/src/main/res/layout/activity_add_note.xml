@@ -36,7 +36,7 @@
     <include layout="@layout/content_add_note" />
 
     <io.github.yavski.fabspeeddial.FabSpeedDial
-        android:id="@+id/fab_speed_dial_addNote"
+        android:id="@+id/fab_addNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

@@ -39,4 +39,5 @@
         app:layout_constraintEnd_toEndOf="@+id/addNoteContent"
         app:layout_constraintStart_toStartOf="@+id/addNoteContent"
         app:layout_constraintTop_toTopOf="@+id/addNoteContent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

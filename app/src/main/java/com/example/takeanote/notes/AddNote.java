@@ -56,7 +56,7 @@ public class AddNote extends AppCompatActivity {
         progressBarSave = findViewById(R.id.addNote_progressBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_addNote);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
