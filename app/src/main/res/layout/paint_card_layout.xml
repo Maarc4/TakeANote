@@ -33,7 +33,9 @@
             <ImageView
                 android:id="@+id/noteContent"
                 android:layout_width="match_parent"
-                android:layout_height="180"
+                android:layout_height="100dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
