@@ -1,35 +1,29 @@
 package com.example.takeanote.notes;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.takeanote.MainActivity;
-import com.example.takeanote.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.takeanote.MainActivity;
+import com.example.takeanote.R;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -40,7 +34,9 @@ public class NoteDetails extends AppCompatActivity {
     ProgressBar progressBarSave;
     FirebaseUser user;
     MaterialToolbar toolbar;
-    TextInputEditText content, title;
+    private NoteDetailsViewModel noteDetailsViewModel;
+    private TextInputEditText content, title;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +45,15 @@ public class NoteDetails extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        noteDetailsViewModel = new ViewModelProvider( this ).get(NoteDetailsViewModel.class);
         db = FirebaseFirestore.getInstance();
         progressBarSave = findViewById(R.id.noteDetails_progressBar);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        this.activity = (MainActivity) getParent();
         data = getIntent();
 
+        noteDetailsViewModel = new ViewModelProvider( this ).get( NoteDetailsViewModel.class );
 
         //Aixo si es canvia a ¿materialedittext? segurament sha de canviar
         content = findViewById(R.id.noteDetailsContent);
@@ -81,38 +79,16 @@ public class NoteDetails extends AppCompatActivity {
         });
     }
 
-    private void saveNote(EditText title, EditText content) {
-        //Toast.makeText(AddNote.this, "Save btn clicked.", Toast.LENGTH_SHORT).show();
-        String nTitle = title.getText().toString();
-        String nContent = content.getText().toString();
-
-        if (nTitle.isEmpty() || nContent.isEmpty()) {
-            Toast.makeText(NoteDetails.this, "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        progressBarSave.setVisibility(View.VISIBLE);
-        //save note
-        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("noteId"));
-
-        Map<String, Object> note = new HashMap<>();
-        note.put("title", nTitle);
-        note.put("content", nContent);
-
-        docref.update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+    private void saveNote(){
+        noteDetailsViewModel.saveNote( NoteDetails.this, user, db, data, title, content,
+                progressBarSave).observe( this, new Observer<List<String>>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(NoteDetails.this, "Note SAVED", Toast.LENGTH_SHORT).show();
-                //progressBarSave.setVisibility(View.INVISIBLE);
+            public void onChanged(List<String> strings) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(NoteDetails.this, "FAILED to save", Toast.LENGTH_SHORT).show();
-                progressBarSave.setVisibility(View.VISIBLE);
-            }
-        });
+        } );
+
+
     }
 
     @Override
@@ -128,7 +104,7 @@ public class NoteDetails extends AppCompatActivity {
                 break;
 
             case R.id.save:
-                saveNote(title, content);
+                saveNote();
                 break;
 
             case android.R.id.home:
@@ -143,20 +119,13 @@ public class NoteDetails extends AppCompatActivity {
 
     public void deleteNote() {
         String docId = data.getStringExtra("noteId");
+        noteDetailsViewModel.deleteNote(this, docId, db, user).observe( this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        } );
 
-        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(docId);
-        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(NoteDetails.this, "Note deleted.", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(NoteDetails.this, "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
