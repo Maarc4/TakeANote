@@ -19,6 +19,8 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -37,12 +39,15 @@ public class PaintActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     String filePath;
+    String user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Guillem
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
@@ -142,7 +147,7 @@ public class PaintActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString() + ".jpg");
+            StorageReference ref = storageReference.child("images/" + user +"/" + UUID.randomUUID().toString() + ".jpg");
             ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
