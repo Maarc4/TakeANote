@@ -27,8 +27,8 @@ public class LoadScreenViewModel extends ViewModel {
         tempAuth = new MutableLiveData<>();
     }
 
-    public LiveData<FirebaseAuth> login(Activity activity, FirebaseAuth auth){
-        this.auth = auth;
+    public LiveData<FirebaseAuth> login(Activity activity){
+        this.auth = FirebaseAuth.getInstance();
         this.activity = activity;
 
         auth = FirebaseAuth.getInstance();

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,14 +38,13 @@ public class NoteDetailsViewModel extends ViewModel {
 
     public NoteDetailsViewModel() {
         info = new MutableLiveData<>();
+        this.db = FirebaseFirestore.getInstance();
+        this.user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public LiveData<List<String>> saveNote(Context context, FirebaseUser user, FirebaseFirestore db,
-                                           Intent data, TextInputEditText title, TextInputEditText content,
-                                           ProgressBar progressBarSave) {
+    public LiveData<List<String>> saveNote(Context context, Intent data, TextInputEditText title,
+                                           TextInputEditText content, ProgressBar progressBarSave) {
         this.context = context;
-        this.db = db;
-        this.user = user;
         this.intent = data;
         this.progressBarSave = progressBarSave;
 
@@ -87,10 +87,8 @@ public class NoteDetailsViewModel extends ViewModel {
 
     }
 
-    public LiveData<List<String>> deleteNote(Context context, String docID, FirebaseFirestore db, FirebaseUser user) {
+    public LiveData<List<String>> deleteNote(Context context, String docID) {
         this.context = context;
-        this.db = db;
-        this.user = user;
 
         List<String> listEmpty = new ArrayList<>();
         this.docId = docID;

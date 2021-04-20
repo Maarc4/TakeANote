@@ -23,12 +23,12 @@ import java.util.List;
 
 
 public class LoadScreen extends AppCompatActivity {
-    FirebaseAuth auth;
+
     private LoadScreenViewModel viewModel;
 
     private void setUpViewModel() {
         viewModel = new ViewModelProvider( this ).get(LoadScreenViewModel.class);
-        viewModel.login( this, auth ).observe( this, new Observer<FirebaseAuth>() {
+        viewModel.login( this).observe( this, new Observer<FirebaseAuth>() {
             @Override
             public void onChanged(FirebaseAuth firebaseAuth) {
                 Toast.makeText( LoadScreen.this, "Logged in With Temporary Account.", Toast.LENGTH_SHORT ).show();

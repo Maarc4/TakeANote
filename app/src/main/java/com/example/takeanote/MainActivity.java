@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
     RecyclerView listOfNotes;
-    FirebaseFirestore db;
+    //FirebaseFirestore db;
     //FirestoreRecyclerAdapter<NoteUI, MainActivity.NoteViewHolder> noteAdapter;
-    FirebaseUser user;
-    FirebaseAuth auth;
+    //FirebaseUser user;
+    //FirebaseAuth auth;
 
     private MainActivityViewModel viewModel;
     private NoteUIAdapter adapter;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpViewModel() {
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        viewModel.init(this, auth, user, db).observe( this, new androidx.lifecycle.Observer<List<NoteUI>>() {
+        viewModel.init(this).observe( this, new androidx.lifecycle.Observer<List<NoteUI>>() {
             @Override
             public void onChanged(List<NoteUI> noteUIS) {
                 setUpAdapter( noteUIS );
@@ -82,10 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         MaterialToolbar toolbar = findViewById(R.id.content_main_toolbar);
         setSupportActionBar(toolbar);
-
-        db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
 
         listOfNotes = findViewById(R.id.listOfNotes);
         listOfNotes.setLayoutManager( new LinearLayoutManager(  this, LinearLayoutManager.VERTICAL, false) );
@@ -187,17 +183,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.sync:
-
-                if (user.isAnonymous()) {
-                    startActivity(new Intent(this, Register.class));
-                } else {
-                    Toast.makeText(this, "You are connected", Toast.LENGTH_SHORT).show();
-                }
+                viewModel.sync();
                 break;
 
             case R.id.logout:
                 //Mirem si l'usuari logejat és anonim o no i fem signout
-                checkUser();
+                viewModel.checkUser();
                 break;
 
             default:
@@ -205,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
-
+/*
     private void checkUser() {
         // if user is real or not
         if (user.isAnonymous()) {
@@ -249,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
         warning.show();
     }
-
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

@@ -1,14 +1,19 @@
 package com.example.takeanote;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.takeanote.auth.Register;
 import com.example.takeanote.model.NoteUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,20 +32,20 @@ public class MainActivityViewModel extends ViewModel {
     FirebaseFirestore db;
     //FirestoreRecyclerAdapter<NoteUI, MainActivity.NoteViewHolder> noteAdapter;
     FirebaseUser user;
-    FirebaseAuth auth;
+    private Activity activity;
     private Context context;
 
     private MutableLiveData<List<NoteUI>> notesData;
 
     public MainActivityViewModel() {
         notesData = new MutableLiveData<>();
+        this.db = FirebaseFirestore.getInstance();
+        this.user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public LiveData<List<NoteUI>> init(Context context, FirebaseAuth auth, FirebaseUser user, FirebaseFirestore db) {
-        this.context = context;
-        this.db = db;
-        this.auth = auth;
-        this.user = user;
+    public LiveData<List<NoteUI>> init(Activity activity) {
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
         //user = auth.getCurrentUser();
         NoteUI note = new NoteUI();
         FirebaseUser finalUser = user;
@@ -101,6 +106,56 @@ public class MainActivityViewModel extends ViewModel {
                 Toast.makeText( context, "FAILED to delete the note.", Toast.LENGTH_SHORT ).show();
             }
         } );
+    }
+
+    public void sync(){
+        if (user.isAnonymous()) {
+            activity.startActivity(new Intent(context, Register.class));
+        } else {
+            Toast.makeText(context, "You are connected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void checkUser() {
+        // if user is real or not
+        if (user.isAnonymous()) {
+            displayAlert();
+        } else {
+            FirebaseAuth.getInstance().signOut();
+            activity.startActivity( new Intent(context.getApplicationContext(), LoadScreen.class));
+            activity.finish();
+        }
+    }
+
+    public void displayAlert() {
+        AlertDialog.Builder warning = new AlertDialog.Builder(activity)
+                .setTitle("Are you sure?")
+                .setMessage("You are logged in with Temporary Account. Loggin out will Delete All the notes.")
+                .setPositiveButton("Sync NoteUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.startActivity( new Intent(context, Register.class));
+                        activity.finish();
+                    }
+                }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                activity.startActivity(new Intent(context, LoadScreen.class));
+                                activity.finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+                    }
+                });
+        warning.show();
     }
 
 

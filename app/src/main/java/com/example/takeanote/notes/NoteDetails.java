@@ -30,13 +30,10 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class NoteDetails extends AppCompatActivity {
     Intent data;
-    FirebaseFirestore db;
     ProgressBar progressBarSave;
-    FirebaseUser user;
     MaterialToolbar toolbar;
     private NoteDetailsViewModel noteDetailsViewModel;
     private TextInputEditText content, title;
-    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +43,7 @@ public class NoteDetails extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         noteDetailsViewModel = new ViewModelProvider( this ).get(NoteDetailsViewModel.class);
-        db = FirebaseFirestore.getInstance();
         progressBarSave = findViewById(R.id.noteDetails_progressBar);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        this.activity = (MainActivity) getParent();
         data = getIntent();
 
         noteDetailsViewModel = new ViewModelProvider( this ).get( NoteDetailsViewModel.class );
@@ -80,7 +73,7 @@ public class NoteDetails extends AppCompatActivity {
     }
 
     private void saveNote(){
-        noteDetailsViewModel.saveNote( NoteDetails.this, user, db, data, title, content,
+        noteDetailsViewModel.saveNote( NoteDetails.this, data, title, content,
                 progressBarSave).observe( this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> strings) {
@@ -119,7 +112,7 @@ public class NoteDetails extends AppCompatActivity {
 
     public void deleteNote() {
         String docId = data.getStringExtra("noteId");
-        noteDetailsViewModel.deleteNote(this, docId, db, user).observe( this, new Observer<List<String>>() {
+        noteDetailsViewModel.deleteNote(this, docId).observe( this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> strings) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
