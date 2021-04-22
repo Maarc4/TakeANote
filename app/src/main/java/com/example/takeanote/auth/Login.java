@@ -3,6 +3,8 @@ package com.example.takeanote.auth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.takeanote.LoadScreenViewModel;
 import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,10 +36,9 @@ public class Login extends AppCompatActivity {
     TextInputLayout emailLayout, pwdLayout;
     Button loginNow;
     TextView forgetPass, createAcc;
-    FirebaseAuth auth;
-    FirebaseFirestore db;
-    FirebaseUser user;
     ProgressBar progressBar;
+    private LoginViewModel loginViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,8 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Login to TakeANote");
+
+        loginViewModel = new ViewModelProvider( this ).get( LoginViewModel.class );
 
         lEmail = findViewById(R.id.email);
         lPassword = findViewById(R.id.lPassword);
@@ -56,10 +60,7 @@ public class Login extends AppCompatActivity {
 
         forgetPass = findViewById(R.id.forgotPasword);
         createAcc = findViewById(R.id.createAccount);
-        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
 
 
         showWarning();
@@ -67,61 +68,14 @@ public class Login extends AppCompatActivity {
         loginNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int errors = 0;
-                String mEmail = lEmail.getText().toString();
-                String mPassword = lPassword.getText().toString();
-                emailLayout.setError(null);
-                pwdLayout.setError(null);
-                if (mPassword.isEmpty()) {
-                    pwdLayout.setError("Cannot be empty.");
-                    errors++;
-                }
-                if (!isEmailValid(mEmail)) {
-                    emailLayout.setError("Email is not valid.");
-                    errors++;
-                }
-                if (errors != 0) return;
-                Toast.makeText(Login.this, "ESTA PASANT AMB ERROR LOGIN", Toast.LENGTH_SHORT).show();
-
-                progressBar.setVisibility(View.VISIBLE);
-
-                //TODO: arreglar login fallit i intentar tornar a fer login
-                //TODO: mirar de fer que si el login sera ok, llavors borrar notes/user temp (POTSER s'arregla al def VMMV)
-                if (auth.getCurrentUser().isAnonymous()) {
-                    //delete temp notes
-                    FirebaseUser user = auth.getCurrentUser();
-
-                    db.collection("notes").document(user.getUid()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(Login.this, "All Temp Notes are Deleted.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    // delete Temp user
-                    user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(Login.this, "Temp user Deleted.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                auth.signInWithEmailAndPassword(mEmail, mPassword)
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                Toast.makeText(Login.this, "Success !", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Login.this, "Login Failed. " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+               loginViewModel.login( Login.this, lEmail, lPassword, emailLayout, pwdLayout, loginNow, forgetPass,
+                       createAcc, progressBar).observe( Login.this, new Observer<FirebaseUser>() {
+                   @Override
+                   public void onChanged(FirebaseUser user) {
+                       startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                       finish();
+                   }
+               } );
             }
         });
 
@@ -142,9 +96,8 @@ public class Login extends AppCompatActivity {
 
     }
 
-    private void showWarning() {
-        final AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setTitle("Are you sure ?")
+    public void showWarning() {
+        final AlertDialog.Builder warning = new AlertDialog.Builder( this)
                 .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
                 .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
                     @Override
@@ -169,7 +122,4 @@ public class Login extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
 }

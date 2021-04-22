@@ -1,6 +1,8 @@
 package com.example.takeanote.notes;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -35,14 +37,17 @@ public class AddNoteViewModel extends ViewModel {
         user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public LiveData<Map<String, Object>> saveNote(Context context, EditText title, EditText content, ProgressBar progressBarSave) {
+    public LiveData<Map<String, Object>> saveNote(Activity activity, EditText title, EditText content, ProgressBar progressBarSave) {
         String nTitle = title.getText().toString();
         String nContent = content.getText().toString();
-        this.context = context;
+        this.context = activity.getApplicationContext();
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
             Toast.makeText(context, "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT).show();
-            //return ;
+            Intent intent = new Intent(context, AddNote.class);
+            activity.startActivity(intent);
+            activity.finish();
+            return note;
         }
 
         progressBarSave.setVisibility( View.VISIBLE);

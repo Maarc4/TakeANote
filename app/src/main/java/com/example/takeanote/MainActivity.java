@@ -50,10 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
     RecyclerView listOfNotes;
-    //FirebaseFirestore db;
-    //FirestoreRecyclerAdapter<NoteUI, MainActivity.NoteViewHolder> noteAdapter;
-    //FirebaseUser user;
-    //FirebaseAuth auth;
+
 
     private MainActivityViewModel viewModel;
     private NoteUIAdapter adapter;
@@ -190,51 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
-/*
-    private void checkUser() {
-        // if user is real or not
-        if (user.isAnonymous()) {
-            displayAlert();
-        } else {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), LoadScreen.class));
-            finish();
-        }
-    }
 
-
-    //TODO posible canvi a viewmodel
-    private void displayAlert() {
-        AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setTitle("Are you sure?")
-                .setMessage("You are logged in with Temporary Account. Loggin out will Delete All the notes.")
-                .setPositiveButton("Sync NoteUI", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(), Register.class));
-                        finish();
-                    }
-                }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                startActivity(new Intent(getApplicationContext(), LoadScreen.class));
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                            }
-                        });
-                    }
-                });
-        warning.show();
-    }
-*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
