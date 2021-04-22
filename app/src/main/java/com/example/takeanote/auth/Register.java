@@ -1,8 +1,10 @@
 package com.example.takeanote.auth;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -92,8 +94,11 @@ public class Register extends AppCompatActivity {
                     pwdConfLayout.setError("Passwords do not match");
                     errors++;
                 }
-                if (errors != 0) return;
-                Toast.makeText(Register.this, "ESTA PASANT AMB ERROR REGISTER", Toast.LENGTH_SHORT).show();
+                if (errors != 0) {
+                    Toast.makeText(Register.this, "ESTA PASANT AMB ERROR REGISTER", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
 
 
                 AuthCredential credential = EmailAuthProvider.getCredential(userEmail, userPass);
@@ -124,7 +129,7 @@ public class Register extends AppCompatActivity {
         loginAct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), Login.class));
+                showWarning(v);
             }
         });
 
@@ -139,5 +144,24 @@ public class Register extends AppCompatActivity {
 
     boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public void showWarning(View v) {
+        final AlertDialog.Builder warning = new AlertDialog.Builder( this)
+                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
+                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do nothing
+                    }
+                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(v.getContext(), Login.class));
+                        finish();
+                    }
+                });
+
+        warning.show();
     }
 }

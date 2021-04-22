@@ -27,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.longrunning.WaitOperationRequest;
 
 public class LoginViewModel extends ViewModel {
     FirebaseAuth auth;
@@ -71,41 +72,38 @@ public class LoginViewModel extends ViewModel {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        //TODO: arreglar login fallit i intentar tornar a fer login
-        //TODO: mirar de fer que si el login sera ok, llavors borrar notes/user temp (POTSER s'arregla al def VMMV)
-        if (auth.getCurrentUser().isAnonymous()) {
-            //delete temp notes
-            FirebaseUser user = auth.getCurrentUser();
-
-            db.collection("notes").document(currentUser.getUid()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(activity.getApplicationContext(), "All Temp Notes are Deleted.", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // delete Temp user
-            currentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(activity.getApplicationContext(), "Temp user Deleted.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
         auth.signInWithEmailAndPassword(mEmail, mPassword)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        if (currentUser.isAnonymous()) {
+
+                            db.collection("notes").document(currentUser.getUid()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(activity.getApplicationContext(), "All Temp Notes are Deleted.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            // delete Temp user
+                            currentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(activity.getApplicationContext(), "Temp user Deleted.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                         Toast.makeText(activity.getApplicationContext(), "Success !", Toast.LENGTH_SHORT).show();
                         user.setValue( FirebaseAuth.getInstance().getCurrentUser() );
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(activity.getApplicationContext(), "Login Failed. " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-            }
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(activity.getApplicationContext(), "Login Failed. " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        //activity.startActivity(new Intent(activity.getApplicationContext(), Login.class));
+                        //activity.finish();//Tornar a new Login
+                        progressBar.setVisibility(View.GONE);
+                    }
         });
         return user;
     }

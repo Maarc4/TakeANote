@@ -61,10 +61,6 @@ public class Login extends AppCompatActivity {
         forgetPass = findViewById(R.id.forgotPasword);
         createAcc = findViewById(R.id.createAccount);
 
-
-
-        showWarning();
-
         loginNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,24 +92,7 @@ public class Login extends AppCompatActivity {
 
     }
 
-    public void showWarning() {
-        final AlertDialog.Builder warning = new AlertDialog.Builder( this)
-                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
-                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(), Register.class));
-                        finish();
-                    }
-                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                });
 
-        warning.show();
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
