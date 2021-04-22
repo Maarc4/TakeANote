@@ -25,8 +25,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 import com.google.longrunning.WaitOperationRequest;
 
 public class LoginViewModel extends ViewModel {
@@ -63,9 +69,7 @@ public class LoginViewModel extends ViewModel {
             errors++;
         }
         if (errors != 0) {
-            //activity.startActivity(new Intent(activity.getApplicationContext(), Login.class));
-            //activity.finish();//Tornar a new Login
-            Toast.makeText(activity.getApplicationContext(), "ESTA PASANT AMB ERROR LOGIN", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(activity.getApplicationContext(), "ESTA PASANT AMB ERROR LOGIN", Toast.LENGTH_SHORT).show();
             return user;
         }
 
@@ -99,10 +103,15 @@ public class LoginViewModel extends ViewModel {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(activity.getApplicationContext(), "Login Failed. " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        //activity.startActivity(new Intent(activity.getApplicationContext(), Login.class));
-                        //activity.finish();//Tornar a new Login
-                        progressBar.setVisibility(View.GONE);
+
+                        boolean invalidEmail = e.getClass().equals( FirebaseAuthInvalidUserException.class );
+                        //boolean invalidPwd = e.getClass().equals( FirebaseAuthWeakPasswordException.class );
+                        if (invalidEmail){
+                            emailLayout.setError( "the email doesn't match with a registered user email" );
+                        } else {
+                            pwdLayout.setError( "the password is not correct" );
+                        }
+                        progressBar.setVisibility( View.GONE );
                     }
         });
         return user;

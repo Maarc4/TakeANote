@@ -177,6 +177,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 viewModel.sync();
                 break;
 
+            case R.id.create_account:
+                startActivity(new Intent(getApplicationContext(), Register.class));
+                break;
+
             case R.id.logout:
                 //Mirem si l'usuari logejat és anonim o no i fem signout
                 viewModel.checkUser();

@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
 import com.example.takeanote.model.NoteUI;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -114,7 +115,7 @@ public class MainActivityViewModel extends ViewModel {
 
     public void sync(){
         if (user.isAnonymous()) {
-            activity.startActivity(new Intent(context, Register.class));
+            showWarning();
         } else {
             Toast.makeText(context, "You are connected", Toast.LENGTH_SHORT).show();
         }
@@ -170,6 +171,24 @@ public class MainActivityViewModel extends ViewModel {
             email.setText(user.getEmail());
             username.setText(user.getDisplayName());
         }
+    }
+
+    public void showWarning() {
+        final AlertDialog.Builder warning = new AlertDialog.Builder( activity)
+                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
+                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.startActivity(new Intent(context, Register.class));
+                    }
+                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.startActivity(new Intent(context, Login.class));
+                    }
+                });
+
+        warning.show();
     }
 
 }

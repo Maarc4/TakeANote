@@ -24,6 +24,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -72,6 +73,7 @@ public class Register extends AppCompatActivity {
                 pwdConfLayout.setError(null);
                 //TODO: posar metode per comprovació password i email
 
+
                 // Comprovar i setejar errors
                 if (userName.isEmpty()) {
                     nameLayout.setError("Cannot be empty.");
@@ -85,11 +87,11 @@ public class Register extends AppCompatActivity {
                 if (userConfPass.isEmpty()) {
                     pwdConfLayout.setError("Cannot be empty.");
                     errors++;
-                }
+                }/*
                 if (!isEmailValid(userEmail)) {
                     emailLayout.setError("Email not valid");
                     errors++;
-                }
+                }*/
                 if (!userPass.equals(userConfPass)) {
                     pwdConfLayout.setError("Passwords do not match");
                     errors++;
@@ -118,6 +120,10 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         //TODO: canviar per comprovar pwd abans
+                        /*boolean invalidEmail = e.getClass().equals( FirebaseAuthUserCollisionException.class );
+                        if (invalidEmail){
+                            emailLayout.setError( "the email doesn't match with a registered user email" );
+                        }*/
                         if (e.getMessage().contains("email")) emailLayout.setError(e.getMessage());
                         else if (e.getMessage().contains("password"))
                             pwdLayout.setError(e.getMessage());
@@ -129,7 +135,7 @@ public class Register extends AppCompatActivity {
         loginAct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showWarning(v);
+                startActivity(new Intent(v.getContext(), Login.class));
             }
         });
 
@@ -142,26 +148,5 @@ public class Register extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
 
-    public void showWarning(View v) {
-        final AlertDialog.Builder warning = new AlertDialog.Builder( this)
-                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
-                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //do nothing
-                    }
-                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(v.getContext(), Login.class));
-                        finish();
-                    }
-                });
-
-        warning.show();
-    }
 }
