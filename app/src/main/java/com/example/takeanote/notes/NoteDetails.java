@@ -1,6 +1,5 @@
 package com.example.takeanote.notes;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -19,14 +18,8 @@ import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
-
-import io.github.yavski.fabspeeddial.FabSpeedDial;
-import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class NoteDetails extends AppCompatActivity {
     Intent data;
@@ -42,11 +35,11 @@ public class NoteDetails extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        noteDetailsViewModel = new ViewModelProvider( this ).get(NoteDetailsViewModel.class);
+        noteDetailsViewModel = new ViewModelProvider(this).get(NoteDetailsViewModel.class);
         progressBarSave = findViewById(R.id.noteDetails_progressBar);
         data = getIntent();
 
-        noteDetailsViewModel = new ViewModelProvider( this ).get( NoteDetailsViewModel.class );
+        noteDetailsViewModel = new ViewModelProvider(this).get(NoteDetailsViewModel.class);
 
         //Aixo si es canvia a ¿materialedittext? segurament sha de canviar
         content = findViewById(R.id.noteDetailsContent);
@@ -58,28 +51,16 @@ public class NoteDetails extends AppCompatActivity {
         //Aixo pel color de la nota al color de dins
         //content.setBackgroundColor(getResources().getColor(data.getIntExtra("code",0));
 
-        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
-        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.action_image:
-                        Toast.makeText(NoteDetails.this, "Add IMAGE clicked.", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return false;
-            }
-        });
     }
 
-    private void saveNote(){
-        noteDetailsViewModel.saveNote( NoteDetails.this, data, title, content,
-                progressBarSave).observe( this, new Observer<List<String>>() {
+    private void saveNote() {
+        noteDetailsViewModel.saveNote(NoteDetails.this, data, title, content,
+                progressBarSave).observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> strings) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
-        } );
+        });
 
 
     }
@@ -112,12 +93,12 @@ public class NoteDetails extends AppCompatActivity {
 
     public void deleteNote() {
         String docId = data.getStringExtra("noteId");
-        noteDetailsViewModel.deleteNote(this, docId).observe( this, new Observer<List<String>>() {
+        noteDetailsViewModel.deleteNote(this, docId).observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> strings) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
-        } );
+        });
 
     }
 

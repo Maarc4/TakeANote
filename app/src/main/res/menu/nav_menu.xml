@@ -3,26 +3,35 @@
     <item android:title="@string/general_menu">
         <menu>
             <item
-                android:id="@+id/notes"
-                android:icon="@drawable/ic_notes_24dp"
-                android:title="@string/notes" />
+                android:id="@+id/add_text_note"
+                android:icon="@drawable/ic_text_24dp"
+                android:title="@string/add_text" />
             <item
-                android:id="@+id/add_note"
-                android:icon="@drawable/ic_add_note_24dp"
-                android:title="@string/add_note" />
+                android:id="@+id/add_drawing_note"
+                android:icon="@drawable/ic_paint_24dp"
+                android:title="@string/add_paint" />
+            <item
+                android:id="@+id/add_audio_note"
+                android:icon="@drawable/ic_audio_24dp"
+                android:title="@string/add_audio" />
+            <item
+                android:id="@+id/add_image_note"
+                android:icon="@drawable/ic_image_24dp"
+                android:title="@string/add_image" />
+        </menu>
+
+    </item>
+    <item android:title="@string/account_menu">
+        <menu>
+            <item
+                android:id="@+id/create_account"
+                android:icon="@drawable/ic_add_24dp"
+                android:title="@string/new_account" />
             <item
                 android:id="@+id/sync"
                 android:icon="@drawable/ic_sync_24dp"
                 android:title="@string/sync_notes" />
-            <item
-                android:id="@+id/create_account"
-                android:icon="@drawable/ic_add_24dp"
-                android:title="New Account" />
-        </menu>
 
-    </item>
-    <item android:title="@string/log_out">
-        <menu>
             <item
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_logout_24dp"
