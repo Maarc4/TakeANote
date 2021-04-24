@@ -60,7 +60,6 @@ public class LoginViewModel extends ViewModel {
             return user;
         }
 
-
         progressBar.setVisibility(View.VISIBLE);
 
         auth.signInWithEmailAndPassword(mEmail, mPassword)

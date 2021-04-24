@@ -1,10 +1,5 @@
 package com.example.takeanote.auth;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,6 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
@@ -42,7 +42,7 @@ public class Register extends AppCompatActivity {
         sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registrerViewModel.register( Register.this ).observe( Register.this, new Observer<Boolean>() {
+                registrerViewModel.register(Register.this ).observe(Register.this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
