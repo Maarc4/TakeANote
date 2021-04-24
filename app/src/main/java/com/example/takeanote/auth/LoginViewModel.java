@@ -34,8 +34,7 @@ public class LoginViewModel extends ViewModel {
 
 
     public LiveData<FirebaseUser> login(Activity activity, TextInputEditText lEmail, TextInputEditText lPassword,
-                                        TextInputLayout emailLayout, TextInputLayout pwdLayout, Button loginNow,
-                                        TextView forgetPass, TextView createAcc, ProgressBar progressBar) {
+                                        TextInputLayout emailLayout, TextInputLayout pwdLayout, ProgressBar progressBar) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();

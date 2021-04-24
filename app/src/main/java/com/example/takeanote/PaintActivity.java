@@ -10,11 +10,14 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,21 +36,13 @@ public class PaintActivity extends AppCompatActivity {
     private int width;
     private int color;
     MaterialToolbar toolbar;
+    private PaintActivityViewModel paintActivityViewModel;
 
     //Guillem
-    FirebaseStorage storage;
-    StorageReference storageReference;
-    String filePath;
-    String user;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Guillem
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
         paintView = findViewById(R.id.paintView);
@@ -55,6 +50,7 @@ public class PaintActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        paintActivityViewModel = new ViewModelProvider( this ).get( PaintActivityViewModel.class );
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -127,70 +123,22 @@ public class PaintActivity extends AppCompatActivity {
                 paintView.setBrushColor(color);
                 break;
             case R.id.save:
-                saveView();
+                paintActivityViewModel.saveView( this, paintView ).observe( this, new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        paintActivityViewModel.uploadImage();
+                        //TODO potser no va quan fem lo de recuperar del firebase
+                        //onBackPressed();
+
+                    }
+                } );
                 break;
             case android.R.id.home:
                 onBackPressed();
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-// TODO Treure comentaris loco
-
-
-    private void uploadImage() {
-
-        if (filePath != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            StorageReference ref = storageReference.child("images/" + user + "/" + UUID.randomUUID().toString() + ".jpg");
-            ref.putFile(Uri.parse(filePath))
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            Toast.makeText(PaintActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(PaintActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                        }
-                    });
-        }
-    }
-
-    //TODO: mirar de ferho sense depracated method
-    public void saveView() {
-
-        //AIXI VA PERO DEPRACATED
-        paintView.setDrawingCacheEnabled(true);
-        String imgSaved = MediaStore.Images.Media.insertImage(
-                getContentResolver(), paintView.getDrawingCache(),
-                UUID.randomUUID().toString() + ".jpg", "drawing");
-
-        //Guillem
-        filePath = imgSaved;
-
-        if (imgSaved != null) {
-            Toast.makeText(this, "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT).show();
-            uploadImage();
-        } else {
-            Toast.makeText(this, "ERROR NOT SAVED", Toast.LENGTH_SHORT).show();
-        }
-        paintView.destroyDrawingCache();
-    }
 }
