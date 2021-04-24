@@ -1,38 +1,21 @@
 package com.example.takeanote.auth;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.squareup.okhttp.internal.http.CacheStrategy;
 
-import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
 
@@ -65,7 +48,7 @@ public class Register extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     }
-                } );
+                });
             }
         });
 

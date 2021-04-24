@@ -33,40 +33,40 @@ public class NoteUIAdapter extends RecyclerView.Adapter<NoteUIAdapter.NoteUIView
     @NonNull
     @Override
     public NoteUIViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.note_card_layout, parent, false );
-        return new NoteUIViewHolder( view );
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout, parent, false);
+        return new NoteUIViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NoteUIViewHolder holder, int position) {
-        NoteUI note = this.notes.get( position );
-        holder.noteTitle.setText( note.getTitle() );
+        NoteUI note = this.notes.get(position);
+        holder.noteTitle.setText(note.getTitle());
         String content = note.getContent();
-        if (content.length()>20 | content.contains( "\n" )){
+        if (content.length() > 20 | content.contains("\n")) {
             String newContent = "";
             char salto = '\n';
-            for(int i = 0; i < 20; i++) {
-                if (content.charAt( i ) == salto) {
+            for (int i = 0; i < 20; i++) {
+                if (content.charAt(i) == salto) {
                     break;
                 }
-                newContent += content.charAt( i );
+                newContent += content.charAt(i);
             }
             newContent += "...";
             content = newContent;
         }
-        holder.noteContent.setText( content );
-        holder.view.setOnClickListener( new View.OnClickListener() {
+        holder.noteContent.setText(content);
+        holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onNoteClick( note );
+                listener.onNoteClick(note);
             }
-        } );
-        holder.menuIcon.setOnClickListener( new View.OnClickListener() {
+        });
+        holder.menuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onNoteMenuClick( note, v);
+                listener.onNoteMenuClick(note, v);
             }
-        } );
+        });
 
     }
 
@@ -81,12 +81,12 @@ public class NoteUIAdapter extends RecyclerView.Adapter<NoteUIAdapter.NoteUIView
         ImageView menuIcon;
 
         public NoteUIViewHolder(@NonNull View itemView) {
-            super( itemView );
-            noteTitle = itemView.findViewById( R.id.noteTitle );
-            noteContent = itemView.findViewById( R.id.noteContent );
+            super(itemView);
+            noteTitle = itemView.findViewById(R.id.noteTitle);
+            noteContent = itemView.findViewById(R.id.noteContent);
             view = itemView; // Aixo es per manejar el click, pero amb material card potser es diferent
             //mCardView = itemView.findViewById(R.id.cardViewContent);
-            menuIcon = itemView.findViewById( R.id.menuIcon );
+            menuIcon = itemView.findViewById(R.id.menuIcon);
         }
     }
 

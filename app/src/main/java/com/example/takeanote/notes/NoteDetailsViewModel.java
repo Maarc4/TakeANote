@@ -51,14 +51,14 @@ public class NoteDetailsViewModel extends ViewModel {
         List<String> list = new ArrayList<>();
 
         nTitle = title.getText().toString();
-        nContent= content.getText().toString();
+        nContent = content.getText().toString();
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
             Toast.makeText(context, "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT).show();
             return info;
         }
 
-        progressBarSave.setVisibility( View.VISIBLE);
+        progressBarSave.setVisibility(View.VISIBLE);
         //save note
         DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(intent.getStringExtra("noteId"));
 
@@ -73,7 +73,7 @@ public class NoteDetailsViewModel extends ViewModel {
                 List<String> list = new ArrayList<>();
                 list.add(nTitle);
                 list.add(nContent);
-                info.setValue( list );
+                info.setValue(list);
                 //progressBarSave.setVisibility(View.INVISIBLE);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -97,7 +97,7 @@ public class NoteDetailsViewModel extends ViewModel {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(context, "NoteUI deleted.", Toast.LENGTH_SHORT).show();
-                info.setValue( listEmpty );
+                info.setValue(listEmpty);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

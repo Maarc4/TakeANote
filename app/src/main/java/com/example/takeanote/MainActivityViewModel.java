@@ -27,8 +27,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,33 +52,33 @@ public class MainActivityViewModel extends ViewModel {
         //user = auth.getCurrentUser();
         NoteUI note = new NoteUI();
         FirebaseUser finalUser = user;
-        db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" )
+        db.collection("notes").document(user.getUid()).collection("myNotes")
                 .get()
-                .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (queryDocumentSnapshots.isEmpty()) {
-                            Log.d( "TAG", "List Empty" );
+                            Log.d("TAG", "List Empty");
                             return;
                         } else {
                             List<NoteUI> notes = new ArrayList<>();
                             for (DocumentSnapshot q : queryDocumentSnapshots) {
                                 String id = q.getId();
-                                NoteUI note = q.toObject( NoteUI.class );
-                                note.setId( id );
-                                note.setUser( finalUser.getUid() );
-                                notes.add( note );
+                                NoteUI note = q.toObject(NoteUI.class);
+                                note.setId(id);
+                                note.setUser(finalUser.getUid());
+                                notes.add(note);
                             }
-                            notesData.setValue( notes );
-                            Log.d( "TAG", "List Loaded" );
+                            notesData.setValue(notes);
+                            Log.d("TAG", "List Loaded");
                         }
                     }
-                } ).addOnFailureListener( new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText( context, "Error loading notes!", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(context, "Error loading notes!", Toast.LENGTH_SHORT).show();
             }
-        } );
+        });
         return notesData;
     }
 
@@ -93,27 +91,27 @@ public class MainActivityViewModel extends ViewModel {
         List<NoteUI> oldData = notesData.getValue();
         List<NoteUI> newData = new ArrayList<NoteUI>();
         for (NoteUI note : oldData) {
-            if (!note.getId().equals( deleteNoteUI.getId() )) {
-                newData.add( note );
+            if (!note.getId().equals(deleteNoteUI.getId())) {
+                newData.add(note);
             }
         }
-        notesData.setValue( newData );
+        notesData.setValue(newData);
 
-        DocumentReference docRef = db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" ).document( deleteNoteUI.getId() );
-        docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(deleteNoteUI.getId());
+        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText( context, "NoteUI deleted.", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(context, "NoteUI deleted.", Toast.LENGTH_SHORT).show();
             }
-        } ).addOnFailureListener( new OnFailureListener() {
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText( context, "FAILED to delete the note.", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(context, "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
             }
-        } );
+        });
     }
 
-    public void sync(){
+    public void sync() {
         if (user.isAnonymous()) {
             showWarning();
         } else {
@@ -127,7 +125,7 @@ public class MainActivityViewModel extends ViewModel {
             displayAlert();
         } else {
             FirebaseAuth.getInstance().signOut();
-            activity.startActivity( new Intent(context.getApplicationContext(), LoadScreen.class));
+            activity.startActivity(new Intent(context.getApplicationContext(), LoadScreen.class));
             activity.finish();
         }
     }
@@ -139,7 +137,7 @@ public class MainActivityViewModel extends ViewModel {
                 .setPositiveButton("Sync NoteUI", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        activity.startActivity( new Intent(context, Register.class));
+                        activity.startActivity(new Intent(context, Register.class));
                         activity.finish();
                     }
                 }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
@@ -165,7 +163,7 @@ public class MainActivityViewModel extends ViewModel {
 
     public void menuConf(TextView email, TextView username) {
         if (user.isAnonymous()) {
-            email.setVisibility( View.INVISIBLE);
+            email.setVisibility(View.INVISIBLE);
             username.setText("Temporal account");
         } else {
             email.setText(user.getEmail());
@@ -174,7 +172,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void showWarning() {
-        final AlertDialog.Builder warning = new AlertDialog.Builder( activity)
+        final AlertDialog.Builder warning = new AlertDialog.Builder(activity)
                 .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
                 .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
                     @Override

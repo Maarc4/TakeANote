@@ -34,13 +34,13 @@
                 android:id="@+id/noteContent"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:adjustViewBounds="true"
                 android:padding="5dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/fuman"
                 app:layout_constraintBottom_toTopOf="@+id/cardViewTitle"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +51,7 @@
                 android:id="@+id/cardViewTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="5dp"
                 app:contentPadding="5dp"
@@ -58,8 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
-                android:orientation="horizontal">
+                app:layout_constraintVertical_bias="1.0">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

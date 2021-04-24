@@ -1,27 +1,17 @@
 package com.example.takeanote;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.takeanote.auth.Register;
-import com.example.takeanote.model.NoteUI;
-import com.example.takeanote.model.NoteUIAdapter;
-import com.example.takeanote.notes.AddNote;
-import com.example.takeanote.notes.NoteDetails;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -29,15 +19,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-
-import android.view.MenuItem;
-import android.widget.PopupMenu;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.NoteUI;
+import com.example.takeanote.model.NoteUIAdapter;
+import com.example.takeanote.notes.AddNote;
+import com.example.takeanote.notes.NoteDetails;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +33,12 @@ import java.util.List;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
+//TODO: canviar SAMPLE DESCRIPTION: treure o posar algo (a concertar)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
     RecyclerView listOfNotes;
-
 
     private MainActivityViewModel viewModel;
     private NoteUIAdapter adapter;
@@ -63,12 +51,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpViewModel() {
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        viewModel.init(this).observe( this, new androidx.lifecycle.Observer<List<NoteUI>>() {
-            @Override
-            public void onChanged(List<NoteUI> noteUIS) {
-                setUpAdapter( noteUIS );
-                adapter.notifyDataSetChanged();
-            }
+        viewModel.init(this).observe(this, noteUIS -> {
+            setUpAdapter(noteUIS);
+            adapter.notifyDataSetChanged();
         });
     }
 
@@ -81,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         listOfNotes = findViewById(R.id.listOfNotes);
-        listOfNotes.setLayoutManager( new LinearLayoutManager(  this, LinearLayoutManager.VERTICAL, false) );
+        listOfNotes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         setUpViewModel();
 
@@ -98,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView username = headerView.findViewById(R.id.userDisplayName);
         TextView email = headerView.findViewById(R.id.userDisplayEmail);
 
-        viewModel.menuConf( email, username );
+        viewModel.menuConf(email, username);
 
 
         //Escollir si nota dibuix o nota text
@@ -108,18 +93,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_text:
-                        Toast.makeText(MainActivity.this, "Add TEXT NOTE clicked.", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), AddNote.class));
                         break;
                     case R.id.action_paint:
-                        Toast.makeText(MainActivity.this, "Add DRAW NOTE clicked.", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), PaintActivity.class));
                         break;
-                    case R.id.action_audio:
-                        //TODO: Hector, desde aqui vas a la teva clase audio
-                        Toast.makeText(MainActivity.this, "Add AUDIO NOTE clicked.", Toast.LENGTH_SHORT).show();
-                        //startActivity(new Intent(getApplicationContext(), NOM_CLASE_AUDIO_HECTOR.class));
-                        break;
+                    /*case R.id.action_audio:
+                        startActivity(new Intent(getApplicationContext(), AddAudio.class));
+                        break;*/
+                    /*case R.id.action_image:
+                        startActivity(new Intent(getApplicationContext(), AddImage.class));
+                        break;*/
+                    default:
+                        Toast.makeText(MainActivity.this, "Coming soon.", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -131,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (noteUIS == null) {
             noteUIS = new ArrayList<>();
         }
-        adapter = new NoteUIAdapter( noteUIS, new NoteUIAdapter.OnNoteClickListener() {
+        adapter = new NoteUIAdapter(noteUIS, new NoteUIAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(NoteUI noteUI) {
                 Intent intent = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
@@ -140,38 +126,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //intent.putExtra("code",code);
                 String docId = noteUI.getId();
                 intent.putExtra("noteId", docId);
-                intent.addFlags( intent.FLAG_ACTIVITY_NEW_TASK );
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MainActivity.this.getApplicationContext().startActivity(intent);
             }
 
             @Override
             public void onNoteMenuClick(NoteUI noteUI, View view) {
                 PopupMenu menu = new PopupMenu(MainActivity.this.getApplicationContext(), view);
-                menu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        viewModel.deleteNote( noteUI );
-                        return false;
-                    }
+                menu.getMenu().add("Delete").setOnMenuItemClickListener(item -> {
+                    viewModel.deleteNote(noteUI);
+                    return false;
                 });
                 //TODO: potser afegir share dsp de noteDetails i cambiar a material
 
                 menu.show();
             }
-        } );
-        listOfNotes.setAdapter( adapter );
+        });
+        listOfNotes.setAdapter(adapter);
     }
-
 
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
-            case R.id.add_note:
-                Intent intent = new Intent(this, AddNote.class);
-                startActivity(intent);
+            case R.id.add_text_note:
+                startActivity(new Intent(this, AddNote.class));
                 break;
+
+            case R.id.add_drawing_note:
+                startActivity(new Intent(this, PaintActivity.class));
+                break;
+
+            /*case R.id.add_audio_note:
+                startActivity(new Intent(this, AddAudio.class));
+                break;*/
+
+            /*case R.id.add_image_note:
+                startActivity(new Intent(this, AddImage.class));
+                break;*/
 
             case R.id.sync:
                 viewModel.sync();
@@ -187,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Toast.makeText(this, "Comming soon.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Coming soon.", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -201,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //TODO: fer per poder canviar idioma espanyol/català/àngles (MARC) i altres ajuestes a concertar
         if (item.getItemId() == R.id.action_settings) {
             Toast.makeText(this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT).show();
         }

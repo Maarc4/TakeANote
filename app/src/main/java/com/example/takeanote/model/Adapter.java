@@ -9,15 +9,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.takeanote.notes.NoteDetails;
 import com.example.takeanote.R;
+import com.example.takeanote.notes.NoteDetails;
 
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     List<String> titles;
     List<String> content;
-    public Adapter(List<String> titles, List<String> content){
+
+    public Adapter(List<String> titles, List<String> content) {
         this.titles = titles;
         this.content = content;
     }
@@ -25,7 +26,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout, parent, false);
         return new ViewHolder(view);
     }
 
@@ -74,9 +75,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return titles.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView noteTitle, noteContent;
         View view;
+
         //Per cambiar els colors random
         //MaterialCardView mCardView;
         public ViewHolder(@NonNull View itemView) {

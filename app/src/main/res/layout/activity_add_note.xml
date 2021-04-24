@@ -35,15 +35,4 @@
 
     <include layout="@layout/content_add_note" />
 
-    <io.github.yavski.fabspeeddial.FabSpeedDial
-        android:id="@+id/fab_addNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:fabGravity="bottom_end"
-        app:fabMenu="@menu/speed_dial_fab"
-        app:miniFabBackgroundTint="@android:color/white"
-        app:miniFabDrawableTint="?attr/colorPrimaryDark"
-        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

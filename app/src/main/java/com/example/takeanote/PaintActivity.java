@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -147,7 +146,7 @@ public class PaintActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/" + user +"/" + UUID.randomUUID().toString() + ".jpg");
+            StorageReference ref = storageReference.child("images/" + user + "/" + UUID.randomUUID().toString() + ".jpg");
             ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

@@ -50,7 +50,7 @@ public class AddNoteViewModel extends ViewModel {
             return note;
         }
 
-        progressBarSave.setVisibility( View.VISIBLE);
+        progressBarSave.setVisibility(View.VISIBLE);
         //save note
         DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document();
         Map<String, Object> newNote = new HashMap<>();
@@ -61,7 +61,7 @@ public class AddNoteViewModel extends ViewModel {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(context, "Note Added to database.", Toast.LENGTH_SHORT).show();
-                note.setValue( newNote );
+                note.setValue(newNote);
                 progressBarSave.setVisibility(View.INVISIBLE);
                 //onBackPressed();
             }

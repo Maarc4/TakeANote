@@ -1,9 +1,6 @@
 package com.example.takeanote.auth;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -11,29 +8,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.takeanote.LoadScreen;
-import com.example.takeanote.MainActivity;
-import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthEmailException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
-import com.google.longrunning.WaitOperationRequest;
 
 public class LoginViewModel extends ViewModel {
     FirebaseAuth auth;
@@ -41,14 +28,14 @@ public class LoginViewModel extends ViewModel {
     private MutableLiveData<FirebaseUser> user;
     private Activity activity;
 
-    public LoginViewModel (){
+    public LoginViewModel() {
         user = new MutableLiveData<>();
     }
 
 
     public LiveData<FirebaseUser> login(Activity activity, TextInputEditText lEmail, TextInputEditText lPassword,
                                         TextInputLayout emailLayout, TextInputLayout pwdLayout, Button loginNow,
-                                        TextView forgetPass, TextView createAcc, ProgressBar progressBar){
+                                        TextView forgetPass, TextView createAcc, ProgressBar progressBar) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -98,7 +85,7 @@ public class LoginViewModel extends ViewModel {
                             });
                         }
                         Toast.makeText(activity.getApplicationContext(), "Success !", Toast.LENGTH_SHORT).show();
-                        user.setValue( FirebaseAuth.getInstance().getCurrentUser() );
+                        user.setValue(FirebaseAuth.getInstance().getCurrentUser());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
