@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.action_paint:
                         startActivity(new Intent(getApplicationContext(), PaintActivity.class));
                         break;
-                    /*case R.id.action_audio:
+                    case R.id.action_audio:
                         startActivity(new Intent(getApplicationContext(), AddAudio.class));
-                        break;*/
+                        break;
                     /*case R.id.action_image:
                         startActivity(new Intent(getApplicationContext(), AddImage.class));
                         break;*/

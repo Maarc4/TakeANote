@@ -50,4 +50,5 @@
     <string name="title_activity_note_details">Detalls de la nota</string>
     <string name="title_activity_add_note">Afegir nota</string>
     <string name="untitled">Sense títol</string>
+    <string name="title_activity_audio_activity">Crear nota de audio</string>
 </resources>
