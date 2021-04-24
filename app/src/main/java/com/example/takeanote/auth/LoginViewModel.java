@@ -104,9 +104,7 @@ public class LoginViewModel extends ViewModel {
                     @Override
                     public void onFailure(@NonNull Exception e) {
 
-                        boolean invalidEmail = e.getClass().equals( FirebaseAuthInvalidUserException.class );
-                        //boolean invalidPwd = e.getClass().equals( FirebaseAuthWeakPasswordException.class );
-                        if (invalidEmail){
+                        if (e.getClass().equals( FirebaseAuthInvalidUserException.class )){
                             emailLayout.setError( "the email doesn't match with a registered user email" );
                         } else {
                             pwdLayout.setError( "the password is not correct" );
