@@ -51,4 +51,6 @@
     <string name="title_activity_paint_activity">Nota de dibujo</string>
     <string name="new_account">Crear cuenta nueva</string>
     <string name="title_activity_audio_activity">Crear nota de audio</string>
+    <string name="recording_started">Grabación iniciada</string>
+    <string name="recording_finished">Grabación finalizada</string>
 </resources>

@@ -51,4 +51,6 @@
     <string name="title_activity_add_note">Afegir nota</string>
     <string name="untitled">Sense títol</string>
     <string name="title_activity_audio_activity">Crear nota de audio</string>
+    <string name="recording_started">Grabació iniciada</string>
+    <string name="recording_finished">Grabació finalitzada</string>
 </resources>
