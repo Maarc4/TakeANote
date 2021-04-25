@@ -29,7 +29,7 @@ import java.io.IOException;
 public class AddAudio extends AppCompatActivity {
 
 
-    private ImageButton recorder;
+    private ImageButton recorder,recorder2;
     private TextView text;
     private Chronometer time = null;
     private MediaRecorder mrecorder;
@@ -44,6 +44,9 @@ public class AddAudio extends AppCompatActivity {
         setContentView(R.layout.activity_add_audio);
         recorder = findViewById(R.id.record_btn);
         text = findViewById(R.id.record_filename);
+        recorder2 = findViewById(R.id.record2_btn);
+        View b = findViewById(R.id.record2_btn);
+        b.setVisibility(View.GONE);
 
         toolbar = findViewById(R.id.audioToolbar);
         setSupportActionBar(toolbar);
@@ -54,20 +57,24 @@ public class AddAudio extends AppCompatActivity {
         recorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(AddAudio.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(AddAudio.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-
-                } else {
                     if (!isrecording) {
                         startRecording();
+                        b.setVisibility(View.VISIBLE);
                         text.setText(R.string.recording_started);
                         isrecording = true;
-                    } else {
-                        stopRecording();
-                        text.setText(R.string.recording_finished);
-                        isrecording = false;
-                    }
+
+                }
+            }
+        });
+        recorder2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isrecording){
+                    stopRecording();
+                    b.setVisibility(View.INVISIBLE);
+                    text.setText("Recording Finshed");
+                    isrecording=false;
                 }
             }
         });
