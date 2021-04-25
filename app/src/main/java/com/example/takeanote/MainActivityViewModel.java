@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.example.takeanote.auth.Register;
 import com.example.takeanote.model.NoteUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,7 +45,7 @@ public class MainActivityViewModel extends ViewModel {
     public MainActivityViewModel() {
         notesData = new MutableLiveData<>();
         this.db = FirebaseFirestore.getInstance();
-        this.user = FirebaseAuth.getInstance().getCurrentUser();
+        //this.user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public LiveData<List<NoteUI>> init(Activity activity) {
@@ -51,6 +53,7 @@ public class MainActivityViewModel extends ViewModel {
         this.context = activity.getApplicationContext();
         //user = auth.getCurrentUser();
         NoteUI note = new NoteUI();
+        this.user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseUser finalUser = user;
         db.collection("notes").document(user.getUid()).collection("myNotes")
                 .get()
@@ -80,6 +83,16 @@ public class MainActivityViewModel extends ViewModel {
             }
         });
         return notesData;
+    }
+
+    public void checkUserNav(NavigationView nav) {
+        if (!user.isAnonymous()){
+            nav.getMenu().clear();
+            nav.inflateMenu( R.menu.nav_menu_loged_user );
+        } else {
+            nav.getMenu().clear();
+            nav.inflateMenu( R.menu.nav_menu );
+        }
     }
 
     public List<NoteUI> getData() {

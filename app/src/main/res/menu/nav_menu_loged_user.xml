@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/general_menu">
+        <menu>
+            <item
+                android:id="@+id/add_text_note"
+                android:icon="@drawable/ic_text_24dp"
+                android:title="@string/add_text" />
+            <item
+                android:id="@+id/add_drawing_note"
+                android:icon="@drawable/ic_paint_24dp"
+                android:title="@string/add_paint" />
+            <item
+                android:id="@+id/add_audio_note"
+                android:icon="@drawable/ic_audio_24dp"
+                android:title="@string/add_audio" />
+            <item
+                android:id="@+id/add_image_note"
+                android:icon="@drawable/ic_image_24dp"
+                android:title="@string/add_image" />
+        </menu>
+
+    </item>
+    <item android:title="@string/account_menu">
+        <menu>
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_logout_24dp"
+                android:title="@string/log_out" />
+        </menu>
+    </item>
+</menu>
