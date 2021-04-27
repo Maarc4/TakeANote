@@ -37,6 +37,10 @@
             android:name=".PaintActivity"
             android:label="@string/title_activity_paint_activity"
             android:theme="@style/Theme.TakeANote.NoActionBar" />
+        <activity
+            android:name=".ImageActivity"
+            android:label="@string/title_activity_add_image_activity"
+            android:theme="@style/Theme.TakeANote.NoActionBar" />
     </application>
 
 </manifest>

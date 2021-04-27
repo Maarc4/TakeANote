@@ -30,13 +30,13 @@ public class AddNote extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
-        toolbar = findViewById(R.id.addNote_toolbar);
+        toolbar = findViewById(R.id.addImage_toolbar);
         setSupportActionBar(toolbar);
 
         viewModel = new ViewModelProvider(this).get(AddNoteViewModel.class);
         //data = getIntent();
         noteContent = findViewById(R.id.addNoteContent);
-        noteTitle = findViewById(R.id.addNoteTitle);
+        noteTitle = findViewById(R.id.addImageTitle);
 
         progressBarSave = findViewById(R.id.addNote_progressBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

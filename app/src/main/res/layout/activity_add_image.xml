@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".notes.AddNote">
+    tools:context=".ImageActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -30,9 +30,23 @@
                 android:textStyle="bold" />
         </com.google.android.material.appbar.MaterialToolbar>
 
+        <Button
+            android:id="@+id/select_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:shadowColor="#9F3D3D"
+            android:text="@string/select_image"
+            app:rippleColor="#472F2F" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_add_note" />
+    <ImageView
+        android:id="@+id/selected_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/fuman"
+        android:contentDescription="@string/todo" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

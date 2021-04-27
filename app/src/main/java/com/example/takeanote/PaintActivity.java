@@ -41,6 +41,8 @@ public class PaintActivity extends AppCompatActivity {
     String user;
 
 
+    //TODO moure permisos a main
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Guillem

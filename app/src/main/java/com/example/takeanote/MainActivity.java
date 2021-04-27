@@ -101,9 +101,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     /*case R.id.action_audio:
                         startActivity(new Intent(getApplicationContext(), AddAudio.class));
                         break;*/
-                    /*case R.id.action_image:
-                        startActivity(new Intent(getApplicationContext(), AddImage.class));
-                        break;*/
+                    case R.id.action_image:
+                        startActivity(new Intent(getApplicationContext(), ImageActivity.class));
+                        break;
                     default:
                         Toast.makeText(MainActivity.this, "Coming soon.", Toast.LENGTH_SHORT).show();
                 }
@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, AddAudio.class));
                 break;*/
 
-            /*case R.id.add_image_note:
-                startActivity(new Intent(this, AddImage.class));
-                break;*/
+            case R.id.add_image_note:
+                startActivity(new Intent(this, ImageActivity.class));
+                break;
 
             case R.id.sync:
                 viewModel.sync();
