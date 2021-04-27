@@ -58,6 +58,9 @@
     <string name="add_audio">Add Audio Note</string>
     <string name="title_activity_paint_activity">DrawNote</string>
     <string name="new_account">New Account</string>
+    <string name="title_activity_audio_activity">AddAudio</string>
+    <string name="recording_started">Recording Started</string>
+    <string name="recording_finished">Recording Finshed</string>
     <string name="select_image">Select Image</string>
     <string name="todo">TODO</string>
     <string name="title_activity_add_image_activity">AddImage</string>

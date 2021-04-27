@@ -34,8 +34,7 @@ public class LoginViewModel extends ViewModel {
 
 
     public LiveData<FirebaseUser> login(Activity activity, TextInputEditText lEmail, TextInputEditText lPassword,
-                                        TextInputLayout emailLayout, TextInputLayout pwdLayout, Button loginNow,
-                                        TextView forgetPass, TextView createAcc, ProgressBar progressBar) {
+                                        TextInputLayout emailLayout, TextInputLayout pwdLayout, ProgressBar progressBar) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,7 +58,6 @@ public class LoginViewModel extends ViewModel {
             //Toast.makeText(activity.getApplicationContext(), "ESTA PASANT AMB ERROR LOGIN", Toast.LENGTH_SHORT).show();
             return user;
         }
-
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -88,18 +86,16 @@ public class LoginViewModel extends ViewModel {
                         user.setValue(FirebaseAuth.getInstance().getCurrentUser());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-                boolean invalidEmail = e.getClass().equals(FirebaseAuthInvalidUserException.class);
-                //boolean invalidPwd = e.getClass().equals( FirebaseAuthWeakPasswordException.class );
-                if (invalidEmail) {
-                    emailLayout.setError("the email doesn't match with a registered user email");
-                } else {
-                    pwdLayout.setError("the password is not correct");
-                }
-                progressBar.setVisibility(View.GONE);
-            }
+                        if (e.getClass().equals( FirebaseAuthInvalidUserException.class )){
+                            emailLayout.setError( "the email doesn't match with a registered user email" );
+                        } else {
+                            pwdLayout.setError( "the password is not correct" );
+                        }
+                        progressBar.setVisibility( View.GONE );
+                    }
         });
         return user;
     }

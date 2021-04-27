@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer);
         nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
+        viewModel.checkUserNav( nav_view );
 
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
@@ -84,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView email = headerView.findViewById(R.id.userDisplayEmail);
 
         viewModel.menuConf(email, username);
-
 
         //Escollir si nota dibuix o nota text
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_main);
@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.action_paint:
                         startActivity(new Intent(getApplicationContext(), PaintActivity.class));
                         break;
-                    /*case R.id.action_audio:
+                    case R.id.action_audio:
                         startActivity(new Intent(getApplicationContext(), AddAudio.class));
-                        break;*/
+                        break;
                     case R.id.action_image:
                         startActivity(new Intent(getApplicationContext(), ImageActivity.class));
                         break;
@@ -148,7 +148,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
         drawerLayout.closeDrawer(GravityCompat.START);
+
         switch (item.getItemId()) {
             case R.id.add_text_note:
                 startActivity(new Intent(this, AddNote.class));
@@ -158,9 +160,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, PaintActivity.class));
                 break;
 
-            /*case R.id.add_audio_note:
+            case R.id.add_audio_note:
                 startActivity(new Intent(this, AddAudio.class));
-                break;*/
+                break;
 
             case R.id.add_image_note:
                 startActivity(new Intent(this, ImageActivity.class));

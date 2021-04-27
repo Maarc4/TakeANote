@@ -53,8 +53,8 @@ public class Login extends AppCompatActivity {
         loginNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginViewModel.login(Login.this, lEmail, lPassword, emailLayout, pwdLayout, loginNow, forgetPass,
-                        createAcc, progressBar).observe(Login.this, new Observer<FirebaseUser>() {
+                loginViewModel.login(Login.this, lEmail, lPassword, emailLayout, pwdLayout,
+                        progressBar).observe(Login.this, new Observer<FirebaseUser>() {
                     @Override
                     public void onChanged(FirebaseUser user) {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
