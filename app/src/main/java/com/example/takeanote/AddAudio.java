@@ -3,6 +3,7 @@ package com.example.takeanote;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -17,11 +18,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 //import com.google.firebase.storage.FirebaseStorage;
 //import com.google.firebase.storage.StorageReference;
@@ -30,12 +44,26 @@ public class AddAudio extends AppCompatActivity {
 
 
     private ImageButton recorder,recorder2;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private boolean permissionToRecordAccepted = false;
     private TextView text;
     private Chronometer time = null;
     private MediaRecorder mrecorder;
     private String fileName = null;
     private boolean isrecording = false;
     MaterialToolbar toolbar;
+    FirebaseStorage storage;
+    public static final String TAG = "DatabaseAdapter";
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static AddAudio audio;
+    private String noteId;
+
+
+    private final String [] permissions = {Manifest.permission.RECORD_AUDIO};
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +87,7 @@ public class AddAudio extends AppCompatActivity {
             public void onClick(View v) {
 
                     if (!isrecording) {
+
                         startRecording();
                         b.setVisibility(View.VISIBLE);
                         text.setText(R.string.recording_started);
@@ -83,6 +112,8 @@ public class AddAudio extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+
+            //audio.saveDocumentWithFile(this.noteId, this.audioDesc, this.owner,this.address);
             /*case R.id.save:
                 viewModel.saveNote( this, noteTitle, noteContent, progressBarSave ).observe( this, new Observer<Map<String, Object>>() {
                     @Override
@@ -123,6 +154,13 @@ public class AddAudio extends AppCompatActivity {
 
 
     }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+        }
+        if (!permissionToRecordAccepted) finish();
+    }
 
     private void stopRecording() {
         time.stop();
@@ -143,23 +181,71 @@ public class AddAudio extends AppCompatActivity {
         inflater.inflate(R.menu.add_note_top_bar, menu);
         return true;
     }
+    public void saveDocumentWithFile (String id, String description, String userid, String path) {
 
+        Uri file = Uri.fromFile(new File(path));
+        StorageReference storageRef = storage.getReference();
+        StorageReference audioRef = storageRef.child("audio"+File.separator+file.getLastPathSegment());
+        UploadTask uploadTask = audioRef.putFile(file);
 
-    /*public void showPopup(View anchorView) {
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
 
-        View popupView = getLayoutInflater().inflate(R.layout.audio_card_layout, null);
-        PopupWindow popupWindow = new PopupWindow(popupView, 800, 600);
-        popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable());
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
-
-        // Initialize objects from layout
-        TextInputLayout saveDescr = popupView.findViewById(R.id.save);
-        Button saveButton = popupView.findViewById(R.id.save);
-        saveButton.setOnClickListener((v) -> {
-            String text = saveDescr.getEditText().getText().toString();
-
-            popupWindow.dismiss();
+                // Continue with the task to get the download URL
+                return audioRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    saveDocument(id, description, userid, downloadUri.toString());
+                } else {
+                    // Handle failures
+                    // ...
+                }
+            }
         });
-    }*/
+
+
+        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                Log.d(TAG, "Upload is " + progress + "% done");
+            }
+        });
+    }
+    public void saveDocument (String id, String description, String userid, String url) {
+
+        // Create a new user with a first and last name
+        Map<String, Object> note = new HashMap<>();
+        note.put("id", id);
+        note.put("description", description);
+        note.put("userid", userid);
+        note.put("url", url);
+
+        Log.d(TAG, "saveDocument");
+        // Add a new document with a generated ID
+        db.collection("audioCards")
+                .add(note)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+
+
 }
