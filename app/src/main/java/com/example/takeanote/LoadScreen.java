@@ -17,10 +17,15 @@ public class LoadScreen extends AppCompatActivity {
 
     private void setUpViewModel() {
         viewModel = new ViewModelProvider(this).get(LoadScreenViewModel.class);
-        viewModel.login(this).observe(this, new Observer<FirebaseAuth>() {
+        viewModel.login().observe(this, new Observer<FirebaseAuth>() {
             @Override
             public void onChanged(FirebaseAuth firebaseAuth) {
-                Toast.makeText(LoadScreen.this, "Logged in With Temporary Account.", Toast.LENGTH_SHORT).show();
+                if (viewModel.getUser().isAnonymous()) {
+                    Toast.makeText(LoadScreen.this, "Logged in With Temporary Account.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoadScreen.this, "Wellcome back " + viewModel.getUser().getDisplayName() + "!!", Toast.LENGTH_LONG).show();
+                }
+
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }

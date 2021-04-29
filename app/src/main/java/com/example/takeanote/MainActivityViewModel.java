@@ -1,6 +1,7 @@
 package com.example.takeanote;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -32,25 +34,21 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivityViewModel extends ViewModel {
+public class MainActivityViewModel extends AndroidViewModel {
 
     FirebaseFirestore db;
-    //FirestoreRecyclerAdapter<NoteUI, MainActivity.NoteViewHolder> noteAdapter;
     FirebaseUser user;
-    private Activity activity;
-    private Context context;
 
     private MutableLiveData<List<NoteUI>> notesData;
 
-    public MainActivityViewModel() {
+    public MainActivityViewModel(@NonNull Application application) {
+        super( application );
         notesData = new MutableLiveData<>();
         this.db = FirebaseFirestore.getInstance();
-        //this.user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public LiveData<List<NoteUI>> init(Activity activity) {
-        this.activity = activity;
-        this.context = activity.getApplicationContext();
+    public LiveData<List<NoteUI>> init() {
+
         //user = auth.getCurrentUser();
         NoteUI note = new NoteUI();
         this.user = FirebaseAuth.getInstance().getCurrentUser();
@@ -79,7 +77,7 @@ public class MainActivityViewModel extends ViewModel {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Error loading notes!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication().getApplicationContext(), "Error loading notes!", Toast.LENGTH_SHORT).show();
             }
         });
         return notesData;
@@ -114,65 +112,35 @@ public class MainActivityViewModel extends ViewModel {
         docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(context, "NoteUI deleted.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication().getApplicationContext(), "NoteUI deleted.", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void sync() {
+    public boolean sync() {
         if (user.isAnonymous()) {
-            showWarning();
+            return true;
         } else {
-            Toast.makeText(context, "You are connected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), "You are connected", Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 
-    public void checkUser() {
+    public boolean userAnonymous() {
         // if user is real or not
         if (user.isAnonymous()) {
-            displayAlert();
+            return true;
         } else {
             FirebaseAuth.getInstance().signOut();
-            activity.startActivity(new Intent(context.getApplicationContext(), LoadScreen.class));
-            activity.finish();
+            return false;
         }
     }
 
-    public void displayAlert() {
-        AlertDialog.Builder warning = new AlertDialog.Builder(activity)
-                .setTitle("Are you sure?")
-                .setMessage("You are logged in with Temporary Account. Loggin out will Delete All the notes.")
-                .setPositiveButton("Sync NoteUI", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        activity.startActivity(new Intent(context, Register.class));
-                        activity.finish();
-                    }
-                }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                activity.startActivity(new Intent(context, LoadScreen.class));
-                                activity.finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                            }
-                        });
-                    }
-                });
-        warning.show();
-    }
 
     public void menuConf(TextView email, TextView username) {
         if (user.isAnonymous()) {
@@ -184,22 +152,9 @@ public class MainActivityViewModel extends ViewModel {
         }
     }
 
-    public void showWarning() {
-        final AlertDialog.Builder warning = new AlertDialog.Builder(activity)
-                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
-                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        activity.startActivity(new Intent(context, Register.class));
-                    }
-                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        activity.startActivity(new Intent(context, Login.class));
-                    }
-                });
 
-        warning.show();
+    public FirebaseUser getUser() {
+        return user;
     }
 
 }

@@ -125,7 +125,7 @@ public class PaintActivity extends AppCompatActivity {
                 paintView.setBrushColor(color);
                 break;
             case R.id.save:
-                paintActivityViewModel.saveView( this, paintView ).observe( this, new Observer<String>() {
+                paintActivityViewModel.saveView(paintView).observe( this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
                         paintActivityViewModel.uploadImage();

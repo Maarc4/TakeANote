@@ -21,10 +21,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
-    TextInputEditText lEmail, lPassword;
-    TextInputLayout emailLayout, pwdLayout;
+
     Button loginNow;
     TextView forgetPass, createAcc;
+    TextInputEditText lEmail, lPassword;
+    TextInputLayout emailLayout, pwdLayout;
     ProgressBar progressBar;
     private LoginViewModel loginViewModel;
 
@@ -38,23 +39,24 @@ public class Login extends AppCompatActivity {
 
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-        lEmail = findViewById(R.id.email);
-        lPassword = findViewById(R.id.lPassword);
         loginNow = findViewById(R.id.loginBtn);
+
+        forgetPass = findViewById(R.id.forgotPasword);
+        createAcc = findViewById(R.id.createAccount);
+
+        lEmail = findViewById( R.id.email);
+        lPassword = findViewById(R.id.lPassword);
 
         emailLayout = findViewById(R.id.emailLayout);
         pwdLayout = findViewById(R.id.pwdLayout);
 
         progressBar = findViewById(R.id.progressBar3);
 
-        forgetPass = findViewById(R.id.forgotPasword);
-        createAcc = findViewById(R.id.createAccount);
-
         loginNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginViewModel.login(Login.this, lEmail, lPassword, emailLayout, pwdLayout,
-                        progressBar).observe(Login.this, new Observer<FirebaseUser>() {
+                loginViewModel.login(lEmail, lPassword, emailLayout, pwdLayout, progressBar)
+                        .observe(Login.this, new Observer<FirebaseUser>() {
                     @Override
                     public void onChanged(FirebaseUser user) {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));

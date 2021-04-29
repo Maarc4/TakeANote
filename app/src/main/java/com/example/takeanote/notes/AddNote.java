@@ -48,7 +48,7 @@ public class AddNote extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                viewModel.saveNote(this, noteTitle, noteContent, progressBarSave).observe(this, new Observer<Map<String, Object>>() {
+                viewModel.saveNote(noteTitle, noteContent, progressBarSave).observe(this, new Observer<Map<String, Object>>() {
                     @Override
                     public void onChanged(Map<String, Object> stringObjectMap) {
                         onBackPressed();

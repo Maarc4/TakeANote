@@ -1,57 +1,57 @@
 package com.example.takeanote;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.net.Uri;
-import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+import android.content.ContentResolver;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.nio.charset.MalformedInputException;
 import java.util.UUID;
 
-public class PaintActivityViewModel extends AndroidViewModel {
+public class ImageActivityViewModel extends AndroidViewModel {
 
     FirebaseStorage storage;
+    FirebaseUser user;
     StorageReference storageReference;
-    String user;
-    String filePath;
+    private MutableLiveData<Uri> newUri;
 
-    private MutableLiveData<String> observableFilePath;
-
-    public PaintActivityViewModel(@NonNull Application application) {
+    public ImageActivityViewModel(@NonNull Application application) {
         super( application );
-        observableFilePath = new MutableLiveData<>();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        newUri = new MutableLiveData<>();
     }
 
-    // TODO Treure comentaris loco
-    public void uploadImage() {
 
-        if (filePath != null) {
-            final ProgressDialog progressDialog = new ProgressDialog( getApplication() );
+    public LiveData<Uri> uploadFile(Uri mImageUri, String extension, ProgressDialog progressDialog) {
+        if (mImageUri != null) {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
+            StorageReference ref = storageReference.child("images/" + user.getUid() + "/" + UUID.randomUUID().toString() + "." + extension);
 
-            StorageReference ref = storageReference.child("images/" + user + "/" + UUID.randomUUID().toString() + ".jpg");
-            ref.putFile( Uri.parse(filePath))
+            ref.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
+                            newUri.setValue( mImageUri );
                             Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -64,39 +64,18 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                            double progress = (100.0 * snapshot.getBytesTransferred() / snapshot
                                     .getTotalByteCount());
                             progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
-        }
-    }
 
-    //TODO: mirar de ferho sense depracated method
-    public LiveData<String> saveView(PaintView paintView) {
-
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        //AIXI VA PERO DEPRACATED
-        paintView.setDrawingCacheEnabled(true);
-        String imgSaved = MediaStore.Images.Media.insertImage(
-                getApplication().getContentResolver(), paintView.getDrawingCache(),
-                UUID.randomUUID().toString() + ".jpg", "drawing");
-
-        //Guillem
-        filePath = imgSaved;
-
-        if (imgSaved != null) {
-            observableFilePath.setValue( imgSaved );
-            Toast.makeText(getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getApplication().getApplicationContext(), "ERROR NOT SAVED", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), "No file selected!", Toast.LENGTH_SHORT).show();
         }
-        paintView.destroyDrawingCache();
-        return observableFilePath;
+
+        return newUri;
     }
 
 }

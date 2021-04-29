@@ -1,9 +1,11 @@
 package com.example.takeanote.auth;
 
 import android.app.Activity;
+import android.app.Application;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,29 +25,21 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import java.util.regex.Pattern;
 
 
-public class RegistrerViewModel extends ViewModel {
+public class RegistrerViewModel extends AndroidViewModel {
 
-    TextInputEditText name, email, pwd, pwdConf;
-    TextInputLayout emailLayout, pwdConfLayout, pwdLayout, nameLayout;
     FirebaseAuth auth;
     private MutableLiveData<Boolean> registrat;
 
-    public RegistrerViewModel() {
+    public RegistrerViewModel(@NonNull Application application) {
+        super( application );
         auth = FirebaseAuth.getInstance();
         registrat = new MutableLiveData<>();
     }
 
-    public LiveData<Boolean> register(Activity activity){
-        name = activity.findViewById( R.id.userName);
-        email = activity.findViewById(R.id.userEmail);
-        pwd = activity.findViewById(R.id.password);
-        pwdConf = activity.findViewById(R.id.passwordConfirm);
-
-        emailLayout = activity.findViewById(R.id.emailLayout);
-        pwdConfLayout = activity.findViewById(R.id.pwdConfirmLayout);
-        pwdLayout = activity.findViewById(R.id.pwdLayout);
-        nameLayout = activity.findViewById(R.id.nameLayout);
-
+    public LiveData<Boolean> register(TextInputEditText name, TextInputEditText email,
+                                      TextInputEditText pwd, TextInputEditText  pwdConf,
+                                      TextInputLayout emailLayout, TextInputLayout pwdConfLayout,
+                                      TextInputLayout pwdLayout, TextInputLayout nameLayout){
 
         String userName = name.getText().toString();
         String userEmail = email.getText().toString();
@@ -93,7 +87,7 @@ public class RegistrerViewModel extends ViewModel {
         auth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Toast.makeText(activity.getApplicationContext(), "Notes are Syncced", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication().getApplicationContext(), "Notes are Syncced", Toast.LENGTH_SHORT).show();
                 //activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
                 FirebaseUser usr = auth.getCurrentUser();
                 UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()

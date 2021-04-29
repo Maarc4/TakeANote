@@ -1,12 +1,14 @@
 package com.example.takeanote;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,21 +17,22 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class LoadScreenViewModel extends ViewModel {
+public class LoadScreenViewModel extends AndroidViewModel {
 
     FirebaseAuth auth;
-    Activity activity;
 
     private MutableLiveData<FirebaseAuth> tempAuth;
 
-    public LoadScreenViewModel() {
+    public LoadScreenViewModel(@NonNull Application application) {
+        super( application );
         tempAuth = new MutableLiveData<>();
     }
 
-    public LiveData<FirebaseAuth> login(Activity activity) {
+
+    public LiveData<FirebaseAuth> login() {
         this.auth = FirebaseAuth.getInstance();
-        this.activity = activity;
 
         auth = FirebaseAuth.getInstance();
 
@@ -41,8 +44,7 @@ public class LoadScreenViewModel extends ViewModel {
             public void run() {
                 // check if user is logged in
                 if (finalAuth.getCurrentUser() != null) {
-                    activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
-                    activity.finish();
+                    tempAuth.setValue(finalAuth);
                 } else {
                     // create new anonymous acount
                     finalAuth.signInAnonymously().addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -53,8 +55,7 @@ public class LoadScreenViewModel extends ViewModel {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(activity.getApplicationContext(), "Error ! " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            activity.finish();
+                            Toast.makeText(getApplication().getApplicationContext(), "Error ! " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -63,6 +64,10 @@ public class LoadScreenViewModel extends ViewModel {
         }, 2000);
 
         return tempAuth;
+    }
+
+    public FirebaseUser getUser() {
+        return auth.getCurrentUser();
     }
 
 }

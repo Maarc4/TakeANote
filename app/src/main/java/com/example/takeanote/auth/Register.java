@@ -2,6 +2,8 @@ package com.example.takeanote.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 
 import android.os.Handler;
@@ -26,6 +30,8 @@ public class Register extends AppCompatActivity {
     Button sync;
     TextView loginAct;
     ProgressBar progressBar;
+    TextInputEditText name, email, pwd, pwdConf;
+    TextInputLayout emailLayout, pwdConfLayout, pwdLayout, nameLayout;
     private RegistrerViewModel registrerViewModel;
 
     @Override
@@ -39,6 +45,15 @@ public class Register extends AppCompatActivity {
 
         sync = findViewById(R.id.createAccount);
         loginAct = findViewById(R.id.login);
+        name = findViewById( R.id.userName);
+        email = findViewById(R.id.userEmail);
+        pwd = findViewById(R.id.password);
+        pwdConf = findViewById(R.id.passwordConfirm);
+
+        emailLayout = findViewById(R.id.emailLayout);
+        pwdConfLayout = findViewById(R.id.pwdConfirmLayout);
+        pwdLayout = findViewById(R.id.pwdLayout);
+        nameLayout = findViewById(R.id.nameLayout);
 
         //TODO
         progressBar = findViewById(R.id.progressBar2);
@@ -46,7 +61,8 @@ public class Register extends AppCompatActivity {
         sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registrerViewModel.register(Register.this ).observe(Register.this, new Observer<Boolean>() {
+                registrerViewModel.register(name, email, pwd, pwdConf, emailLayout, pwdConfLayout,
+                        pwdLayout, nameLayout).observe(Register.this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
                         Handler handler = new Handler( Looper.getMainLooper());

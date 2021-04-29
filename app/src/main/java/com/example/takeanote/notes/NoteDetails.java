@@ -54,7 +54,7 @@ public class NoteDetails extends AppCompatActivity {
     }
 
     private void saveNote() {
-        noteDetailsViewModel.saveNote(NoteDetails.this, data, title, content,
+        noteDetailsViewModel.saveNote(data ,title, content,
                 progressBarSave).observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> strings) {
@@ -93,7 +93,7 @@ public class NoteDetails extends AppCompatActivity {
 
     public void deleteNote() {
         String docId = data.getStringExtra("noteId");
-        noteDetailsViewModel.deleteNote(this, docId).observe(this, new Observer<List<String>>() {
+        noteDetailsViewModel.deleteNote(docId).observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> strings) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));

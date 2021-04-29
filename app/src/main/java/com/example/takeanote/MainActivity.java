@@ -1,5 +1,6 @@
 package com.example.takeanote;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -19,11 +21,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
 import com.example.takeanote.model.NoteUI;
 import com.example.takeanote.model.NoteUIAdapter;
 import com.example.takeanote.notes.AddNote;
 import com.example.takeanote.notes.NoteDetails;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -51,12 +56,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpViewModel() {
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        viewModel.init(this).observe(this, noteUIS -> {
+        viewModel.init().observe(this, noteUIS -> {
             setUpAdapter(noteUIS);
             adapter.notifyDataSetChanged();
         });
     }
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -169,7 +174,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.sync:
-                viewModel.sync();
+                if (viewModel.sync()) {
+                    showWarning();
+                }
                 break;
 
             case R.id.create_account:
@@ -178,7 +185,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.logout:
                 //Mirem si l'usuari logejat és anonim o no i fem signout
-                viewModel.checkUser();
+                if(!viewModel.userAnonymous()) {
+                    startActivity(new Intent(getApplicationContext(), LoadScreen.class));
+                    finish();
+                } else {
+                    displayAlert();
+                }
                 break;
 
             default:
@@ -201,6 +213,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //TODO possible traspas a viewmodel
+    public void displayAlert() {
+        AlertDialog.Builder warning = new AlertDialog.Builder(this)
+                .setTitle("Are you sure?")
+                .setMessage("You are logged in with Temporary Account. Loggin out will Delete All the notes.")
+                .setPositiveButton("Sync NoteUI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(getApplicationContext(), Register.class));
+                        finish();
+                    }
+                }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        viewModel.getUser().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                startActivity(new Intent(getApplicationContext(), LoadScreen.class));
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+                    }
+                });
+        warning.show();
+    }
+
+    //TODO possible traspas a viewmodel
+    public void showWarning() {
+        final AlertDialog.Builder warning = new AlertDialog.Builder(this)
+                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
+                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(getApplicationContext(), Register.class));
+                    }
+                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(getApplicationContext(), Login.class));
+                    }
+                });
+
+        warning.show();
     }
 
 /*
