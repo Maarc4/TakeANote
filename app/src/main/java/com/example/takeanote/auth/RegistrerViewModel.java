@@ -22,6 +22,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.regex.Pattern;
 
+
 public class RegistrerViewModel extends ViewModel {
 
     TextInputEditText name, email, pwd, pwdConf;
@@ -55,9 +56,6 @@ public class RegistrerViewModel extends ViewModel {
         emailLayout.setError( null );
         pwdLayout.setError( null );
         pwdConfLayout.setError( null );
-        //TODO: posar metode per comprovació password i email
-
-
         // Comprovar i setejar errors
         if (userName.isEmpty()) {
             nameLayout.setError( "Cannot be empty." );
@@ -89,23 +87,6 @@ public class RegistrerViewModel extends ViewModel {
         if (errors != 0) {
             //Toast.makeText(Register.this, "ESTA PASANT AMB ERROR REGISTER", Toast.LENGTH_SHORT).show();
             return registrat;
-        }
-
-
-        if (!auth.getCurrentUser().isAnonymous()) {
-            FirebaseAuth.getInstance().signOut();
-            FirebaseAuth.getInstance().signInAnonymously().addOnSuccessListener( new OnSuccessListener<AuthResult>() {
-                @Override
-                public void onSuccess(AuthResult authResult) {
-
-                }
-            } ).addOnFailureListener( new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText( activity.getApplicationContext(), "Error ! " + e.getMessage(), Toast.LENGTH_SHORT ).show();
-                    activity.finish();
-                }
-            } );
         }
 
         AuthCredential credential = EmailAuthProvider.getCredential(userEmail, userPass);

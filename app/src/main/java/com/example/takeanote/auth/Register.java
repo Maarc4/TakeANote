@@ -17,6 +17,10 @@ import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
 
 
+import android.os.Handler;
+import android.os.Looper;
+
+
 public class Register extends AppCompatActivity {
 
     Button sync;
@@ -45,8 +49,14 @@ public class Register extends AppCompatActivity {
                 registrerViewModel.register(Register.this ).observe(Register.this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
+                        Handler handler = new Handler( Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            }
+                        }, 500);
                     }
                 });
             }
