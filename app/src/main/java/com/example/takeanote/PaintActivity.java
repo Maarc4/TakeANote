@@ -128,7 +128,8 @@ public class PaintActivity extends AppCompatActivity {
                 paintActivityViewModel.saveView(paintView).observe( this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
-                        paintActivityViewModel.uploadImage();
+                        final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
+                        paintActivityViewModel.uploadImage(progressDialog);
                         //TODO potser no va quan fem lo de recuperar del firebase
                         //onBackPressed();
 

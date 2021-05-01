@@ -39,10 +39,9 @@ public class PaintActivityViewModel extends AndroidViewModel {
     }
 
     // TODO Treure comentaris loco
-    public void uploadImage() {
+    public void uploadImage(ProgressDialog progressDialog) {
 
         if (filePath != null) {
-            final ProgressDialog progressDialog = new ProgressDialog( getApplication() );
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
