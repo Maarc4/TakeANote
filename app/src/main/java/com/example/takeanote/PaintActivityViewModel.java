@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +47,9 @@ public class PaintActivityViewModel extends AndroidViewModel {
             progressDialog.show();
 
             StorageReference ref = storageReference.child("images/" + user + "/" + UUID.randomUUID().toString() + ".jpg");
+            Log.d("STATE","FILEPATHHHHHHHHHHHH: " + filePath);
+            Log.d("STATE","REFFFFFFFFFFFFFFFFFFFFF: " + ref);
+
             ref.putFile( Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
