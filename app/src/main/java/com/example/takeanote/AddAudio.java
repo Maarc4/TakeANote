@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaRecorder;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -44,12 +46,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.protobuf.StringValue;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -62,8 +69,6 @@ public class AddAudio extends AppCompatActivity {
 
 
     private ImageButton recorder,recorder2;
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-    private boolean permissionToRecordAccepted = false;
     private TextView text;
     private Chronometer time = null;
     private MediaRecorder mrecorder;
@@ -72,12 +77,9 @@ public class AddAudio extends AppCompatActivity {
     MaterialToolbar toolbar;
     FirebaseStorage storage;
     StorageReference storageReference;
-    public static final String TAG = "DatabaseAdapter";
-    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     String userid;
     String filePath;
-
-
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +91,20 @@ public class AddAudio extends AppCompatActivity {
         recorder2 = findViewById(R.id.record2_btn);
         View b = findViewById(R.id.record2_btn);
         b.setVisibility(View.GONE);
-        DateFormat df = new SimpleDateFormat("yyMMddHHmmss", Locale.GERMANY);
-        String date = df.format(Calendar.getInstance().getTime());
+
         this.storage = FirebaseStorage.getInstance();
         this.userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //this.path = getExternalCacheDir().getAbsolutePath()+ File.separator +date+".3gp";
         storageReference = storage.getReference();
-
-
-
+        /*StorageReference audiosref = storageReference.child("audio.3gp");
+        StorageReference mountainImagesRef = storageReference.child("images/mountains.jpg");
+        // While the file names are the same, the references point to different files
+        audiosref.getName().equals(mountainImagesRef.getName());    // true
+        audiosref.getPath().equals(mountainImagesRef.getPath());*/
         toolbar = findViewById(R.id.audioToolbar);
         setSupportActionBar(toolbar);
+        mProgress = new ProgressDialog(this);
+        fileName = Environment.getExternalStorageDirectory().getAbsolutePath();
+        fileName += "/recorded_audio.3gp";
 
         time = findViewById(R.id.record_timer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -165,7 +170,7 @@ public class AddAudio extends AppCompatActivity {
         mrecorder = new MediaRecorder();
         mrecorder.reset();
         mrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mrecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mrecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mrecorder.setOutputFile(fileName);
         mrecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
@@ -175,8 +180,6 @@ public class AddAudio extends AppCompatActivity {
         } catch (IOException e) {
             Log.d("startRecording", "prepare() failed");
         }
-
-
     }
 
     private void stopRecording() {
@@ -199,37 +202,61 @@ public class AddAudio extends AppCompatActivity {
         inflater.inflate(R.menu.add_note_top_bar, menu);
         return true;
     }
-    public void uploadAudio() {
-        String fileName = UUID.randomUUID().toString();
-        /*String imgSaved = MediaStore.Images.Media.insertImage(
+    public void uploadAudio()  {
+        //String fullPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+        InputStream stream = null;
+        filePath = "content://media/external/images/media/" + UUID.randomUUID().toString() + ".3gp";
+
+        try {
+            stream = new FileInputStream(new File(filePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        UploadTask uploadTask = storageReference.child("audio").putStream(stream);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+
+        /*String fileName = UUID.randomUUID().toString();
+        String imgSaved = MediaStore.Images.Media.insertImage(
                 getApplication().getContentResolver(), paintView.getDrawingCache(),
-                UUID.randomUUID().toString() + ".3gp", "Recording Audio");*/
+                UUID.randomUUID().toString() + ".3gp", "Recording Audio");
         //Create album folder if it doesn't exist
-        File mImageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PODCASTS), "MyAlbumName");
+        String audioFilePath =
+                Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + "/myaudio.3gp";
         //Retrieve the path with the folder/filename concatenated
-        File mImageFilePath = new File(new File(mImageDir, fileName).getAbsolutePath());
+        File mImageFilePath = new File(new File(audioFilePath, fileName).getAbsolutePath());
 
         //Create new content values
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.ImageColumns.DATA, String.valueOf(mImageFilePath));
-        //Add whatever other content values you need
-        ContentResolver contentResolver = AddAudio.this.getContentResolver();
-        Object mUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
+        Uri.fromFile(new File(mImageFilePath.getPath()));*/
 
         //Guillem
-         filePath = mImageFilePath.getAbsolutePath();
+         //filePath = "content://media/external/images/media/45";
 
-        if (filePath != null) {
+
+
+        /*if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog( getApplication() );
             progressDialog.setTitle("Uploading...");
             //progressDialog.show();
 
-            StorageReference ref = storageReference.child("audios/" + userid + "/" + fileName + ".3gp");
+            StorageReference ref = storageReference.child("images/" + userid + "/" + UUID.randomUUID().toString() + ".3gp");
             Log.d("STATE","FILEPATHHHHHHHHHHHH: " + filePath);
             Log.d("STATE","REFFFFFFFFFFFFFFFFFFFFF: " + ref);
-            ref.putFile( Uri.parse(filePath))
+            ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -252,113 +279,8 @@ public class AddAudio extends AppCompatActivity {
                             progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
-        }
-
-    /*public void saveDocumentWithFile (String userid, String path) {
-
-        Uri file = Uri.fromFile(new File(path));
-        StorageReference storageRef = storage.getReference();
-        StorageReference audioRef = storageRef.child("audio/" + userid + "/" + UUID.randomUUID().toString() + ".3gp");
-        ProgressDialog progressDialog = new ProgressDialog(this);
-
-        audioRef.putFile( Uri.parse(fileName))
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                .getTotalByteCount());
-                        progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                    }
-                });
-       /* UploadTask uploadTask = audioRef.putFile(file);
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-
-                // Continue with the task to get the download URL
-                return audioRef.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    saveDocument(userid, downloadUri.toString());
-                } else {
-                   
-                }
-            }
-        });
-
-
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                Log.d(TAG, "Upload is " + progress + "% done");
-            }
-        });
+        }*/
 
     }
-    public void saveDocument(String userid, String url) {
-
-        // Create a new user with a first and last name
-        Map<String, Object> note = new HashMap<>();
-
-        note.put("userid", userid);
-        note.put("url", url);
-
-        Log.d(TAG, "saveDocument");
-        // Add a new document with a generated ID
-        db.collection("audioCards")
-                .add(note)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-    }*/
-    /*public void showPopup(View anchorView) {
-
-        View popupView = getLayoutInflater().inflate(R.layout.audio_card_layout, null);
-        PopupWindow popupWindow = new PopupWindow(popupView, 800, 600);
-        popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable());
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
-
-        // Initialize objects from layout
-        TextInputLayout saveDescr = popupView.findViewById(R.id.noteTitle);
-        Button saveButton = popupView.findViewById(R.id.save);
-        saveButton.setOnClickListener((v) -> {
-            String text = saveDescr.getEditText().getText().toString();
-
-            popupWindow.dismiss();
-        });*/
-    }
-
 
 }
