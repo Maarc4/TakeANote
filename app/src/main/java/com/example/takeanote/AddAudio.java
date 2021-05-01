@@ -76,6 +76,7 @@ public class AddAudio extends AppCompatActivity {
     private boolean isrecording = false;
     MaterialToolbar toolbar;
     FirebaseStorage storage;
+    FirebaseFirestore db;
     StorageReference storageReference;
     String userid;
     String filePath;
@@ -85,6 +86,9 @@ public class AddAudio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        fileName = getExternalCacheDir().getAbsolutePath();
+        fileName += ("/audiorecordtest.3gp");
         setContentView(R.layout.activity_add_audio);
         recorder = findViewById(R.id.record_btn);
         text = findViewById(R.id.record_filename);
@@ -95,16 +99,10 @@ public class AddAudio extends AppCompatActivity {
         this.storage = FirebaseStorage.getInstance();
         this.userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         storageReference = storage.getReference();
-        /*StorageReference audiosref = storageReference.child("audio.3gp");
-        StorageReference mountainImagesRef = storageReference.child("images/mountains.jpg");
-        // While the file names are the same, the references point to different files
-        audiosref.getName().equals(mountainImagesRef.getName());    // true
-        audiosref.getPath().equals(mountainImagesRef.getPath());*/
+
         toolbar = findViewById(R.id.audioToolbar);
         setSupportActionBar(toolbar);
         mProgress = new ProgressDialog(this);
-        fileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        fileName += "/recorded_audio.3gp";
 
         time = findViewById(R.id.record_timer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -113,20 +111,20 @@ public class AddAudio extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                    if (!isrecording) {
-                        if (ActivityCompat.checkSelfPermission(AddAudio.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                if (!isrecording) {
+                    if (ActivityCompat.checkSelfPermission(AddAudio.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
-                            ActivityCompat.requestPermissions(AddAudio.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                        ActivityCompat.requestPermissions(AddAudio.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
 
-                        } else {
+                    } else {
 
-                            startRecording();
+                        startRecording();
 
-                        }
+                    }
 
-                        b.setVisibility(View.VISIBLE);
-                        text.setText(R.string.recording_started);
-                        isrecording = true;
+                    b.setVisibility(View.VISIBLE);
+                    text.setText(R.string.recording_started);
+                    isrecording = true;
 
                 }
             }
@@ -184,13 +182,7 @@ public class AddAudio extends AppCompatActivity {
 
     private void stopRecording() {
         time.stop();
-        try {
-            mrecorder.prepare();
-            mrecorder.stop();
-
-        } catch (IOException e) {
-            Log.d("stopRecording", "prepare() failed");
-        }
+        mrecorder.stop();
         mrecorder.release();
         mrecorder = null;
 
@@ -203,83 +195,35 @@ public class AddAudio extends AppCompatActivity {
         return true;
     }
     public void uploadAudio()  {
-        //String fullPath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-        InputStream stream = null;
-        filePath = "content://media/external/images/media/" + UUID.randomUUID().toString() + ".3gp";
 
-        try {
-            stream = new FileInputStream(new File(filePath));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        /*Uri uri= Uri.fromFile(new File(fileName));
+        DocumentReference docref = db.collection("audio").document(FirebaseAuth.getInstance().getUid()).collection("myAudio").document();
+        Map<String, Uri> newNote = new HashMap<>();
+        newNote.put("Url", uri);
 
-        UploadTask uploadTask = storageReference.child("audio").putStream(stream);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
+        docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getApplication().getApplicationContext(), "Note Added to database.", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplication().getApplicationContext(), "FAILED to add note to database.", Toast.LENGTH_SHORT).show();
+
+            }
+        });*/
+
+        StorageReference filepath =storageReference.child("audio/" + userid + "/" + UUID.randomUUID().toString() + ".3gp");
+        Uri uri= Uri.fromFile(new File(fileName));
+        Log.d("STATE","FILEPATHHHHHHHHHHHH: " + filepath);
+        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
+
             }
         });
-
-        /*String fileName = UUID.randomUUID().toString();
-        String imgSaved = MediaStore.Images.Media.insertImage(
-                getApplication().getContentResolver(), paintView.getDrawingCache(),
-                UUID.randomUUID().toString() + ".3gp", "Recording Audio");
-        //Create album folder if it doesn't exist
-        String audioFilePath =
-                Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/myaudio.3gp";
-        //Retrieve the path with the folder/filename concatenated
-        File mImageFilePath = new File(new File(audioFilePath, fileName).getAbsolutePath());
-
-        //Create new content values
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.ImageColumns.DATA, String.valueOf(mImageFilePath));
-        Uri.fromFile(new File(mImageFilePath.getPath()));*/
-
-        //Guillem
-         //filePath = "content://media/external/images/media/45";
-
-
-
-        /*if (filePath != null) {
-            final ProgressDialog progressDialog = new ProgressDialog( getApplication() );
-            progressDialog.setTitle("Uploading...");
-            //progressDialog.show();
-
-            StorageReference ref = storageReference.child("images/" + userid + "/" + UUID.randomUUID().toString() + ".3gp");
-            Log.d("STATE","FILEPATHHHHHHHHHHHH: " + filePath);
-            Log.d("STATE","REFFFFFFFFFFFFFFFFFFFFF: " + ref);
-            ref.putFile(Uri.parse(filePath))
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
-                        }
-                    });
-        }*/
 
     }
 
