@@ -15,11 +15,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
 import com.example.takeanote.model.PaintInfo;
+import com.example.takeanote.utils.Constant;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -97,7 +99,6 @@ public class MainActivityViewModel extends AndroidViewModel {
         List<NoteListItem> notes = new ArrayList<>();
 
 
-
         //PAINT NOTES
         db.collection("notes").document(user.getUid()).collection("paintNotes")
                 .get()
@@ -117,6 +118,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
                                                 PaintInfo pi = q.toObject(PaintInfo.class);
                                                 pi.setUri(uri);
+                                                pi.setId(q.getId());
                                                 //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
 
                                                 // PaintView pv = q.toObject(PaintView.class);
@@ -132,7 +134,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             }
                         }
                         notesData.setValue(notes);
-                        Log.d("MAVM", "notes sol paint "+notes.size());
+                        Log.d("MAVM", "notes sol paint " + notes.size());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -160,7 +162,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             }
                         }
                         notesData.postValue(notes);
-                        Log.d("MAVM", "notes amb text? "+notes.size());
+                        Log.d("MAVM", "notes amb text? " + notes.size());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -185,30 +187,85 @@ public class MainActivityViewModel extends AndroidViewModel {
         return notesData.getValue();
     }*/
 
-   /* public void deleteNote(NoteUI deleteNoteUI) {
+    public void deleteNote(NoteListItem noteListItem, int viewType) {
         //Log.d("docId ->", docId);
-        List<NoteUI> oldData = notesData.getValue();
-        List<NoteUI> newData = new ArrayList<NoteUI>();
-        for (NoteUI note : oldData) {
-            if (!note.getId().equals(deleteNoteUI.getId())) {
+        List<NoteListItem> oldData = notesData.getValue();
+        List<NoteListItem> newData = new ArrayList<NoteListItem>();
+        for (NoteListItem note : oldData) {
+            //Borrar nota text
+            if (note.getViewType() == viewType) {
+                if (note.getViewType() == Constant.ITEM_TEXT_NOTE_VIEWTYPE) {
+                    NoteUI noteUI = note.getTextNoteItem();
+                    NoteUI noteToDelete = noteListItem.getTextNoteItem();
+                    if (!noteUI.getId().equals(noteToDelete.getId())) {
+                        newData.add(note);
+                    }
+                }
+                //Borrar nota paint
+                else if (note.getViewType() == Constant.ITEM_PAINT_NOTE_VIEWTYPE) {
+                    PaintInfo paintNote = note.getPaintInfo();
+                    PaintInfo paintToDelete = note.getPaintInfo();
+                    if (!paintNote.getUri().toString().equals(paintToDelete.getUri().toString())) {
+                        newData.add(note);
+                    }
+                }
+                /*//Borrar nota Image
+                else if(note.getViewType() == Constant.ITEM_IMAGE_NOTE_VIEWTYPE){
+
+                }
+                //Borrar nota Audio
+                else {
+
+                }*/
+            } else {
                 newData.add(note);
             }
         }
         notesData.setValue(newData);
+        switch (viewType) {
+            case Constant.ITEM_TEXT_NOTE_VIEWTYPE:
+                NoteUI textNote = noteListItem.getTextNoteItem();
+                DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(textNote.getId());
+                docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplication().getApplicationContext(), "NoteUI deleted.", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+            case Constant.ITEM_PAINT_NOTE_VIEWTYPE:
+                PaintInfo pinfo = noteListItem.getPaintInfo();
 
-        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(deleteNoteUI.getId());
-        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplication().getApplicationContext(), "NoteUI deleted.", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
+                db.collection("notes").document(user.getUid()).collection("paintNotes").document(pinfo.getId())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                storageReference.child(documentSnapshot.getString("url")).delete();
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplication().getApplicationContext(), "Error Deleting PAINT note!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+            case Constant.ITEM_IMAGE_NOTE_VIEWTYPE:
+                break;
+            case Constant.ITEM_AUDIO_NOTE_VIEWTYPE:
+                break;
+            default:
+                throw new
+
+                        IllegalArgumentException();
+        }
+    }
 
     public boolean sync() {
         if (user.isAnonymous()) {

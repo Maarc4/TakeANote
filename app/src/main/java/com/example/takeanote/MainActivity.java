@@ -155,8 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onNoteMenuClick(NoteListItem noteItem, View view) {
                 PopupMenu menu = new PopupMenu(MainActivity.this.getApplicationContext(), view);
                 menu.getMenu().add("Delete").setOnMenuItemClickListener(item -> {
-                    Toast.makeText(MainActivity.this, "Delete coming soon.", Toast.LENGTH_SHORT).show();
-                    //viewModel.deleteNote(noteUI);
+                    viewModel.deleteNote(noteItem, noteItem.getViewType());
                     return false;
                 });
                 //TODO: potser afegir share dsp de noteDetails i cambiar a material
@@ -284,23 +283,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         warning.show();
     }
 
-/*
-    private int getRandomColor() {
-        List<Integer> colorCode = new ArrayList<>();
-        colorCode.add(R.color.blue);
-        colorCode.add(R.color.yellow);
-        colorCode.add(R.color.skyblue);
-        colorCode.add(R.color.lightPurple);
-        colorCode.add(R.color.lightGreen);
-        colorCode.add(R.color.gray);
-        colorCode.add(R.color.pink);
-        colorCode.add(R.color.red);
-        colorCode.add(R.color.greenlight);
-        colorCode.add(R.color.notgreen);
-
-        Random rColor = new Random();
-        int n = rColor.nextInt(colorCode.size());
-        return colorCode.get(n);
-    }*/
 
 }
