@@ -1,20 +1,15 @@
 package com.example.takeanote.auth;
 
-import android.app.Activity;
 import android.app.Application;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,8 +32,8 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<FirebaseUser> login(TextInputEditText lEmail,  TextInputEditText lPassword,
-                                        TextInputLayout emailLayout, TextInputLayout  pwdLayout,
+    public LiveData<FirebaseUser> login(TextInputEditText lEmail, TextInputEditText lPassword,
+                                        TextInputLayout emailLayout, TextInputLayout pwdLayout,
                                         ProgressBar progressBar) {
 
         auth = FirebaseAuth.getInstance();
@@ -48,15 +43,15 @@ public class LoginViewModel extends AndroidViewModel {
         int errors = 0;
         String mEmail = lEmail.getText().toString();
         String mPassword = lPassword.getText().toString();
-        emailLayout.setError(null);
-        pwdLayout.setError(null);
+        emailLayout.setError( null );
+        pwdLayout.setError( null );
 
         if (mPassword.isEmpty()) {
-            pwdLayout.setError("Cannot be empty.");
+            pwdLayout.setError( "Cannot be empty." );
             errors++;
         }
-        if (!isEmailValid(mEmail)) {
-            emailLayout.setError("Email is not valid.");
+        if (!isEmailValid( mEmail )) {
+            emailLayout.setError( "Email is not valid." );
             errors++;
         }
         if (errors != 0) {
@@ -64,49 +59,49 @@ public class LoginViewModel extends AndroidViewModel {
             return user;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility( View.VISIBLE );
 
-        auth.signInWithEmailAndPassword(mEmail, mPassword)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+        auth.signInWithEmailAndPassword( mEmail, mPassword )
+                .addOnSuccessListener( new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         if (currentUser.isAnonymous()) {
 
-                            db.collection("notes").document(currentUser.getUid()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            db.collection( "notes" ).document( currentUser.getUid() ).delete().addOnSuccessListener( new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(getApplication().getApplicationContext(), "All Temp Notes are Deleted.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText( getApplication().getApplicationContext(), "All Temp Notes are Deleted.", Toast.LENGTH_SHORT ).show();
                                 }
-                            });
+                            } );
 
                             // delete Temp user
-                            currentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            currentUser.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(getApplication().getApplicationContext(), "Temp user Deleted.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText( getApplication().getApplicationContext(), "Temp user Deleted.", Toast.LENGTH_SHORT ).show();
                                 }
-                            });
+                            } );
                         }
-                        Toast.makeText(getApplication().getApplicationContext(), "Success !", Toast.LENGTH_SHORT).show();
-                        user.setValue(FirebaseAuth.getInstance().getCurrentUser());
+                        Toast.makeText( getApplication().getApplicationContext(), "Success !", Toast.LENGTH_SHORT ).show();
+                        user.setValue( FirebaseAuth.getInstance().getCurrentUser() );
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                } ).addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-                        if (e.getClass().equals( FirebaseAuthInvalidUserException.class )){
-                            emailLayout.setError( "the email doesn't match with a registered user email" );
-                        } else {
-                            pwdLayout.setError( "the password is not correct" );
-                        }
-                        progressBar.setVisibility( View.GONE );
-                    }
-        });
+                if (e.getClass().equals( FirebaseAuthInvalidUserException.class )) {
+                    emailLayout.setError( "the email doesn't match with a registered user email" );
+                } else {
+                    pwdLayout.setError( "the password is not correct" );
+                }
+                progressBar.setVisibility( View.GONE );
+            }
+        } );
         return user;
     }
 
     private boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return android.util.Patterns.EMAIL_ADDRESS.matcher( email ).matches();
     }
 
 }

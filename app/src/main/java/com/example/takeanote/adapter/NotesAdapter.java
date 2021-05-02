@@ -29,23 +29,23 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("NAda","OnCreateViewHolder");
+        Log.d( "NAda", "OnCreateViewHolder" );
         View view;
         switch (viewType) {
             case (Constant.ITEM_TEXT_NOTE_VIEWTYPE):
-                Log.d("NAda","TEXT NOTE");
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout, parent, false);
-                return new TextNoteViewHolder(view, listener);
+                Log.d( "NAda", "TEXT NOTE" );
+                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.note_card_layout, parent, false );
+                return new TextNoteViewHolder( view, listener );
             case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
-                Log.d("NAda","PAINT NOTE");
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.paint_card_layout, parent, false);
-                return new PaintNoteViewHolder(view, listener);
+                Log.d( "NAda", "PAINT NOTE" );
+                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.paint_card_layout, parent, false );
+                return new PaintNoteViewHolder( view, listener );
             case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_card_layout, parent, false);
-                return new AudioNoteViewHolder(view, listener);
+                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.audio_card_layout, parent, false );
+                return new AudioNoteViewHolder( view, listener );
             case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.paint_card_layout, parent, false);
-                return new ImageNoteViewHolder(view, listener);
+                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.paint_card_layout, parent, false );
+                return new ImageNoteViewHolder( view, listener );
 
             default:
                 throw new IllegalArgumentException();
@@ -54,12 +54,12 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.setData(mdata.get(position));
+        holder.setData( mdata.get( position ) );
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mdata.get(position).getViewType();
+        return mdata.get( position ).getViewType();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         if (mdata != null) {
             return mdata.size();
         } else {
-            Log.d("SIZE", "List Empty");
+            Log.d( "SIZE", "List Empty" );
             return 0;
         }
     }

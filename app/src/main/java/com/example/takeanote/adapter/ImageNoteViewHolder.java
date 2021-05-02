@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.utils.OnNoteTypeClickListener;
 
-public class ImageNoteViewHolder extends BaseViewHolder{
+public class ImageNoteViewHolder extends BaseViewHolder {
 
-    public ImageNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener){
-        super(itemView);
+    public ImageNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener) {
+        super( itemView );
     }
 
     @Override

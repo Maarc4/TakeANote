@@ -13,6 +13,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
 
 
     public BaseViewHolder(@NonNull View itemView) {
-        super(itemView);
+        super( itemView );
     }
 }

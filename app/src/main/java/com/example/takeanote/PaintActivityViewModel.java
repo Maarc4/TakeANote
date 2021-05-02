@@ -39,7 +39,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
     private final MutableLiveData<String> observableFilePath;
 
     public PaintActivityViewModel(@NonNull Application application) {
-        super(application);
+        super( application );
         observableFilePath = new MutableLiveData<>();
         db = FirebaseFirestore.getInstance();
         userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -49,58 +49,58 @@ public class PaintActivityViewModel extends AndroidViewModel {
     public void uploadImage(ProgressDialog progressDialog, String paintTitle) {
 
         if (filePath != null) {
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle( "Uploading..." );
             progressDialog.show();
             String saveUrl = "images/" + userUID + "/" + UUID.randomUUID().toString() + ".jpg";
-            Log.d("PAVM", "1");
+            Log.d( "PAVM", "1" );
 
             // Guardem la nota a firebase per
-            DocumentReference docref = db.collection("notes").document(userUID).collection("paintNotes").document();
+            DocumentReference docref = db.collection( "notes" ).document( userUID ).collection( "paintNotes" ).document();
             Map<String, Object> newNote = new HashMap<>();
-            newNote.put("title", paintTitle);
-            newNote.put("url", saveUrl);
-            Log.d("PAVM", "2");
+            newNote.put( "title", paintTitle );
+            newNote.put( "url", saveUrl );
+            Log.d( "PAVM", "2" );
 
-            docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
+            docref.set( newNote ).addOnSuccessListener( new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d("PAVM", "ONSUCCESS docref.setNote");
+                    Log.d( "PAVM", "ONSUCCESS docref.setNote" );
                 }
-            }).addOnFailureListener(new OnFailureListener() {
+            } ).addOnFailureListener( new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("PAVM", "FAILURE docref.setNote");
+                    Log.d( "PAVM", "FAILURE docref.setNote" );
                 }
-            });
-            Log.d("PAVM", "3");
+            } );
+            Log.d( "PAVM", "3" );
 
-            StorageReference ref = storageReference.child(saveUrl);
-            ref.putFile(Uri.parse(filePath))
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            StorageReference ref = storageReference.child( saveUrl );
+            ref.putFile( Uri.parse( filePath ) )
+                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Log.d("PAVM", "11");
+                            Log.d( "PAVM", "11" );
                             progressDialog.dismiss();
-                            Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText( getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT ).show();
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
+                    } )
+                    .addOnFailureListener( new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d("PAVM", "12");
+                            Log.d( "PAVM", "12" );
                             progressDialog.dismiss();
-                            Toast.makeText(getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText( getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT ).show();
                         }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    } )
+                    .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            Log.d("PAVM", "13");
+                            Log.d( "PAVM", "13" );
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                            progressDialog.setMessage( "Uploaded " + (int) progress + "%" );
                         }
-                    });
+                    } );
         }
     }
 
@@ -108,22 +108,22 @@ public class PaintActivityViewModel extends AndroidViewModel {
     public LiveData<String> saveView(PaintView paintView) {
 
         storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReferenceFromUrl(STORAGE_URL);
+        storageReference = storage.getReferenceFromUrl( STORAGE_URL );
 
 
         //AIXI VA PERO DEPRACATED
-        paintView.setDrawingCacheEnabled(true);
+        paintView.setDrawingCacheEnabled( true );
         String imgSaved = MediaStore.Images.Media.insertImage(
                 getApplication().getContentResolver(), paintView.getDrawingCache(),
-                UUID.randomUUID().toString() + ".jpg", "drawing");
+                UUID.randomUUID().toString() + ".jpg", "drawing" );
 
         filePath = imgSaved;
 
         if (imgSaved != null) {
-            observableFilePath.setValue(imgSaved);
-            Toast.makeText(getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT).show();
+            observableFilePath.setValue( imgSaved );
+            Toast.makeText( getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT ).show();
         } else {
-            Toast.makeText(getApplication().getApplicationContext(), "ERROR NOT SAVED", Toast.LENGTH_SHORT).show();
+            Toast.makeText( getApplication().getApplicationContext(), "ERROR NOT SAVED", Toast.LENGTH_SHORT ).show();
         }
         paintView.destroyDrawingCache();
         return observableFilePath;

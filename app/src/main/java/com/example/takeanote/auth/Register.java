@@ -21,10 +21,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 
-import android.os.Handler;
-import android.os.Looper;
-
-
 public class Register extends AppCompatActivity {
 
     Button sync;
@@ -36,62 +32,62 @@ public class Register extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-        getSupportActionBar().setTitle("Create New Account");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        super.onCreate( savedInstanceState );
+        setContentView( R.layout.activity_register );
+        getSupportActionBar().setTitle( "Create New Account" );
+        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
 
         registrerViewModel = new ViewModelProvider( this ).get( RegistrerViewModel.class );
 
-        sync = findViewById(R.id.createAccount);
-        loginAct = findViewById(R.id.login);
-        name = findViewById( R.id.userName);
-        email = findViewById(R.id.userEmail);
-        pwd = findViewById(R.id.password);
-        pwdConf = findViewById(R.id.passwordConfirm);
+        sync = findViewById( R.id.createAccount );
+        loginAct = findViewById( R.id.login );
+        name = findViewById( R.id.userName );
+        email = findViewById( R.id.userEmail );
+        pwd = findViewById( R.id.password );
+        pwdConf = findViewById( R.id.passwordConfirm );
 
-        emailLayout = findViewById(R.id.emailLayout);
-        pwdConfLayout = findViewById(R.id.pwdConfirmLayout);
-        pwdLayout = findViewById(R.id.pwdLayout);
-        nameLayout = findViewById(R.id.nameLayout);
+        emailLayout = findViewById( R.id.emailLayout );
+        pwdConfLayout = findViewById( R.id.pwdConfirmLayout );
+        pwdLayout = findViewById( R.id.pwdLayout );
+        nameLayout = findViewById( R.id.nameLayout );
 
         //TODO
-        progressBar = findViewById(R.id.progressBar2);
+        progressBar = findViewById( R.id.progressBar2 );
 
-        sync.setOnClickListener(new View.OnClickListener() {
+        sync.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registrerViewModel.register(name, email, pwd, pwdConf, emailLayout, pwdConfLayout,
-                        pwdLayout, nameLayout).observe(Register.this, new Observer<Boolean>() {
+                registrerViewModel.register( name, email, pwd, pwdConf, emailLayout, pwdConfLayout,
+                        pwdLayout, nameLayout ).observe( Register.this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
-                        Handler handler = new Handler( Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
+                        Handler handler = new Handler( Looper.getMainLooper() );
+                        handler.postDelayed( new Runnable() {
                             @Override
                             public void run() {
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                startActivity( new Intent( getApplicationContext(), MainActivity.class ) );
                                 finish();
                             }
-                        }, 500);
+                        }, 500 );
                     }
-                });
+                } );
             }
-        });
+        } );
 
-        loginAct.setOnClickListener(new View.OnClickListener() {
+        loginAct.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), Login.class));
+                startActivity( new Intent( v.getContext(), Login.class ) );
             }
-        });
+        } );
 
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity( new Intent( this, MainActivity.class ) );
         finish();
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected( item );
     }
 
 }

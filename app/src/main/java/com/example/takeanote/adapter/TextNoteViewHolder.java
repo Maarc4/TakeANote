@@ -3,7 +3,6 @@ package com.example.takeanote.adapter;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -19,46 +18,46 @@ public class TextNoteViewHolder extends BaseViewHolder {
     private OnNoteTypeClickListener listener;
 
     public TextNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener) {
-        super(itemView);
-        noteTitle = itemView.findViewById(R.id.noteTitle);
-        noteContent = itemView.findViewById(R.id.noteContent);
+        super( itemView );
+        noteTitle = itemView.findViewById( R.id.noteTitle );
+        noteContent = itemView.findViewById( R.id.noteContent );
         view = itemView; // Aixo es per manejar el click, pero amb material card potser es diferent
-        menuIcon = itemView.findViewById(R.id.menuIcon);
+        menuIcon = itemView.findViewById( R.id.menuIcon );
         this.listener = listener;
     }
 
     @Override
     void setData(NoteListItem item) {
         NoteUI textNote = item.getTextNoteItem();
-        noteTitle.setText(textNote.getTitle());
-        String content = modifyContent(textNote.getContent());
-        noteContent.setText(content);
+        noteTitle.setText( textNote.getTitle() );
+        String content = modifyContent( textNote.getContent() );
+        noteContent.setText( content );
 
-        view.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(v.getContext(), "Coming soon TextNote", Toast.LENGTH_SHORT).show();
-                listener.onNoteClick(item);
+                listener.onNoteClick( item );
             }
-        });
-        menuIcon.setOnClickListener(new View.OnClickListener() {
+        } );
+        menuIcon.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(v.getContext(), "Coming soon TextNote MenuOptions", Toast.LENGTH_SHORT).show();
-                listener.onNoteMenuClick(item, v);
+                listener.onNoteMenuClick( item, v );
             }
-        });
+        } );
     }
 
     private String modifyContent(String content) {
-        if (content.length() > 20 | content.contains("\n")) {
+        if (content.length() > 20 | content.contains( "\n" )) {
             String newContent = "";
             char salto = '\n';
             for (int i = 0; i < 20; i++) {
-                if (content.charAt(i) == salto) {
+                if (content.charAt( i ) == salto) {
                     break;
                 }
-                newContent += content.charAt(i);
+                newContent += content.charAt( i );
             }
             newContent += "...";
             content = newContent;

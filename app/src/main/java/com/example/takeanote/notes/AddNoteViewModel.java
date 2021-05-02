@@ -42,36 +42,36 @@ public class AddNoteViewModel extends AndroidViewModel {
 
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
-            Toast.makeText(getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT).show();
+            Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
             //Intent intent = new Intent(getApplication().getApplicationContext(), AddNote.class);
             //activity.startActivity(intent);
             //activity.finish();
             return note;
         }
 
-        progressBarSave.setVisibility(View.VISIBLE);
+        progressBarSave.setVisibility( View.VISIBLE );
         //save note
-        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document();
+        DocumentReference docref = db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" ).document();
         Map<String, Object> newNote = new HashMap<>();
-        newNote.put("title", nTitle);
-        newNote.put("content", nContent);
-        newNote.put("type","textNote");
+        newNote.put( "title", nTitle );
+        newNote.put( "content", nContent );
+        newNote.put( "type", "textNote" );
 
-        docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
+        docref.set( newNote ).addOnSuccessListener( new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplication().getApplicationContext(), "Note Added to database.", Toast.LENGTH_SHORT).show();
-                note.setValue(newNote);
-                progressBarSave.setVisibility(View.INVISIBLE);
+                Toast.makeText( getApplication().getApplicationContext(), "Note Added to database.", Toast.LENGTH_SHORT ).show();
+                note.setValue( newNote );
+                progressBarSave.setVisibility( View.INVISIBLE );
                 //onBackPressed();
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        } ).addOnFailureListener( new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), "FAILED to add note to database.", Toast.LENGTH_SHORT).show();
-                progressBarSave.setVisibility(View.VISIBLE);
+                Toast.makeText( getApplication().getApplicationContext(), "FAILED to add note to database.", Toast.LENGTH_SHORT ).show();
+                progressBarSave.setVisibility( View.VISIBLE );
             }
-        });
+        } );
         return note;
     }
 

@@ -59,7 +59,7 @@ public class Login extends AppCompatActivity {
                         .observe(Login.this, new Observer<FirebaseUser>() {
                     @Override
                     public void onChanged(FirebaseUser user) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity( new Intent( getApplicationContext(), MainActivity.class ) );
                         finish();
                     }
                 });

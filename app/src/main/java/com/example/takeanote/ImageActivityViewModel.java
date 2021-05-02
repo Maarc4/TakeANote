@@ -2,11 +2,8 @@ package com.example.takeanote;
 
 import android.app.Application;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.net.Uri;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
-import android.content.ContentResolver;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -42,37 +39,37 @@ public class ImageActivityViewModel extends AndroidViewModel {
 
     public LiveData<Uri> uploadFile(Uri mImageUri, String extension, ProgressDialog progressDialog) {
         if (mImageUri != null) {
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle( "Uploading..." );
             progressDialog.show();
-            StorageReference ref = storageReference.child("images/" + user.getUid() + "/" + UUID.randomUUID().toString() + "." + extension);
+            StorageReference ref = storageReference.child( "images/" + user.getUid() + "/" + UUID.randomUUID().toString() + "." + extension );
 
-            ref.putFile(mImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            ref.putFile( mImageUri )
+                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
                             newUri.setValue( mImageUri );
-                            Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText( getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT ).show();
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
+                    } )
+                    .addOnFailureListener( new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText( getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT ).show();
                         }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    } )
+                    .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                             double progress = (100.0 * snapshot.getBytesTransferred() / snapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                            progressDialog.setMessage( "Uploaded " + (int) progress + "%" );
                         }
-                    });
+                    } );
 
         } else {
-            Toast.makeText(getApplication().getApplicationContext(), "No file selected!", Toast.LENGTH_SHORT).show();
+            Toast.makeText( getApplication().getApplicationContext(), "No file selected!", Toast.LENGTH_SHORT ).show();
         }
 
         return newUri;

@@ -4,17 +4,14 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
-import com.example.takeanote.PaintView;
 import com.example.takeanote.R;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.utils.OnNoteTypeClickListener;
 
-public class AudioNoteViewHolder extends BaseViewHolder{
+public class AudioNoteViewHolder extends BaseViewHolder {
 
     ImageButton audioPlayButton;
     ImageView audioMenuItem;
@@ -22,12 +19,12 @@ public class AudioNoteViewHolder extends BaseViewHolder{
     View view;
     OnNoteTypeClickListener listener;
 
-    public AudioNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener){
-        super(itemView);
-        audioTitle = itemView.findViewById(R.id.audioNoteTitle);
-        audioPlayButton = itemView.findViewById(R.id.audioPlayButton);
+    public AudioNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener) {
+        super( itemView );
+        audioTitle = itemView.findViewById( R.id.audioNoteTitle );
+        audioPlayButton = itemView.findViewById( R.id.audioPlayButton );
         view = itemView; // Aixo es per manejar el click, pero amb material card potser es diferent
-        audioMenuItem = itemView.findViewById(R.id.audioMenuIcon);
+        audioMenuItem = itemView.findViewById( R.id.audioMenuIcon );
         this.listener = listener;
     }
 

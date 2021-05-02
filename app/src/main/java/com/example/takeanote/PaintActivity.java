@@ -3,16 +3,12 @@ package com.example.takeanote;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,16 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.UUID;
 
 public class PaintActivity extends AppCompatActivity {
 
@@ -44,30 +31,30 @@ public class PaintActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paint);
-        paintView = findViewById(R.id.paintView);
-        title = findViewById(R.id.PaintTitle);
-        toolbar = findViewById(R.id.paintToolbar);
+        super.onCreate( savedInstanceState );
+        setContentView( R.layout.activity_paint );
+        paintView = findViewById( R.id.paintView );
+        title = findViewById( R.id.PaintTitle );
+        toolbar = findViewById( R.id.paintToolbar );
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar( toolbar );
+        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
 
         paintActivityViewModel = new ViewModelProvider( this ).get( PaintActivityViewModel.class );
 
         DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        paintView.init(metrics);
+        getWindowManager().getDefaultDisplay().getMetrics( metrics );
+        paintView.init( metrics );
         width = PaintView.BRUSH_SIZE;
         color = PaintView.DEFAULT_COLOR;
-        ActivityCompat.requestPermissions(PaintActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        ActivityCompat.requestPermissions( PaintActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1 );
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.paint_settings, menu);
-        return super.onCreateOptionsMenu(menu);
+        menuInflater.inflate( R.menu.paint_settings, menu );
+        return super.onCreateOptionsMenu( menu );
     }
 
     @Override
@@ -87,52 +74,52 @@ public class PaintActivity extends AppCompatActivity {
                 paintView.clear();
                 break;
             case R.id.eraser:
-                paintView.setBrushColor(Color.WHITE);
-                paintView.setBrushWidth(30);
+                paintView.setBrushColor( Color.WHITE );
+                paintView.setBrushWidth( 30 );
                 break;
             case R.id.cRed:
                 color = Color.RED;
-                paintView.setBrushColor(color);
-                paintView.setBrushWidth(width);
+                paintView.setBrushColor( color );
+                paintView.setBrushWidth( width );
                 break;
             case R.id.cGreen:
                 color = Color.GREEN;
-                paintView.setBrushColor(color);
-                paintView.setBrushWidth(width);
+                paintView.setBrushColor( color );
+                paintView.setBrushWidth( width );
                 break;
             case R.id.cBlue:
                 color = Color.BLUE;
-                paintView.setBrushColor(color);
-                paintView.setBrushWidth(width);
+                paintView.setBrushColor( color );
+                paintView.setBrushWidth( width );
                 break;
             case R.id.cBlack:
                 color = Color.BLACK;
-                paintView.setBrushColor(color);
-                paintView.setBrushWidth(width);
+                paintView.setBrushColor( color );
+                paintView.setBrushWidth( width );
                 break;
             case R.id.br5:
                 width = 5;
-                paintView.setBrushWidth(width);
-                paintView.setBrushColor(color);
+                paintView.setBrushWidth( width );
+                paintView.setBrushColor( color );
                 break;
             case R.id.br10:
                 width = 10;
-                paintView.setBrushWidth(width);
-                paintView.setBrushColor(color);
+                paintView.setBrushWidth( width );
+                paintView.setBrushColor( color );
                 break;
             case R.id.br20:
                 width = 20;
-                paintView.setBrushWidth(width);
-                paintView.setBrushColor(color);
+                paintView.setBrushWidth( width );
+                paintView.setBrushColor( color );
                 break;
             case R.id.save:
 
-                paintActivityViewModel.saveView(paintView).observe( this, new Observer<String>() {
+                paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
-                       // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
+                        // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                        paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
+                        paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
                         //TODO potser no va quan fem lo de recuperar del firebase
                         //onBackPressed();
 
@@ -144,7 +131,7 @@ public class PaintActivity extends AppCompatActivity {
                 finish();
                 break;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected( item );
     }
 
 }

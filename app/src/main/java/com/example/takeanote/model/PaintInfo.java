@@ -9,6 +9,7 @@ public class PaintInfo {
     String title;
     Bitmap bmp;
     String id;
+
     public PaintInfo() {
     }
 

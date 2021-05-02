@@ -39,27 +39,27 @@ public class PaintView extends View {
     private MaskFilter mBlur;
     private Bitmap mBitmap;
     private Canvas mCanvas;
-    private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+    private Paint mBitmapPaint = new Paint( Paint.DITHER_FLAG );
 
     public PaintView(Context context) {
-        super(context);
-        new PaintView(context, null);
+        super( context );
+        new PaintView( context, null );
     }
 
     public PaintView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        super( context, attrs );
         mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-        mPaint.setColor(DEFAULT_COLOR);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setXfermode(null);
-        mPaint.setAlpha(0xff);
+        mPaint.setAntiAlias( true );
+        mPaint.setDither( true );
+        mPaint.setColor( DEFAULT_COLOR );
+        mPaint.setStyle( Paint.Style.STROKE );
+        mPaint.setStrokeJoin( Paint.Join.ROUND );
+        mPaint.setStrokeCap( Paint.Cap.ROUND );
+        mPaint.setXfermode( null );
+        mPaint.setAlpha( 0xff );
 
-        mEmboss = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.4f, 6, 3.5f);
-        mBlur = new BlurMaskFilter(5, BlurMaskFilter.Blur.NORMAL);
+        mEmboss = new EmbossMaskFilter( new float[]{1, 1, 1}, 0.4f, 6, 3.5f );
+        mBlur = new BlurMaskFilter( 5, BlurMaskFilter.Blur.NORMAL );
     }
 
 
@@ -67,8 +67,8 @@ public class PaintView extends View {
         int height = metrics.heightPixels;
         int width = metrics.widthPixels;
 
-        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+        mBitmap = Bitmap.createBitmap( width, height, Bitmap.Config.ARGB_8888 );
+        mCanvas = new Canvas( mBitmap );
 
         currentColor = DEFAULT_COLOR;
         strokeWidth = BRUSH_SIZE;
@@ -109,46 +109,46 @@ public class PaintView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.save();
-        mCanvas.drawColor(backgroundColor);
+        mCanvas.drawColor( backgroundColor );
 
         for (FingerPath fp : paths) {
-            mPaint.setColor(fp.getColor());
-            mPaint.setStrokeWidth(fp.getStrokeWidth());
-            mPaint.setMaskFilter(null);
+            mPaint.setColor( fp.getColor() );
+            mPaint.setStrokeWidth( fp.getStrokeWidth() );
+            mPaint.setMaskFilter( null );
 
-            if (fp.isEmboss()) mPaint.setMaskFilter(mEmboss);
-            else if (fp.isBlur()) mPaint.setMaskFilter(mBlur);
+            if (fp.isEmboss()) mPaint.setMaskFilter( mEmboss );
+            else if (fp.isBlur()) mPaint.setMaskFilter( mBlur );
 
-            mCanvas.drawPath(fp.getPath(), mPaint);
+            mCanvas.drawPath( fp.getPath(), mPaint );
         }
-        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+        canvas.drawBitmap( mBitmap, 0, 0, mBitmapPaint );
         canvas.restore();
     }
 
     private void touchStart(float x, float y) {
         mPath = new Path();
-        FingerPath fp = new FingerPath(currentColor, emboss, blur, strokeWidth, mPath);
-        paths.add(fp);
+        FingerPath fp = new FingerPath( currentColor, emboss, blur, strokeWidth, mPath );
+        paths.add( fp );
 
         mPath.reset();
-        mPath.moveTo(x, y);
+        mPath.moveTo( x, y );
         mX = x;
         mY = y;
     }
 
     private void touchMove(float x, float y) {
-        float dx = Math.abs(x - mX);
-        float dy = Math.abs(y - mY);
+        float dx = Math.abs( x - mX );
+        float dy = Math.abs( y - mY );
 
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+            mPath.quadTo( mX, mY, (x + mX) / 2, (y + mY) / 2 );
             mX = x;
             mY = y;
         }
     }
 
     private void touchUp() {
-        mPath.lineTo(mX, mY);
+        mPath.lineTo( mX, mY );
     }
 
     @Override
@@ -158,11 +158,11 @@ public class PaintView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                touchStart(x, y);
+                touchStart( x, y );
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                touchMove(x, y);
+                touchMove( x, y );
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:

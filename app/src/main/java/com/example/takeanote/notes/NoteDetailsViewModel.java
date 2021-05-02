@@ -1,7 +1,6 @@
 package com.example.takeanote.notes;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -11,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,35 +55,35 @@ public class NoteDetailsViewModel extends AndroidViewModel {
         nContent = content.getText().toString();
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
-            Toast.makeText(getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT).show();
+            Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
             return info;
         }
 
-        progressBarSave.setVisibility(View.VISIBLE);
+        progressBarSave.setVisibility( View.VISIBLE );
         //save note
-        DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myNotes").document(intent.getStringExtra("noteId"));
+        DocumentReference docref = db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" ).document( intent.getStringExtra( "noteId" ) );
 
         Map<String, Object> note = new HashMap<>();
-        note.put("title", nTitle);
-        note.put("content", nContent);
+        note.put( "title", nTitle );
+        note.put( "content", nContent );
 
-        docref.update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+        docref.update( note ).addOnSuccessListener( new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplication().getApplicationContext(), "Note SAVED", Toast.LENGTH_SHORT).show();
+                Toast.makeText( getApplication().getApplicationContext(), "Note SAVED", Toast.LENGTH_SHORT ).show();
                 List<String> list = new ArrayList<>();
-                list.add(nTitle);
-                list.add(nContent);
-                info.setValue(list);
+                list.add( nTitle );
+                list.add( nContent );
+                info.setValue( list );
                 //progressBarSave.setVisibility(View.INVISIBLE);
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        } ).addOnFailureListener( new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), "FAILED to save", Toast.LENGTH_SHORT).show();
-                progressBarSave.setVisibility(View.VISIBLE);
+                Toast.makeText( getApplication().getApplicationContext(), "FAILED to save", Toast.LENGTH_SHORT ).show();
+                progressBarSave.setVisibility( View.VISIBLE );
             }
-        });
+        } );
         return info;
 
     }
@@ -94,19 +92,19 @@ public class NoteDetailsViewModel extends AndroidViewModel {
 
         List<String> listEmpty = new ArrayList<>();
         this.docId = docID;
-        DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(this.docId);
-        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        DocumentReference docRef = db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" ).document( this.docId );
+        docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplication().getApplicationContext(), "NoteUI deleted.", Toast.LENGTH_SHORT).show();
-                info.setValue(listEmpty);
+                Toast.makeText( getApplication().getApplicationContext(), "NoteUI deleted.", Toast.LENGTH_SHORT ).show();
+                info.setValue( listEmpty );
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        } ).addOnFailureListener( new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
+                Toast.makeText( getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT ).show();
             }
-        });
+        } );
         return info;
     }
 
