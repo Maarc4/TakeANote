@@ -173,14 +173,6 @@ public class PaintView extends View {
         }
         return true;
     }
-/*
-    public Bitmap getBitmap() {
-        //this.measure(100, 100);
-        //this.layout(0, 0, 100, 100);
-        this.setDrawingCacheEnabled(true);
-        this.buildDrawingCache();
-        Bitmap bmp = Bitmap.createBitmap(this.getDrawingCache());
-        this.setDrawingCacheEnabled(false);
 
         return bmp;
     }*/

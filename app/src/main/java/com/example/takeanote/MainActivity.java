@@ -130,19 +130,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onNoteClick(NoteListItem noteItem) {
                 int viewType = noteItem.getViewType();
+
                 switch (viewType) {
                     case (Constant.ITEM_TEXT_NOTE_VIEWTYPE):
                         NoteUI textNote = noteItem.getTextNoteItem();
-                        Intent intent = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
-                        intent.putExtra("title", textNote.getTitle());
-                        intent.putExtra("content", textNote.getContent());
-                        intent.putExtra("noteId", textNote.getId());
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        MainActivity.this.getApplicationContext().startActivity(intent);
+                        Intent textIntent = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
+                        textIntent.putExtra("title", textNote.getTitle());
+                        textIntent.putExtra("content", textNote.getContent());
+                        textIntent.putExtra("noteId", textNote.getId());
+                        textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(textIntent);
                         break;
-                    /*case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
+                    case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
+                        /*PaintInfo paintInfo = noteItem.getPaintInfo();
+                        Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
+                        paintIntent.putExtra("title",paintInfo.getTitle());
+                        Log.d("MAact",paintInfo.getBmp().toString());
+                        paintIntent.putExtra("bitmap",paintInfo.getBmp());
+                        startActivity(paintIntent);*/
+                        Toast.makeText(MainActivity.this, "Edit PAINT note -> Coming in the next update.", Toast.LENGTH_SHORT).show();
                         break;
-                    case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
+                    /*case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
                         break;
                     case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
                        break;*/
@@ -165,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         listOfNotes.setAdapter(adapter);
     }
-
 
 
     @Override

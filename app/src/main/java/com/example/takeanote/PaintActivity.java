@@ -42,7 +42,6 @@ public class PaintActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Guillem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
         paintView = findViewById(R.id.paintView);

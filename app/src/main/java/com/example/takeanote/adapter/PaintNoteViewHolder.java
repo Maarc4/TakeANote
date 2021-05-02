@@ -40,14 +40,12 @@ public class PaintNoteViewHolder extends BaseViewHolder{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Coming soon PaintNote", Toast.LENGTH_SHORT).show();
                 listener.onNoteClick(item);
             }
         });
         paintMenuItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Coming soon PaintNote MenuOptions", Toast.LENGTH_SHORT).show();
                 listener.onNoteMenuClick(item, v);
             }
         });
