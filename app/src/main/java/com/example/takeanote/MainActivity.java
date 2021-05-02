@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         Handler handler = new Handler( Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
+
             @Override
             public void run() {
                 listOfNotes.setAdapter(adapter);
