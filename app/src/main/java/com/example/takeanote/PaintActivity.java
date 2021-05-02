@@ -133,9 +133,7 @@ public class PaintActivity extends AppCompatActivity {
                        // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
                         paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
-                        //TODO potser no va quan fem lo de recuperar del firebase
                         //onBackPressed();
-
                     }
                 } );
                 break;

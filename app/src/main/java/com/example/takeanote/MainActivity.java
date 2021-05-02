@@ -45,16 +45,13 @@ import java.util.List;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-//TODO: canviar SAMPLE DESCRIPTION: treure o posar algo (a concertar)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    DrawerLayout drawerLayout;
-    ActionBarDrawerToggle toggle;
-    NavigationView nav_view;
-    RecyclerView listOfNotes;
-
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView nav_view;
+    private RecyclerView listOfNotes;
     private MainActivityViewModel viewModel;
     private NotesAdapter adapter;
-    //private List<NoteListItem> mData;
 
     @Override
     protected void onPostResume() {
