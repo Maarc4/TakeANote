@@ -56,62 +56,56 @@ public class AddAudio extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate( savedInstanceState );
+        super.onCreate(savedInstanceState);
 
         fileName = getExternalCacheDir().getAbsolutePath();
         fileName += ("/audiorecordtest.3gp");
-        setContentView( R.layout.activity_add_audio );
-        recorder = findViewById( R.id.record_btn );
-        text = findViewById( R.id.record_filename );
-        recorder2 = findViewById( R.id.record2_btn );
-        View b = findViewById( R.id.record2_btn );
-        b.setVisibility( View.GONE );
+        setContentView(R.layout.activity_add_audio);
+        recorder = findViewById(R.id.record_btn);
+        text = findViewById(R.id.record_filename);
+        recorder2 = findViewById(R.id.record2_btn);
+        View b = findViewById(R.id.record2_btn);
+        b.setVisibility(View.GONE);
 
         this.storage = FirebaseStorage.getInstance();
         this.userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         storageReference = storage.getReference();
 
-        toolbar = findViewById( R.id.audioToolbar );
-        setSupportActionBar( toolbar );
-        mProgress = new ProgressDialog( this );
+        toolbar = findViewById(R.id.audioToolbar);
+        setSupportActionBar(toolbar);
+        mProgress = new ProgressDialog(this);
 
-        time = findViewById( R.id.record_timer );
-        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
+        time = findViewById(R.id.record_timer);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (ActivityCompat.checkSelfPermission(AddAudio.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(AddAudio.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
 
-        recorder.setOnClickListener( new View.OnClickListener() {
+        recorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (!isrecording) {
-                    if (ActivityCompat.checkSelfPermission( AddAudio.this, Manifest.permission.RECORD_AUDIO ) != PackageManager.PERMISSION_GRANTED) {
+                    startRecording();
 
-                        ActivityCompat.requestPermissions( AddAudio.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1 );
-
-                    } else {
-
-                        startRecording();
-
-                    }
-
-                    b.setVisibility( View.VISIBLE );
-                    text.setText( R.string.recording_started );
+                    b.setVisibility(View.VISIBLE);
+                    text.setText(R.string.recording_started);
                     isrecording = true;
 
                 }
             }
-        } );
-        recorder2.setOnClickListener( new View.OnClickListener() {
+        });
+        recorder2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isrecording) {
                     stopRecording();
-                    b.setVisibility( View.INVISIBLE );
-                    text.setText( "Recording Finshed" );
+                    b.setVisibility(View.INVISIBLE);
+                    text.setText("Recording Finshed");
                     isrecording = false;
 
                 }
             }
-        } );
+        });
     }
 
     @Override
@@ -126,28 +120,28 @@ public class AddAudio extends AppCompatActivity {
                 break;
 
             default:
-                Toast.makeText( this, "Coming soon.", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(this, "Coming soon.", Toast.LENGTH_SHORT).show();
 
         }
-        return super.onOptionsItemSelected( item );
+        return super.onOptionsItemSelected(item);
     }
 
     private void startRecording() {
-        time.setBase( SystemClock.elapsedRealtime() );
-        Log.d( "startRecording", "startRecording" );
+        time.setBase(SystemClock.elapsedRealtime());
+        Log.d("startRecording", "startRecording");
         time.start();
         mrecorder = new MediaRecorder();
         mrecorder.reset();
-        mrecorder.setAudioSource( MediaRecorder.AudioSource.MIC );
-        mrecorder.setOutputFormat( MediaRecorder.OutputFormat.THREE_GPP );
-        mrecorder.setOutputFile( fileName );
-        mrecorder.setAudioEncoder( MediaRecorder.AudioEncoder.AMR_NB );
+        mrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mrecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mrecorder.setOutputFile(fileName);
+        mrecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
             mrecorder.prepare();
             mrecorder.start();
         } catch (IOException e) {
-            Log.d( "startRecording", "prepare() failed" );
+            Log.d("startRecording", "prepare() failed");
         }
     }
 
@@ -162,21 +156,21 @@ public class AddAudio extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate( R.menu.add_note_top_bar, menu );
+        inflater.inflate(R.menu.add_note_top_bar, menu);
         return true;
     }
 
     public void uploadAudio() {
 
-        StorageReference filepath = storageReference.child( "audio/" + userid + "/" + UUID.randomUUID().toString() + ".3gp" );
-        Uri uri = Uri.fromFile( new File( fileName ) );
-        Log.d( "STATE", "FILEPATHHHHHHHHHHHH: " + filepath );
-        filepath.putFile( uri ).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        StorageReference filepath = storageReference.child("audio/" + userid + "/" + UUID.randomUUID().toString() + ".3gp");
+        Uri uri = Uri.fromFile(new File(fileName));
+        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                Toast.makeText(AddAudio.this, "Audio UPLOADED", Toast.LENGTH_SHORT).show();
+                text.setText("Audio UPLOADED");
             }
-        } );
+        });
 
     }
 
