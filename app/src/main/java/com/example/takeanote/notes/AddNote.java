@@ -62,7 +62,6 @@ public class AddNote extends AppCompatActivity {
 
             default:
                 Toast.makeText( this, "Coming soon.", Toast.LENGTH_SHORT ).show();
-
         }
         return super.onOptionsItemSelected( item );
     }
