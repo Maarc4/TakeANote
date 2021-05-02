@@ -174,8 +174,6 @@ public class PaintView extends View {
         return true;
     }
 
-        return bmp;
-    }*/
 
     public String getTitle() {
         return title;
