@@ -16,6 +16,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.example.takeanote.model.FingerPath;
+
 import java.util.ArrayList;
 
 public class PaintView extends View {
@@ -33,6 +35,7 @@ public class PaintView extends View {
     private int strokeWidth;
     private boolean emboss;
     private boolean blur;
+    private String title;
     private MaskFilter mEmboss;
     private MaskFilter mBlur;
     private Bitmap mBitmap;
@@ -170,7 +173,7 @@ public class PaintView extends View {
         }
         return true;
     }
-
+/*
     public Bitmap getBitmap() {
         //this.measure(100, 100);
         //this.layout(0, 0, 100, 100);
@@ -179,7 +182,14 @@ public class PaintView extends View {
         Bitmap bmp = Bitmap.createBitmap(this.getDrawingCache());
         this.setDrawingCacheEnabled(false);
 
-
         return bmp;
+    }*/
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

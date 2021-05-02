@@ -1,4 +1,4 @@
-package com.example.takeanote;
+package com.example.takeanote.model;
 
 import android.graphics.Path;
 

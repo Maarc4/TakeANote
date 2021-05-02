@@ -59,6 +59,7 @@ public class AddNoteViewModel extends AndroidViewModel {
         Map<String, Object> newNote = new HashMap<>();
         newNote.put("title", nTitle);
         newNote.put("content", nContent);
+        newNote.put("type","textNote");
 
         docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

@@ -21,12 +21,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.takeanote.adapter.NotesAdapter;
 import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
-import com.example.takeanote.model.NoteUIAdapter;
 import com.example.takeanote.notes.AddNote;
 import com.example.takeanote.notes.NoteDetails;
+import com.example.takeanote.utils.Constant;
+import com.example.takeanote.utils.OnNoteTypeClickListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -46,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RecyclerView listOfNotes;
 
     private MainActivityViewModel viewModel;
-    private NoteUIAdapter adapter;
+    private NotesAdapter adapter;
+    //private List<NoteListItem> mData;
 
     @Override
     protected void onPostResume() {
@@ -56,12 +60,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpViewModel() {
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        viewModel.init().observe(this, noteUIS -> {
-            setUpAdapter(noteUIS);
+        viewModel.init().observe(this, allTypeNotes -> {
+            setUpAdapter(allTypeNotes);
             adapter.notifyDataSetChanged();
         });
+
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer);
         nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
-        viewModel.checkUserNav( nav_view );
+        viewModel.checkUserNav(nav_view);
 
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
@@ -88,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = nav_view.getHeaderView(0);
         TextView username = headerView.findViewById(R.id.userDisplayName);
         TextView email = headerView.findViewById(R.id.userDisplayEmail);
-
         viewModel.menuConf(email, username);
 
         //Escollir si nota dibuix o nota text
@@ -118,28 +122,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void setUpAdapter(List<NoteUI> noteUIS) {
-        if (noteUIS == null) {
-            noteUIS = new ArrayList<>();
+    private void setUpAdapter(List<NoteListItem> allTypeNotes) {
+        if (allTypeNotes == null) {
+            allTypeNotes = new ArrayList<>();
         }
-        adapter = new NoteUIAdapter(noteUIS, new NoteUIAdapter.OnNoteClickListener() {
+        adapter = new NotesAdapter(allTypeNotes, new OnNoteTypeClickListener() {
             @Override
-            public void onNoteClick(NoteUI noteUI) {
-                Intent intent = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
-                intent.putExtra("title", noteUI.getTitle());
-                intent.putExtra("content", noteUI.getContent());
-                //intent.putExtra("code",code);
-                String docId = noteUI.getId();
-                intent.putExtra("noteId", docId);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                MainActivity.this.getApplicationContext().startActivity(intent);
+            public void onNoteClick(NoteListItem noteItem) {
+                int viewType = noteItem.getViewType();
+                switch (viewType) {
+                    case (Constant.ITEM_TEXT_NOTE_VIEWTYPE):
+                        NoteUI textNote = noteItem.getTextNoteItem();
+                        Intent intent = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
+                        intent.putExtra("title", textNote.getTitle());
+                        intent.putExtra("content", textNote.getContent());
+                        intent.putExtra("noteId", textNote.getId());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        MainActivity.this.getApplicationContext().startActivity(intent);
+                        break;
+                    /*case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
+                        break;
+                    case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
+                        break;
+                    case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
+                       break;*/
+                    default:
+                        Toast.makeText(MainActivity.this, "Coming Soon. OnNoteClick", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void onNoteMenuClick(NoteUI noteUI, View view) {
+            public void onNoteMenuClick(NoteListItem noteItem, View view) {
                 PopupMenu menu = new PopupMenu(MainActivity.this.getApplicationContext(), view);
                 menu.getMenu().add("Delete").setOnMenuItemClickListener(item -> {
-                    viewModel.deleteNote(noteUI);
+                    Toast.makeText(MainActivity.this, "Delete coming soon.", Toast.LENGTH_SHORT).show();
+                    //viewModel.deleteNote(noteUI);
                     return false;
                 });
                 //TODO: potser afegir share dsp de noteDetails i cambiar a material
@@ -149,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         listOfNotes.setAdapter(adapter);
     }
+
 
 
     @Override
@@ -185,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.logout:
                 //Mirem si l'usuari logejat és anonim o no i fem signout
-                if(!viewModel.userAnonymous()) {
+                if (!viewModel.userAnonymous()) {
                     startActivity(new Intent(getApplicationContext(), LoadScreen.class));
                     finish();
                 } else {
@@ -208,14 +226,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //TODO: fer per poder canviar idioma espanyol/català/àngles (MARC) i altres ajuestes a concertar
+        //TODO: fer per poder canviar idioma manualment i altres ajuestes a concertar
         if (item.getItemId() == R.id.action_settings) {
             Toast.makeText(this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO possible traspas a viewmodel
+    //TODO possible traspas a viewmodel?
     public void displayAlert() {
         AlertDialog.Builder warning = new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")

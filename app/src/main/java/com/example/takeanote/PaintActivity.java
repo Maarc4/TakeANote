@@ -38,8 +38,6 @@ public class PaintActivity extends AppCompatActivity {
     MaterialToolbar toolbar;
     private PaintActivityViewModel paintActivityViewModel;
 
-    //Guillem
-
     //TODO moure permisos a main
 
     @Override
@@ -125,11 +123,13 @@ public class PaintActivity extends AppCompatActivity {
                 paintView.setBrushColor(color);
                 break;
             case R.id.save:
+
                 paintActivityViewModel.saveView(paintView).observe( this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
+                       // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                        paintActivityViewModel.uploadImage(progressDialog);
+                        paintActivityViewModel.uploadImage(progressDialog, paintView.getTitle());
                         //TODO potser no va quan fem lo de recuperar del firebase
                         //onBackPressed();
 

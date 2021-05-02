@@ -1,6 +1,5 @@
 package com.example.takeanote;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.net.Uri;
@@ -12,48 +11,75 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.nio.charset.MalformedInputException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PaintActivityViewModel extends AndroidViewModel {
 
-    FirebaseStorage storage;
-    StorageReference storageReference;
-    String user;
-    String filePath;
+    private FirebaseStorage storage;
+    private FirebaseFirestore db;
+    private StorageReference storageReference;
+    private String userUID;
+    private String filePath;
+    private final String STORAGE_URL = "gs://takeanote-a0e9a.appspot.com/";
+
 
     private MutableLiveData<String> observableFilePath;
 
     public PaintActivityViewModel(@NonNull Application application) {
-        super( application );
+        super(application);
         observableFilePath = new MutableLiveData<>();
+        db = FirebaseFirestore.getInstance();
+        userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
     }
 
-    // TODO Treure comentaris loco
-    public void uploadImage(ProgressDialog progressDialog) {
+    public void uploadImage(ProgressDialog progressDialog, String paintTitle) {
 
         if (filePath != null) {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
+            String saveUrl = "images/" + userUID + "/" + UUID.randomUUID().toString() + ".jpg";
+            Log.d("PAVM","1");
 
-            StorageReference ref = storageReference.child("images/" + user + "/" + UUID.randomUUID().toString() + ".jpg");
-            Log.d("STATE","FILEPATHHHHHHHHHHHH: " + filePath);
-            Log.d("STATE","REFFFFFFFFFFFFFFFFFFFFF: " + ref);
+            // Guardem la nota a firebase per
+            DocumentReference docref = db.collection("notes").document(userUID).collection("paintNotes").document();
+            Map<String, Object> newNote = new HashMap<>();
+            newNote.put("title", paintTitle);
+            newNote.put("url", saveUrl);
+            Log.d("PAVM","2");
 
-            ref.putFile( Uri.parse(filePath))
+            docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("PAVM","ONSUCCESS docref.setNote");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("PAVM","FAILURE docref.setNote");
+                }
+            });
+            Log.d("PAVM","3");
+
+            StorageReference ref = storageReference.child(saveUrl);
+            ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d("PAVM","11");
                             progressDialog.dismiss();
                             Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                         }
@@ -61,6 +87,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            Log.d("PAVM","12");
                             progressDialog.dismiss();
                             Toast.makeText(getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -68,6 +95,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d("PAVM","13");
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
                             progressDialog.setMessage("Uploaded " + (int) progress + "%");
@@ -80,8 +108,9 @@ public class PaintActivityViewModel extends AndroidViewModel {
     public LiveData<String> saveView(PaintView paintView) {
 
         storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        storageReference = storage.getReferenceFromUrl(STORAGE_URL);
+
+
 
         //AIXI VA PERO DEPRACATED
         paintView.setDrawingCacheEnabled(true);
@@ -89,11 +118,10 @@ public class PaintActivityViewModel extends AndroidViewModel {
                 getApplication().getContentResolver(), paintView.getDrawingCache(),
                 UUID.randomUUID().toString() + ".jpg", "drawing");
 
-        //Guillem
         filePath = imgSaved;
 
         if (imgSaved != null) {
-            observableFilePath.setValue( imgSaved );
+            observableFilePath.setValue(imgSaved);
             Toast.makeText(getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getApplication().getApplicationContext(), "ERROR NOT SAVED", Toast.LENGTH_SHORT).show();

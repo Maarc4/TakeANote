@@ -1,35 +1,30 @@
 package com.example.takeanote;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.takeanote.auth.Login;
-import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
+import com.example.takeanote.model.PaintInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,66 +33,159 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     FirebaseFirestore db;
     FirebaseUser user;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private MutableLiveData<List<NoteListItem>> notesData;
+    final long ONE_MEGABYTE = 1024 * 1024;
+    private final String STORAGE_URL = "gs://takeanote-a0e9a.appspot.com/";
 
-    private MutableLiveData<List<NoteUI>> notesData;
 
     public MainActivityViewModel(@NonNull Application application) {
-        super( application );
+        super(application);
         notesData = new MutableLiveData<>();
         this.db = FirebaseFirestore.getInstance();
     }
 
-    public LiveData<List<NoteUI>> init() {
+    /*case "paintNote":
+        Log.d("MAVM", q.getString("url"));
 
-        //user = auth.getCurrentUser();
-        NoteUI note = new NoteUI();
+        storageReference.child(q.getString("url"))
+                .getBytes(ONE_MEGABYTE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Toast.makeText(getApplication().getApplicationContext(), "ONSUCCESS", Toast.LENGTH_SHORT).show();
+                        PaintInfo pi = q.toObject(PaintInfo.class);
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        pi.setBmp(bmp);
+                        pi.setTitle(q.getString("title"));
+                        NoteListItem noteListItem = new NoteListItem(pi);
+                        notes.add(noteListItem);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("MAVM ->ERROR", "PRINGAT " + e.getMessage());
+
+            }
+        });*/
+                                        /*storageReference.child(q.getString("url")).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                Toast.makeText(getApplication().getApplicationContext(), "ONSUCCESS", Toast.LENGTH_SHORT).show();
+
+                                                PaintInfo pi = q.toObject(PaintInfo.class);
+                                                pi.setUri(uri);
+                                                pi.setTitle(q.getString("title"));
+
+                                               // PaintView pv = q.toObject(PaintView.class);
+                                                NoteListItem noteListItem = new NoteListItem(pi);
+                                                notes.add(noteListItem);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d("MAVM ->ERROR","PRINGAT"+e.getMessage());
+                                            }
+                                        });*/
+    public LiveData<List<NoteListItem>> init() {
+
         this.user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseUser finalUser = user;
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReferenceFromUrl(STORAGE_URL);
+        List<NoteListItem> notes = new ArrayList<>();
+
+
+
+        //PAINT NOTES
+        db.collection("notes").document(user.getUid()).collection("paintNotes")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d("MAVM", "List Empty");
+                            return;
+                        } else {
+                            for (DocumentSnapshot q : queryDocumentSnapshots) {
+                                storageReference.child(q.getString("url"))
+                                        .getDownloadUrl().
+                                        addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+
+                                                PaintInfo pi = q.toObject(PaintInfo.class);
+                                                pi.setUri(uri);
+                                                //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
+
+                                                // PaintView pv = q.toObject(PaintView.class);
+                                                NoteListItem noteListItem = new NoteListItem(pi);
+                                                notes.add(noteListItem);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("MAVM ->ERROR", "PRINGAT" + e.getMessage());
+                                    }
+                                });
+                            }
+                        }
+                        notesData.setValue(notes);
+                        Log.d("MAVM", "notes sol paint "+notes.size());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //TEXT NOTES
         db.collection("notes").document(user.getUid()).collection("myNotes")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (queryDocumentSnapshots.isEmpty()) {
-                            Log.d("TAG", "List Empty");
+                            Log.d("MAVM", "List Empty");
                             return;
                         } else {
-                            List<NoteUI> notes = new ArrayList<>();
                             for (DocumentSnapshot q : queryDocumentSnapshots) {
-                                String id = q.getId();
                                 NoteUI note = q.toObject(NoteUI.class);
+                                String id = q.getId();
                                 note.setId(id);
                                 note.setUser(finalUser.getUid());
-                                notes.add(note);
+                                NoteListItem noteListItem = new NoteListItem(note);
+                                notes.add(noteListItem);
                             }
-                            notesData.setValue(notes);
-                            Log.d("TAG", "List Loaded");
                         }
+                        notesData.postValue(notes);
+                        Log.d("MAVM", "notes amb text? "+notes.size());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), "Error loading notes!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication().getApplicationContext(), "Error loading TEXT notes!", Toast.LENGTH_SHORT).show();
             }
         });
         return notesData;
     }
 
     public void checkUserNav(NavigationView nav) {
-        if (!user.isAnonymous()){
+        if (!user.isAnonymous()) {
             nav.getMenu().clear();
-            nav.inflateMenu( R.menu.nav_menu_loged_user );
+            nav.inflateMenu(R.menu.nav_menu_loged_user);
         } else {
             nav.getMenu().clear();
-            nav.inflateMenu( R.menu.nav_menu );
+            nav.inflateMenu(R.menu.nav_menu);
         }
     }
 
-    public List<NoteUI> getData() {
+    /*public List<NoteUI> getData() {
         return notesData.getValue();
-    }
+    }*/
 
-    public void deleteNote(NoteUI deleteNoteUI) {
+   /* public void deleteNote(NoteUI deleteNoteUI) {
         //Log.d("docId ->", docId);
         List<NoteUI> oldData = notesData.getValue();
         List<NoteUI> newData = new ArrayList<NoteUI>();
@@ -120,7 +208,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     public boolean sync() {
         if (user.isAnonymous()) {

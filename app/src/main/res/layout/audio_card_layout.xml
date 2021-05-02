@@ -33,7 +33,7 @@
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:id="@+id/imageView2"
+                android:id="@+id/audioPlayButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_play_24dp"
@@ -52,7 +52,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/cardViewTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.171"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/audioPlayButton"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/menuIcon"
+                        android:id="@+id/audioMenuIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +85,7 @@
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView
-                        android:id="@+id/noteTitle"
+                        android:id="@+id/audioNoteTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"

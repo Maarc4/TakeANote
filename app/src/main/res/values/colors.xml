@@ -8,7 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Colors per cards -->
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
@@ -22,4 +21,6 @@
     <color name="blue">#8C9EFF</color>
     <color name="greenlight">#96D162</color>
     <color name="notgreen">#EA80FC</color>
+
+    <color name="loadScreen">#383D45</color>
 </resources>
