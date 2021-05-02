@@ -112,6 +112,7 @@ public class AddAudio extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
+                stopRecording();
                 uploadAudio();
                 break;
 
