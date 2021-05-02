@@ -97,7 +97,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReferenceFromUrl(STORAGE_URL);
         List<NoteListItem> notes = new ArrayList<>();
-
+        boolean succes = false;
 
         //PAINT NOTES
         db.collection("notes").document(user.getUid()).collection("paintNotes")
@@ -109,6 +109,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             Log.d("MAVM", "List Empty");
                             return;
                         } else {
+                            Log.d("Entra", "Entra");
                             for (DocumentSnapshot q : queryDocumentSnapshots) {
                                 storageReference.child(q.getString("url"))
                                         .getDownloadUrl().
@@ -132,8 +133,9 @@ public class MainActivityViewModel extends AndroidViewModel {
                                     }
                                 });
                             }
+
                         }
-                        notesData.setValue(notes);
+
                         Log.d("MAVM", "notes sol paint " + notes.size());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -160,6 +162,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                                 NoteListItem noteListItem = new NoteListItem(note);
                                 notes.add(noteListItem);
                             }
+                            //notesData.postValue(notes);
                         }
                         notesData.postValue(notes);
                         Log.d("MAVM", "notes amb text? " + notes.size());
@@ -170,6 +173,8 @@ public class MainActivityViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication().getApplicationContext(), "Error loading TEXT notes!", Toast.LENGTH_SHORT).show();
             }
         });
+
+
         return notesData;
     }
 
@@ -221,7 +226,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                 newData.add(note);
             }
         }
-        notesData.setValue(newData);
+
         switch (viewType) {
             case Constant.ITEM_TEXT_NOTE_VIEWTYPE:
                 NoteUI textNote = noteListItem.getTextNoteItem();
@@ -230,6 +235,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(getApplication().getApplicationContext(), "NoteUI deleted.", Toast.LENGTH_SHORT).show();
+                        notesData.setValue(newData);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -247,7 +253,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 storageReference.child(documentSnapshot.getString("url")).delete();
-
+                                notesData.setValue(newData);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -265,6 +271,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
                         IllegalArgumentException();
         }
+
     }
 
     public boolean sync() {

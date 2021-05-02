@@ -3,6 +3,8 @@ package com.example.takeanote;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +36,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         viewModel.init().observe(this, allTypeNotes -> {
             setUpAdapter(allTypeNotes);
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
         });
 
     }
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setUpAdapter(List<NoteListItem> allTypeNotes) {
+
         if (allTypeNotes == null) {
             allTypeNotes = new ArrayList<>();
         }
@@ -164,6 +169,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 PopupMenu menu = new PopupMenu(MainActivity.this.getApplicationContext(), view);
                 menu.getMenu().add("Delete").setOnMenuItemClickListener(item -> {
                     viewModel.deleteNote(noteItem, noteItem.getViewType());
+                    viewModel.init().observe(MainActivity.this, allTypeNotes -> {
+                        setUpAdapter(allTypeNotes);
+                        //adapter.notifyDataSetChanged();
+                    });
                     return false;
                 });
                 //TODO: potser afegir share dsp de noteDetails i cambiar a material
@@ -171,7 +180,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 menu.show();
             }
         });
-        listOfNotes.setAdapter(adapter);
+        Handler handler = new Handler( Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                listOfNotes.setAdapter(adapter);
+            }
+        }, 1500);
+
     }
 
 

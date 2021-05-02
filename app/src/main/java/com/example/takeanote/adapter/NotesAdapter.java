@@ -67,6 +67,7 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         if (mdata != null) {
             return mdata.size();
         } else {
+            Log.d("SIZE", "List Empty");
             return 0;
         }
     }
