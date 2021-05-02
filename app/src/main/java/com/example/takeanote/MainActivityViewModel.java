@@ -119,6 +119,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
                                                 PaintInfo pi = q.toObject(PaintInfo.class);
                                                 pi.setUri(uri);
+                                                pi.setTitle(q.getString("title"));
                                                 pi.setId(q.getId());
                                                 //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
 

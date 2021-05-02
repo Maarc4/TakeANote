@@ -29,14 +29,14 @@ import java.util.UUID;
 public class PaintActivityViewModel extends AndroidViewModel {
 
     private FirebaseStorage storage;
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
     private StorageReference storageReference;
-    private String userUID;
+    private final String userUID;
     private String filePath;
     private final String STORAGE_URL = "gs://takeanote-a0e9a.appspot.com/";
 
 
-    private MutableLiveData<String> observableFilePath;
+    private final MutableLiveData<String> observableFilePath;
 
     public PaintActivityViewModel(@NonNull Application application) {
         super(application);
@@ -52,34 +52,34 @@ public class PaintActivityViewModel extends AndroidViewModel {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
             String saveUrl = "images/" + userUID + "/" + UUID.randomUUID().toString() + ".jpg";
-            Log.d("PAVM","1");
+            Log.d("PAVM", "1");
 
             // Guardem la nota a firebase per
             DocumentReference docref = db.collection("notes").document(userUID).collection("paintNotes").document();
             Map<String, Object> newNote = new HashMap<>();
             newNote.put("title", paintTitle);
             newNote.put("url", saveUrl);
-            Log.d("PAVM","2");
+            Log.d("PAVM", "2");
 
             docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d("PAVM","ONSUCCESS docref.setNote");
+                    Log.d("PAVM", "ONSUCCESS docref.setNote");
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("PAVM","FAILURE docref.setNote");
+                    Log.d("PAVM", "FAILURE docref.setNote");
                 }
             });
-            Log.d("PAVM","3");
+            Log.d("PAVM", "3");
 
             StorageReference ref = storageReference.child(saveUrl);
             ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Log.d("PAVM","11");
+                            Log.d("PAVM", "11");
                             progressDialog.dismiss();
                             Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                         }
@@ -87,7 +87,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d("PAVM","12");
+                            Log.d("PAVM", "12");
                             progressDialog.dismiss();
                             Toast.makeText(getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -95,7 +95,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            Log.d("PAVM","13");
+                            Log.d("PAVM", "13");
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
                             progressDialog.setMessage("Uploaded " + (int) progress + "%");
@@ -109,7 +109,6 @@ public class PaintActivityViewModel extends AndroidViewModel {
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReferenceFromUrl(STORAGE_URL);
-
 
 
         //AIXI VA PERO DEPRACATED

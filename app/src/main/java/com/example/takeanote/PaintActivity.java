@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,7 +36,8 @@ public class PaintActivity extends AppCompatActivity {
     private PaintView paintView;
     private int width;
     private int color;
-    MaterialToolbar toolbar;
+    private MaterialToolbar toolbar;
+    private EditText title;
     private PaintActivityViewModel paintActivityViewModel;
 
     //TODO moure permisos a main
@@ -45,7 +47,9 @@ public class PaintActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
         paintView = findViewById(R.id.paintView);
+        title = findViewById(R.id.PaintTitle);
         toolbar = findViewById(R.id.paintToolbar);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -128,7 +132,7 @@ public class PaintActivity extends AppCompatActivity {
                     public void onChanged(String s) {
                        // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                        paintActivityViewModel.uploadImage(progressDialog, paintView.getTitle());
+                        paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
                         //TODO potser no va quan fem lo de recuperar del firebase
                         //onBackPressed();
 

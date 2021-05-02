@@ -35,7 +35,6 @@ public class PaintView extends View {
     private int strokeWidth;
     private boolean emboss;
     private boolean blur;
-    private String title;
     private MaskFilter mEmboss;
     private MaskFilter mBlur;
     private Bitmap mBitmap;
@@ -172,14 +171,5 @@ public class PaintView extends View {
                 break;
         }
         return true;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }
