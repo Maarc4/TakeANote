@@ -48,48 +48,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         this.db = FirebaseFirestore.getInstance();
     }
 
-    /*case "paintNote":
-        Log.d("MAVM", q.getString("url"));
 
-        storageReference.child(q.getString("url"))
-                .getBytes(ONE_MEGABYTE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Toast.makeText(getApplication().getApplicationContext(), "ONSUCCESS", Toast.LENGTH_SHORT).show();
-                        PaintInfo pi = q.toObject(PaintInfo.class);
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        pi.setBmp(bmp);
-                        pi.setTitle(q.getString("title"));
-                        NoteListItem noteListItem = new NoteListItem(pi);
-                        notes.add(noteListItem);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("MAVM ->ERROR", "PRINGAT " + e.getMessage());
-
-            }
-        });*/
-                                        /*storageReference.child(q.getString("url")).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                Toast.makeText(getApplication().getApplicationContext(), "ONSUCCESS", Toast.LENGTH_SHORT).show();
-
-                                                PaintInfo pi = q.toObject(PaintInfo.class);
-                                                pi.setUri(uri);
-                                                pi.setTitle(q.getString("title"));
-
-                                               // PaintView pv = q.toObject(PaintView.class);
-                                                NoteListItem noteListItem = new NoteListItem(pi);
-                                                notes.add(noteListItem);
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.d("MAVM ->ERROR","PRINGAT"+e.getMessage());
-                                            }
-                                        });*/
     public LiveData<List<NoteListItem>> init() {
 
         this.user = FirebaseAuth.getInstance().getCurrentUser();
@@ -136,8 +95,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             }
 
                         }
-
-                        Log.d( "MAVM", "notes sol paint " + notes.size() );
+                        notesData.setValue( notes );
                     }
                 } ).addOnFailureListener( new OnFailureListener() {
             @Override
@@ -165,7 +123,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             }
                             //notesData.postValue(notes);
                         }
-                        notesData.postValue( notes );
+                        notesData.setValue( notes );
                         Log.d( "MAVM", "notes amb text? " + notes.size() );
                     }
                 } ).addOnFailureListener( new OnFailureListener() {
