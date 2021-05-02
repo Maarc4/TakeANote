@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void run() {
                 listOfNotes.setAdapter(adapter);
             }
-        }, 1800);
+        }, 2000);
 
     }
 
