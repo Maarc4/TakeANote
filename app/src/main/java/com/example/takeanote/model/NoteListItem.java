@@ -1,5 +1,6 @@
 package com.example.takeanote.model;
 
+import com.example.takeanote.AddAudio;
 import com.example.takeanote.PaintView;
 import com.example.takeanote.utils.Constant;
 
@@ -7,7 +8,7 @@ public class NoteListItem {
 
     private NoteUI textNoteItem;
     private PaintView paintNoteItem;
-    //private Audio audioNoteItem;
+    private AddAudio audioNoteItem;
     //private Image imageNoteItem;
     private PaintInfo paintInfo;
     private int viewType;
@@ -27,12 +28,12 @@ public class NoteListItem {
         this.viewType = Constant.ITEM_PAINT_NOTE_VIEWTYPE;
     }
 
-    /*public NoteListItem(Audio audioNoteItem) {
+    public NoteListItem(AddAudio audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
         this.viewType = Constant.ITEM_AUDIO_NOTE_VIEWTYPE;
     }
 
-    public NoteListItem(Image imageNoteItem) {
+    /*public NoteListItem(Image imageNoteItem) {
         this.imageNoteItem = imageNoteItem;
         this.viewType = Constant.ITEM_IMAGE_NOTE_VIEWTYPE;
     }*/
@@ -53,15 +54,15 @@ public class NoteListItem {
         this.paintNoteItem = paintNoteItem;
     }
 
-    /*public Audio getAudioNoteItem() {
+    public AddAudio getAudioNoteItem() {
         return audioNoteItem;
     }
 
-    public void setAudioNoteItem(Audio audioNoteItem) {
+    public void setAudioNoteItem(AddAudio audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
     }
 
-    public Image getImageNoteItem() {
+    /*public Image getImageNoteItem() {
         return imageNoteItem;
     }
 

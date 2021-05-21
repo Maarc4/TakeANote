@@ -132,6 +132,35 @@ public class MainActivityViewModel extends AndroidViewModel {
                 Toast.makeText( getApplication().getApplicationContext(), "Error loading TEXT notes!", Toast.LENGTH_SHORT ).show();
             }
         } );
+        //Audio NOTES
+        db.collection( "audios" ).document( user.getUid() ).collection( "AudioNotes" )
+                .get()
+                .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d( "MAVM", "List Empty" );
+                            return;
+                        } else {
+                            for (DocumentSnapshot q : queryDocumentSnapshots) {
+                                NoteUI note = q.toObject( NoteUI.class );
+                                String id = q.getId();
+                                note.setId( id );
+                                note.setUser( finalUser.getUid() );
+                                NoteListItem noteListItem = new NoteListItem( note );
+                                notes.add( noteListItem );
+                            }
+                            //notesData.postValue(notes);
+                        }
+                        notesData.setValue( notes );
+                        Log.d( "MAVM", "notes amb text? " + notes.size() );
+                    }
+                } ).addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText( getApplication().getApplicationContext(), "Error loading TEXT notes!", Toast.LENGTH_SHORT ).show();
+            }
+        } );
 
 
         return notesData;

@@ -4,10 +4,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.takeanote.AddAudio;
 import com.example.takeanote.R;
+import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.utils.OnNoteTypeClickListener;
 
@@ -30,7 +33,7 @@ public class AudioNoteViewHolder extends BaseViewHolder {
 
     @Override
     void setData(NoteListItem item) {
-        /*Audio audioNote = item.getAudioNoteItem();
+        AddAudio audioNote = item.getAudioNoteItem();
         audioTitle.setText(audioNote.getTitle());
 
         audioPlayButton.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +56,6 @@ public class AudioNoteViewHolder extends BaseViewHolder {
                 //listener.onNoteMenuClick(item, v);
             }
         });
-    }*/
     }
-}
+    }
+

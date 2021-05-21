@@ -119,7 +119,7 @@ public class PaintActivity extends AppCompatActivity {
                     public void onChanged(String s) {
                         // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                        paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
+                        paintActivityViewModel.uploadImage( progressDialog, title.getText().toString());
                         //onBackPressed();
                     }
                 } );
