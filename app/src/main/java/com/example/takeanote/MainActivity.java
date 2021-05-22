@@ -2,9 +2,13 @@ package com.example.takeanote;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,8 +30,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.takeanote.adapter.NotesAdapter;
 import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.ImageInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
+import com.example.takeanote.model.PaintInfo;
 import com.example.takeanote.notes.AddNote;
 import com.example.takeanote.notes.NoteDetails;
 import com.example.takeanote.utils.Constant;
@@ -37,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +111,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity( new Intent( getApplicationContext(), AddNote.class ) );
                         break;
                     case R.id.action_paint:
-                        startActivity( new Intent( getApplicationContext(), PaintActivity.class ) );
+                        Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
+                        paintIntent1.putExtra("uriPath"," ");
+                        startActivity( paintIntent1);
                         break;
                     case R.id.action_audio:
                         startActivity( new Intent( getApplicationContext(), AddAudio.class ) );
@@ -141,19 +150,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         textIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
                         startActivity( textIntent );
                         break;
-                    case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
-                        /*PaintInfo paintInfo = noteItem.getPaintInfo();
+                   /* case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
+                        PaintInfo paintInfo = noteItem.getPaintInfo();
                         Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
                         paintIntent.putExtra("title",paintInfo.getTitle());
                         Log.d("MAact",paintInfo.getBmp().toString());
                         paintIntent.putExtra("bitmap",paintInfo.getBmp());
-                        startActivity(paintIntent);*/
-                        Toast.makeText( MainActivity.this, "Edit PAINT note -> Coming in the next update.", Toast.LENGTH_SHORT ).show();
+                        startActivity(paintIntent);
+                        //Toast.makeText( MainActivity.this, "Edit PAINT note -> Coming in the next update.", Toast.LENGTH_SHORT ).show();
                         break;
-                    /*case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
-                        break;
+                   */
+
                     case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
-                       break;*/
+                        ImageInfo imageInfo = noteItem.getImageInfo();
+                        Intent imageIntent = new Intent();
+                        imageIntent.setAction(Intent.ACTION_VIEW);
+                        Log.d("myTag", "This ssage");
+                        imageIntent.setDataAndType(imageInfo.getUri(), "image/*");
+                        startActivity(imageIntent);
+                        break;
+
+
+
+                    case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
+
+                        PaintInfo paintInfo = noteItem.getPaintInfo();
+                        Intent paintIntent = new Intent();
+                        paintIntent.setAction(Intent.ACTION_VIEW);
+                        Log.d("myTag", "This ssage");
+                        paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
+                        startActivity(paintIntent);
+                        /*
+                        //Intent intent = new Intent();
+                        //intent.setAction(Intent.ACTION_VIEW);
+                        //intent.setDataAndType(PaintActivity.imageUri, "image/*");
+                        //startActivity(intent);
+                        PaintInfo paintInfo = noteItem.getPaintInfo();
+                        //Intent paintIntent = new Intent();
+                        //paintIntent.setAction();
+
+                        Log.d("myTag", "This is my message");
+                        //paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
+                        //startActivity(paintIntent);
+
+
+
+                        PaintView paintNote = noteItem.getPaintNoteItem();
+                        Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
+                        paintIntent1.putExtra( "title", paintInfo.getTitle() );
+                        Uri a = paintInfo.getUri();
+                        paintIntent1.putExtra("uriPath",paintInfo.getUri());
+                        Bitmap bmp = paintInfo.getBmp();
+                        paintIntent1.putExtra("bitmap",paintInfo.getBmp());
+
+
+
+                        Log.d( "URISS", "URI FORA: " + a );
+                        paintIntent1.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+                        startActivity( paintIntent1 );
+
+                        */
+                        break;
+
+
+                    /*case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
+                        break;*/
+
                     default:
                         Toast.makeText( MainActivity.this, "Coming Soon. OnNoteClick", Toast.LENGTH_SHORT ).show();
                 }
@@ -198,7 +260,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.add_drawing_note:
-                startActivity( new Intent( this, PaintActivity.class ) );
+                Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
+                paintIntent1.putExtra("uriPath"," ");
+                startActivity( paintIntent1);
+
                 break;
 
             case R.id.add_audio_note:

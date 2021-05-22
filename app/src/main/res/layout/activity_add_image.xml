@@ -39,6 +39,12 @@
             android:text="@string/select_image"
             app:rippleColor="#472F2F" />
 
+        <Button
+            android:id="@+id/take_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/take_photo" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
 

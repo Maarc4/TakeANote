@@ -2,13 +2,29 @@ package com.example.takeanote;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,24 +34,87 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
-public class PaintActivity extends AppCompatActivity {
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.UUID;
 
+public class PaintActivity extends AppCompatActivity {
+    Intent data;
     private PaintView paintView;
     private int width;
     private int color;
     private MaterialToolbar toolbar;
     private EditText title;
     private PaintActivityViewModel paintActivityViewModel;
-
+    private ImageView imageView;
+    private Bitmap bitmap;
+    public static Uri imageUri;
+    private Uri mImageUri;
+    private String uriPath;
     //TODO moure permisos a main
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_paint );
+        data = getIntent();
+
         paintView = findViewById( R.id.paintView );
         title = findViewById( R.id.PaintTitle );
         toolbar = findViewById( R.id.paintToolbar );
+        imageView = findViewById(R.id.imageView4);
+
+
+        imageView.setVisibility(View.INVISIBLE);
+        uriPath = data.getExtras().get("uriPath").toString();
+
+
+        if (!uriPath.equals(" ")){  // SI ja el tenim creat
+            Log.d( "URISS", "URI DINS: " + uriPath);
+            title.setText( data.getStringExtra( "title" ) );
+
+            //Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
+            Uri uris = (Uri) data.getExtras().get("uriPath");
+
+            //ImageView image = (ImageView) findViewById(R.id.imageView);
+            // image.setImageBitmap(bmp);
+
+           /* Bitmap ass = null;
+            try {
+                ass = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uris);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            paintView.setCanvas(new Canvas(ass));*/
+
+           /* Drawable d = null;//= new DrawableContainer();
+
+            InputStream inputStream = null;
+            try {
+                inputStream = getContentResolver().openInputStream(uris);
+                d = Drawable.createFromStream(inputStream, uris.toString() );
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            //Uri imgUri = Uri.parse(uriPath);
+            //imageView.setImageURI(null);
+            //imageView.setImageURI(imgUri);
+
+
+            //imageView.setImageBitmap(other);
+            //imageView.setImageURI(Uri.parse(uriPath));
+            //imageView.setImageDrawable(d);
+
+            paintView.setBackground(d);*/
+            //imageView.setVisibility(View.VISIBLE);
+        }
+
 
         setSupportActionBar( toolbar );
         getSupportActionBar().setDisplayHomeAsUpEnabled( true );
@@ -48,6 +127,14 @@ public class PaintActivity extends AppCompatActivity {
         width = PaintView.BRUSH_SIZE;
         color = PaintView.DEFAULT_COLOR;
         ActivityCompat.requestPermissions( PaintActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1 );
+    }
+
+
+
+
+
+    public void setImageUri(Uri imageUri){
+        this.mImageUri = imageUri;
     }
 
     @Override
@@ -120,6 +207,7 @@ public class PaintActivity extends AppCompatActivity {
                         // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
                         paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
+                        imageUri = paintActivityViewModel.ImageUri;
                         //onBackPressed();
                     }
                 } );

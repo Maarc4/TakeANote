@@ -32,8 +32,9 @@ public class PaintActivityViewModel extends AndroidViewModel {
     private final FirebaseFirestore db;
     private StorageReference storageReference;
     private final String userUID;
-    private String filePath;
+    public static String filePath;
     private final String STORAGE_URL = "gs://takeanote-a0e9a.appspot.com/";
+    public static Uri ImageUri;
 
 
     private final MutableLiveData<String> observableFilePath;
@@ -70,6 +71,8 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     Log.d( "PAVM", "FAILURE docref.setNote" );
                 }
             });
+
+            ImageUri = Uri.parse(filePath);
 
             StorageReference ref = storageReference.child( saveUrl );
             ref.putFile( Uri.parse( filePath ) )
@@ -111,9 +114,11 @@ public class PaintActivityViewModel extends AndroidViewModel {
                 getApplication().getContentResolver(), paintView.getDrawingCache(),
                 UUID.randomUUID().toString() + ".jpg", "drawing" );
 
-        filePath = imgSaved;
 
         if (imgSaved != null) {
+            Log.d( "ass", imgSaved );
+            filePath = imgSaved;
+            Log.d( "ass", filePath );
             observableFilePath.setValue( imgSaved );
             Toast.makeText( getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT ).show();
         } else {

@@ -63,6 +63,17 @@ public class PaintView extends View {
     }
 
 
+    public void setCanvas(Canvas canvas){
+        this.mCanvas = canvas;
+    }
+
+    public Canvas getCanvas(){
+        return this.mCanvas;
+    }
+
+
+
+
     public void init(DisplayMetrics metrics) {
         int height = metrics.heightPixels;
         int width = metrics.widthPixels;

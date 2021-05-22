@@ -1,37 +1,56 @@
 package com.example.takeanote;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import java.io.ByteArrayOutputStream;
+
+
 public class ImageActivity extends AppCompatActivity {
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     //EditText noteTitle, noteContent;
     MaterialToolbar toolbar;
     //private AddNoteViewModel viewModel;
     private ImageActivityViewModel viewModel;
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int TAKE_PHOTO_REQUEST = 2;
     private Button addImageButton;
+    private Button takePhotoButton;
     private Button saveButton;
     private ImageView imatge;
+    private EditText title;
+
     private Uri mImageUri;
 
 
@@ -43,15 +62,18 @@ public class ImageActivity extends AppCompatActivity {
         setContentView( R.layout.activity_add_image );
         toolbar = findViewById( R.id.addImage_toolbar );
         setSupportActionBar( toolbar );
+
         getSupportActionBar().setDisplayHomeAsUpEnabled( true );
 
         viewModel = new ViewModelProvider( this ).get( ImageActivityViewModel.class );
 
         //viewModel = new ViewModelProvider(this).get(AddNoteViewModel.class);
 
+        takePhotoButton = findViewById(R.id.take_photo);
         addImageButton = findViewById( R.id.select_image );
         //saveButton = findViewById(R.id.save);
         imatge = findViewById( R.id.selected_image );
+        title = findViewById( R.id.addImageTitle );
 
 
         //noteContent = findViewById(R.id.addNoteContent);
@@ -73,19 +95,41 @@ public class ImageActivity extends AppCompatActivity {
                 openFileChooser();
             }
         } );
+
+        takePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                take_photo();
+            }
+        });
+    }
+
+
+    public void take_photo(){
+        if(ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
+        != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(ImageActivity.this, new String[]{
+                Manifest.permission.CAMERA
+            },TAKE_PHOTO_REQUEST);
+        }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent,TAKE_PHOTO_REQUEST);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.save:
                 final ProgressDialog progressDialog = new ProgressDialog( this );
-                viewModel.uploadFile( mImageUri, getFileExtension( mImageUri ), progressDialog ).observe( this, new Observer<Uri>() {
-                    @Override
-                    public void onChanged(Uri uri) {
+                //viewModel.uploadImage(progressDialog,  title.getText().toString());
+                //mImageUri = viewModel.ImageUri;
+                viewModel.uploadFile( mImageUri, getFileExtension( mImageUri ), progressDialog , title.getText().toString()).observe( this, new Observer<Uri>() {
+                     @Override
+                     public void onChanged(Uri uri) {
                         onBackPressed();
-                    }
+                     }
                 } );
                 break;
             case android.R.id.home:
@@ -99,14 +143,37 @@ public class ImageActivity extends AppCompatActivity {
         return super.onOptionsItemSelected( item );
     }
 
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult( requestCode, resultCode, data );
+
+
+        if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK){
+            Handler handler = new Handler( Looper.getMainLooper() );
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d( "nigga", "aaaaaaaaaaaaaaaaaaaaaa" );
+                    mImageUri = data.getData();
+                    imatge.setImageURI(mImageUri);
+                    //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    //imatge.setImageBitmap(bitmap);
+                    imatge.setVisibility( View.VISIBLE );
+                }
+            },5000);
+
+
+
+        }
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             mImageUri = data.getData();
             imatge.setImageURI( mImageUri );
             imatge.setVisibility( View.VISIBLE );
         }
+
     }
 
     @Override

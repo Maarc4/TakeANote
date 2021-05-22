@@ -1,7 +1,10 @@
 package com.example.takeanote;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -12,6 +15,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.takeanote.model.ImageInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
 import com.example.takeanote.model.PaintInfo;
@@ -58,6 +62,54 @@ public class MainActivityViewModel extends AndroidViewModel {
         List<NoteListItem> notes = new ArrayList<>();
         boolean succes = false;
 
+
+        //IMAGE NOTES
+       db.collection( "notes" ).document( user.getUid() ).collection( "imageNotes" )
+                .get()
+                .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d( "MAVM", "List Empty" );
+                            return;
+                        } else {
+                            Log.d( "Entra", "Entra" );
+                            for (DocumentSnapshot q : queryDocumentSnapshots) {
+                                storageReference.child( q.getString( "url" ) )
+                                        .getDownloadUrl().
+                                        addOnSuccessListener( new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                ImageInfo ii = q.toObject( ImageInfo.class );
+
+                                                ii.setUri( uri );
+                                                ii.setTitle( q.getString( "title" ) );
+                                                ii.setId( q.getId() );
+
+                                                ///pi.setTitle(q.getString("title")); //No hi ha re guardat al title
+                                                /// PaintView pv = q.toObject(PaintView.class);
+                                                NoteListItem noteListItem = new NoteListItem( ii );
+
+                                                notes.add( noteListItem );
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d( "MAVM ->ERROR", "PRINGAT" + e.getMessage() );
+                                    }
+                                } );
+                            }
+
+                        }
+                        notesData.setValue( notes );
+                    }
+                } ).addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText( getApplication().getApplicationContext(), "Error loading IMAGE notes!", Toast.LENGTH_SHORT ).show();
+            }
+        } );
+
         //PAINT NOTES
         db.collection( "notes" ).document( user.getUid() ).collection( "paintNotes" )
                 .get()
@@ -79,7 +131,10 @@ public class MainActivityViewModel extends AndroidViewModel {
                                                 PaintInfo pi = q.toObject( PaintInfo.class );
                                                 pi.setUri( uri );
                                                 pi.setTitle( q.getString( "title" ) );
+
                                                 pi.setId( q.getId() );
+                                                pi.setUriPath(uri.getPath());
+
                                                 //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
 
                                                 // PaintView pv = q.toObject(PaintView.class);
@@ -103,6 +158,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                 Toast.makeText( getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT ).show();
             }
         } );
+
         //TEXT NOTES
         db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" )
                 .get()
@@ -173,10 +229,14 @@ public class MainActivityViewModel extends AndroidViewModel {
                         newData.add( note );
                     }
                 }
-                /*//Borrar nota Image
-                else if(note.getViewType() == Constant.ITEM_IMAGE_NOTE_VIEWTYPE){
-
-                }
+                //Borrar nota Image
+                else if (note.getViewType() == Constant.ITEM_IMAGE_NOTE_VIEWTYPE) {
+                    ImageInfo imageNote = note.getImageInfo();
+                    ImageInfo imageToDelete = note.getImageInfo();
+                    if (!imageNote.getUri().toString().equals( imageToDelete.getUri().toString() )) {
+                        newData.add( note );
+                    }
+                }/*
                 //Borrar nota Audio
                 else {
 

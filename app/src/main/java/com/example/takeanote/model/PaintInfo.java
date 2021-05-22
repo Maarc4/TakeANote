@@ -9,6 +9,8 @@ public class PaintInfo {
     String title;
     Bitmap bmp;
     String id;
+    String uriPath;
+    byte[] bytes;
 
     public PaintInfo() {
     }
@@ -17,6 +19,15 @@ public class PaintInfo {
         this.uri = uri;
         this.title = title;
         this.bmp = bmp;
+        this.uriPath = uri.getPath();
+    }
+
+    public byte[] getBytes(){
+        return this.bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
     public Bitmap getBmp() {
@@ -38,6 +49,14 @@ public class PaintInfo {
     public String getTitle() {
         return title;
     }
+    public void setUriPath(String path){
+        this.uriPath = path;
+    }
+
+    public String getUriPath(){
+        return this.uriPath;
+    }
+
 
     public void setTitle(String title) {
         this.title = title;

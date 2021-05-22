@@ -21,10 +21,10 @@ public class PaintNoteViewHolder extends BaseViewHolder {
 
     public PaintNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener) {
         super( itemView );
-        paintTitle = itemView.findViewById( R.id.paintNoteTitle );
-        paintContent = itemView.findViewById( R.id.paintNoteContent );
+        paintTitle = itemView.findViewById( R.id.paintNoteTitle);
+        paintContent = itemView.findViewById( R.id.paintNoteContent);
         view = itemView; // Aixo es per manejar el click, pero amb material card potser es diferent
-        paintMenuItem = itemView.findViewById( R.id.paintMenuIcon );
+        paintMenuItem = itemView.findViewById( R.id.paintMenuIcon);
         this.listener = listener;
     }
 

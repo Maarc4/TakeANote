@@ -8,7 +8,7 @@ public class NoteListItem {
     private NoteUI textNoteItem;
     private PaintView paintNoteItem;
     //private Audio audioNoteItem;
-    //private Image imageNoteItem;
+    private ImageInfo imageInfo;
     private PaintInfo paintInfo;
     private int viewType;
 
@@ -30,12 +30,12 @@ public class NoteListItem {
     /*public NoteListItem(Audio audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
         this.viewType = Constant.ITEM_AUDIO_NOTE_VIEWTYPE;
-    }
-
-    public NoteListItem(Image imageNoteItem) {
-        this.imageNoteItem = imageNoteItem;
-        this.viewType = Constant.ITEM_IMAGE_NOTE_VIEWTYPE;
     }*/
+
+    public NoteListItem(ImageInfo imageInfo) {
+        this.imageInfo = imageInfo;
+        this.viewType = Constant.ITEM_IMAGE_NOTE_VIEWTYPE;
+    }
 
     public NoteUI getTextNoteItem() {
         return textNoteItem;
@@ -59,19 +59,21 @@ public class NoteListItem {
 
     public void setAudioNoteItem(Audio audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
-    }
-
-    public Image getImageNoteItem() {
-        return imageNoteItem;
-    }
-
-    public void setImageNoteItem(Image imageNoteItem) {
-        this.imageNoteItem = imageNoteItem;
     }*/
+
+    public ImageInfo getImageInfo() {
+        return imageInfo;
+    }
+
+    public void setImageInfo(ImageInfo imageInfo) {
+        this.imageInfo = imageInfo;
+    }
 
     public PaintInfo getPaintInfo() {
         return paintInfo;
     }
+
+
 
     public void setPaintInfo(PaintInfo paintInfo) {
         this.paintInfo = paintInfo;

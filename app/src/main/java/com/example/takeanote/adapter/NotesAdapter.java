@@ -44,7 +44,8 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                 view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.audio_card_layout, parent, false );
                 return new AudioNoteViewHolder( view, listener );
             case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
-                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.paint_card_layout, parent, false );
+                Log.d( "NAda", "IMAGE NOTE" );
+                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.image_card_layout, parent, false );
                 return new ImageNoteViewHolder( view, listener );
 
             default:
