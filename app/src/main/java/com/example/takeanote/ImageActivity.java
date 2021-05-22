@@ -76,6 +76,9 @@ public class ImageActivity extends AppCompatActivity {
         title = findViewById( R.id.addImageTitle );
 
 
+        mImageUri = null;
+
+
         //noteContent = findViewById(R.id.addNoteContent);
         //noteTitle = findViewById(R.id.addImageTitle);
 
@@ -125,12 +128,24 @@ public class ImageActivity extends AppCompatActivity {
                 final ProgressDialog progressDialog = new ProgressDialog( this );
                 //viewModel.uploadImage(progressDialog,  title.getText().toString());
                 //mImageUri = viewModel.ImageUri;
-                viewModel.uploadFile( mImageUri, getFileExtension( mImageUri ), progressDialog , title.getText().toString()).observe( this, new Observer<Uri>() {
-                     @Override
-                     public void onChanged(Uri uri) {
-                        onBackPressed();
-                     }
-                } );
+
+                if(!title.getText().toString().equals("")) {
+                    if(mImageUri != null) {
+                        viewModel.uploadFile(mImageUri, getFileExtension(mImageUri), progressDialog, title.getText().toString()).observe(this, new Observer<Uri>() {
+                            @Override
+                            public void onChanged(Uri uri) {
+                                onBackPressed();
+                            }
+                        });
+                    }
+                    else{
+                        Toast.makeText(getApplication().getApplicationContext(), "Introduce an image  " , Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(getApplication().getApplicationContext(), "Introduce a title  " , Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case android.R.id.home:
                 onBackPressed();
@@ -156,7 +171,6 @@ public class ImageActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d( "nigga", "aaaaaaaaaaaaaaaaaaaaaa" );
                     mImageUri = data.getData();
                     imatge.setImageURI(mImageUri);
                     //Bitmap bitmap = (Bitmap) data.getExtras().get("data");

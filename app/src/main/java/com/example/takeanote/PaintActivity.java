@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -130,8 +131,9 @@ public class PaintActivity extends AppCompatActivity {
     }
 
 
-
-
+    public String getStringTitle() {
+        return title.getText().toString();
+    }
 
     public void setImageUri(Uri imageUri){
         this.mImageUri = imageUri;
@@ -206,8 +208,13 @@ public class PaintActivity extends AppCompatActivity {
                     public void onChanged(String s) {
                         // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                        paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
-                        imageUri = paintActivityViewModel.ImageUri;
+                        if(!title.getText().toString().equals("")) {
+                            paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
+                            imageUri = paintActivityViewModel.ImageUri;
+                        }
+                        else{
+                            Toast.makeText(getApplication().getApplicationContext(), "Introduce a title " , Toast.LENGTH_SHORT).show();
+                        }
                         //onBackPressed();
                     }
                 } );

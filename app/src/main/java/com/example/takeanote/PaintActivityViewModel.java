@@ -50,54 +50,60 @@ public class PaintActivityViewModel extends AndroidViewModel {
     public void uploadImage(ProgressDialog progressDialog, String paintTitle) {
 
         if (filePath != null) {
-            progressDialog.setTitle( "Uploading..." );
-            progressDialog.show();
-            String saveUrl = "images/" + userUID + "/" + UUID.randomUUID().toString() + ".jpg";
 
-            // Guardem la nota a firebase per
-            DocumentReference docref = db.collection( "notes" ).document( userUID ).collection( "paintNotes" ).document();
-            Map<String, Object> newNote = new HashMap<>();
-            newNote.put( "title", paintTitle );
-            newNote.put( "url", saveUrl );
 
-            docref.set( newNote ).addOnSuccessListener( new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d( "PAVM", "ONSUCCESS docref.setNote" );
-                }
-            } ).addOnFailureListener( new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d( "PAVM", "FAILURE docref.setNote" );
-                }
-            });
 
-            ImageUri = Uri.parse(filePath);
+                progressDialog.setTitle("Uploading...");
+                progressDialog.show();
+                String saveUrl = "images/" + userUID + "/" + UUID.randomUUID().toString() + ".jpg";
 
-            StorageReference ref = storageReference.child( saveUrl );
-            ref.putFile( Uri.parse( filePath ) )
-                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            Toast.makeText( getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT ).show();
-                        }
-                    } )
-                    .addOnFailureListener( new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText( getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT ).show();
-                        }
-                    } )
-                    .addOnProgressListener( new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage( "Uploaded " + (int) progress + "%" );
-                        }
-                    } );
+                // Guardem la nota a firebase per
+                DocumentReference docref = db.collection("notes").document(userUID).collection("paintNotes").document();
+                Map<String, Object> newNote = new HashMap<>();
+                newNote.put("title", paintTitle);
+                newNote.put("url", saveUrl);
+
+                docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("PAVM", "ONSUCCESS docref.setNote");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("PAVM", "FAILURE docref.setNote");
+                    }
+                });
+
+                ImageUri = Uri.parse(filePath);
+
+                StorageReference ref = storageReference.child(saveUrl);
+
+
+                ref.putFile(Uri.parse(filePath))
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplication().getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplication().getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                        .getTotalByteCount());
+                                progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                            }
+                        });
+
         }
     }
 
@@ -116,11 +122,9 @@ public class PaintActivityViewModel extends AndroidViewModel {
 
 
         if (imgSaved != null) {
-            Log.d( "ass", imgSaved );
             filePath = imgSaved;
-            Log.d( "ass", filePath );
             observableFilePath.setValue( imgSaved );
-            Toast.makeText( getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( getApplication().getApplicationContext(), "IMAGE SAVED: " + imgSaved, Toast.LENGTH_SHORT ).show();
         } else {
             Toast.makeText( getApplication().getApplicationContext(), "ERROR NOT SAVED", Toast.LENGTH_SHORT ).show();
         }
