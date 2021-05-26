@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -123,6 +124,20 @@ public class PaintActivity extends AppCompatActivity {
                         //onBackPressed();
                     }
                 } );
+                if (!title.getText().toString().isEmpty()){
+                    paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
+                            final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
+                            paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
+                            //onBackPressed();
+                        }
+                    } );
+                } else {
+                    Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
+                }
+
                 break;
             case android.R.id.home:
                 onBackPressed();

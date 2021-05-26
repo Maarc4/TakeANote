@@ -64,5 +64,7 @@
     <string name="select_image">Select Image</string>
     <string name="todo">TODO</string>
     <string name="title_activity_add_image_activity">AddImage</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="address">Address</string>
 
 </resources>

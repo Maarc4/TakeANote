@@ -11,6 +11,7 @@ public class NoteListItem {
     private AudioInfo audioNoteItem;
     //private Image imageNoteItem;
     private PaintInfo paintInfo;
+    private MapsInfo maps;
     private int viewType;
 
     public NoteListItem(NoteUI textNoteItem) {
@@ -28,6 +29,12 @@ public class NoteListItem {
         this.viewType = Constant.ITEM_PAINT_NOTE_VIEWTYPE;
     }
 
+    public NoteListItem(MapsInfo mapsItem) {
+        this.maps = mapsItem;
+        this.viewType = Constant.ITEM_MAP_NOTE_VIEWTYPE;
+    }
+
+    //public NoteListItem(Audio audioNoteItem) {
     public NoteListItem(AudioInfo audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
         this.viewType = Constant.ITEM_AUDIO_NOTE_VIEWTYPE;
@@ -37,6 +44,14 @@ public class NoteListItem {
         this.imageNoteItem = imageNoteItem;
         this.viewType = Constant.ITEM_IMAGE_NOTE_VIEWTYPE;
     }*/
+
+    public MapsInfo getMaps() {
+        return maps;
+    }
+
+    public void setMaps(MapsInfo maps) {
+        this.maps = maps;
+    }
 
     public NoteUI getTextNoteItem() {
         return textNoteItem;

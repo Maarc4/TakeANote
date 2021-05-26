@@ -2,12 +2,14 @@ package com.example.takeanote;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Gravity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,15 +24,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.takeanote.adapter.NotesAdapter;
 import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.MapsInfo;
 import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
@@ -38,14 +44,17 @@ import com.example.takeanote.notes.AddNote;
 import com.example.takeanote.notes.NoteDetails;
 import com.example.takeanote.utils.Constant;
 import com.example.takeanote.utils.OnNoteTypeClickListener;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -57,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView listOfNotes;
     private MainActivityViewModel viewModel;
     private NotesAdapter adapter;
+    private androidx.appcompat.widget.SearchView search;
+    private List<NoteListItem> original;
+    private int order;
     private MediaPlayer mediaplayer;
     private ImageButton record;
 
@@ -82,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView( R.layout.activity_main );
         MaterialToolbar toolbar = findViewById( R.id.content_main_toolbar );
         setSupportActionBar( toolbar );
-
+        order = -1;
         listOfNotes = findViewById( R.id.listOfNotes );
         listOfNotes.setLayoutManager( new LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false ) );
         mediaplayer = new MediaPlayer();
@@ -101,6 +113,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener( toggle );
         toggle.setDrawerIndicatorEnabled( true );
         toggle.syncState();
+
+        search = findViewById( R.id.search );
+        confSearch();
 
         View headerView = nav_view.getHeaderView( 0 );
         TextView username = headerView.findViewById( R.id.userDisplayName );
@@ -125,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.action_image:
                         startActivity( new Intent( getApplicationContext(), ImageActivity.class ) );
                         break;
+                    case R.id.action_map:
+                        startActivity( new Intent( getApplicationContext(), MapsActivity.class));
+                        finish();
+                        break;
                     default:
                         Toast.makeText( MainActivity.this, "Coming soon.", Toast.LENGTH_SHORT ).show();
                 }
@@ -135,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setUpAdapter(List<NoteListItem> allTypeNotes) {
-
         if (allTypeNotes == null) {
             allTypeNotes = new ArrayList<>();
         }
@@ -175,6 +193,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
                        break;*/
+                    case (Constant.ITEM_MAP_NOTE_VIEWTYPE):
+                        MapsInfo maps = noteItem.getMaps();
+                        Intent mapsIntetnt = new Intent( MainActivity.this.getApplicationContext(), MapsActivity.class );
+                        mapsIntetnt.putExtra( "title", maps.getTitle() );
+                        mapsIntetnt.putExtra( "latlng", maps.getLatLng() );
+                        mapsIntetnt.putExtra( "id", maps.getId() );
+                        mapsIntetnt.putExtra( "address", maps.getAddress() );
+                        //mapsIntetnt.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+                        startActivity( mapsIntetnt );
+                        finish();
+                        break;
                     default:
                         Toast.makeText( MainActivity.this, "Coming Soon. OnNoteClick", Toast.LENGTH_SHORT ).show();
                 }
@@ -228,14 +257,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } );
         Handler handler = new Handler( Looper.getMainLooper() );
+        List<NoteListItem> finalAllTypeNotes = allTypeNotes;
         handler.postDelayed( new Runnable() {
 
             @Override
             public void run() {
                 listOfNotes.setAdapter( adapter );
+                original = new ArrayList<>();
+                original.addAll( finalAllTypeNotes );
+                adapter.orderRecyclerView( order );
             }
-        }, 1000 );
-
+        }, 1000);
     }
 
 
@@ -260,7 +292,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.add_image_note:
                 startActivity( new Intent( this, ImageActivity.class ) );
                 break;
-
+            case R.id.add_map_note:
+                startActivity( new Intent( getApplicationContext(), MapsActivity.class));
+                finish();
+                break;
             case R.id.sync:
                 if (viewModel.sync()) {
                     showWarning();
@@ -298,7 +333,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //TODO: fer per poder canviar idioma manualment i altres ajuestes a concertar
         if (item.getItemId() == R.id.action_settings) {
-            Toast.makeText( this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT ).show();
+            Toast.makeText( MainActivity.this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT ).show();
+        } else if (item.getItemId() == R.id.action_order) {
+            PopupMenu popupMenu = new PopupMenu( this,  this.findViewById( R.id.content_main_toolbar ), Gravity.RIGHT );
+            popupMenu.getMenuInflater().inflate( R.menu.order_menu, popupMenu.getMenu() );
+            popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch(item.getItemId()) {
+                        case R.id.alfabet:
+                            order = 0;
+                            adapter.orderRecyclerView( order );
+                            break;
+                        case R.id.alfabet_reverse:
+                            order = 1;
+                            adapter.orderRecyclerView( order );
+                            break;
+                        case R.id.order_type:
+                            order = 2;
+                            adapter.orderRecyclerView( order );
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                }
+            });
+            popupMenu.show();
+
         }
         return super.onOptionsItemSelected( item );
     }
@@ -354,5 +416,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         warning.show();
     }
 
+    private void confSearch(){
+        search.setOnQueryTextListener( new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.setOriginal( original );
+                adapter.filter( query );
+                adapter.orderRecyclerView( order );
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.setOriginal( original );
+                adapter.filter( newText );
+                adapter.orderRecyclerView( order );
+                return false;
+            }
+        } );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        search.setEnabled( true );
+        search.clearFocus();
+        search.clearAnimation();
+        if (adapter != null) {
+            search.setQuery( "", false );
+            adapter.orderRecyclerView( order );
+            for(MapView mapView : adapter.getMapViewList()){
+                if (mapView != null){
+                    mapView.onResume();
+                }
+            }
+        }
+
+    }
 
 }

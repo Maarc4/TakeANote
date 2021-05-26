@@ -12,7 +12,19 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:queryHint="Buscar nombre"
+        app:iconifiedByDefault="false"
+        app:layout_constraintBottom_toTopOf="@+id/listOfNotes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/content_main_toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listOfNotes"
@@ -21,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/content_main_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/search" />
 
     <io.github.yavski.fabspeeddial.FabSpeedDial
         android:id="@+id/fab_main"
