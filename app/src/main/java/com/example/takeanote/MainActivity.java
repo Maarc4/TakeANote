@@ -2,13 +2,18 @@ package com.example.takeanote;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.takeanote.adapter.NotesAdapter;
 import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
 import com.example.takeanote.notes.AddNote;
@@ -37,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView listOfNotes;
     private MainActivityViewModel viewModel;
     private NotesAdapter adapter;
+    private MediaPlayer mediaplayer;
+    private ImageButton record;
 
     @Override
     protected void onPostResume() {
@@ -76,13 +85,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         listOfNotes = findViewById( R.id.listOfNotes );
         listOfNotes.setLayoutManager( new LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false ) );
-
+        mediaplayer = new MediaPlayer();
         setUpViewModel();
-
+        record = findViewById(R.id.audioPlayButton);
         drawerLayout = findViewById( R.id.drawer );
         nav_view = findViewById( R.id.nav_view );
         nav_view.setNavigationItemSelectedListener( this );
         viewModel.checkUserNav( nav_view );
+
+        //mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //Log.d("Hector","caca" + fileName);
+
 
         toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.open, R.string.close );
         drawerLayout.addDrawerListener( toggle );
@@ -141,6 +154,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         textIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
                         startActivity( textIntent );
                         break;
+                    case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
+                        AudioInfo textAudio = noteItem.getAudioNoteItem();
+                        Intent textIn = new Intent( MainActivity.this.getApplicationContext(), NoteDetails.class );
+                        textIn.putExtra( "title", textAudio.getTitle() );
+                        textIn.putExtra( "noteId", textAudio.getId() );
+                        textIn.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+                        startActivity( textIn );
+                        break;
                     case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
                         /*PaintInfo paintInfo = noteItem.getPaintInfo();
                         Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
@@ -170,10 +191,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } );
                     return false;
                 } );
+
                 //TODO: potser afegir share dsp de noteDetails i cambiar a material
 
                 menu.show();
             }
+
+            @Override
+            public void onPlayClick(NoteListItem audio, View view) {
+
+                AudioInfo aud = audio.getAudioNoteItem();
+                if(!mediaplayer.isPlaying()){
+
+                    String fileName = aud.getUri().toString();
+                    Log.d("minga",fileName);
+                    try {
+                        mediaplayer.setDataSource(fileName);
+                        mediaplayer.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(!aud.isRepro()){
+                    mediaplayer.start();
+                }else{
+                    mediaplayer.pause();
+                }
+
+            }
+            /*record.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mediaplayer.start();
+                }
+            });*/
+
         } );
         Handler handler = new Handler( Looper.getMainLooper() );
         handler.postDelayed( new Runnable() {

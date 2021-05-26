@@ -62,10 +62,7 @@ public class AddAudio extends AppCompatActivity {
     StorageReference storageReference;
     String userid;
     private ProgressDialog mProgress;
-    private EditText AudioTi;
-    //private Uri mAudioUri , AudioUri;
-    private MutableLiveData<Uri> newUri;
-    private static final int PICK_IMAGE_REQUEST = 1;
+
 
 
     @Override
@@ -80,8 +77,6 @@ public class AddAudio extends AppCompatActivity {
         recorder2 = findViewById(R.id.record2_btn);
         View b = findViewById(R.id.record2_btn);
         b.setVisibility(View.GONE);
-        AudioTi = findViewById(R.id.AudioTitle);
-        newUri = new MutableLiveData<>();
         title = findViewById(R.id.AudioTitle);
         this.storage = FirebaseStorage.getInstance();
         this.userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -108,7 +103,6 @@ public class AddAudio extends AppCompatActivity {
                     b.setVisibility(View.VISIBLE);
                     text.setText("Recording Started");
                     isrecording = true;
-
                 }
             }
         });
@@ -130,7 +124,7 @@ public class AddAudio extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                String AudioTitle = AudioTi.getText().toString();
+
                 uploadAudio();
                 break;
 
@@ -187,36 +181,43 @@ public class AddAudio extends AppCompatActivity {
         }
     }*/
     private void uploadAudio() {
-        mProgress.setMessage("Uploading audio...");
-        mProgress.show();
-        String saveUrl = "audios/" + userid + "/" + UUID.randomUUID().toString() + ".3gp";
+        String nTitle = title.getText().toString();
 
-        DocumentReference docref = db.collection( "notes" ).document( userid ).collection( "AudioNotes" ).document();
-        StorageReference filepath = storageReference.child(saveUrl);
-        Uri uri = Uri.fromFile(new File(fileName));
-        Map<String, Object> newNote = new HashMap<>();
-        newNote.put("title", title.getText().toString());
-        newNote.put( "url", saveUrl );
+        if (nTitle.isEmpty()) {
+            text.setText("Cannot SAVE with an empty field.");
+        }else{
+            mProgress.setMessage("Uploading audio...");
+            mProgress.show();
+            String saveUrl = "audios/" + userid + "/" + UUID.randomUUID().toString() + ".3gp";
 
-        docref.set( newNote ).addOnSuccessListener( new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d( "PAVM", "ONSUCCESS docref.setNote" );
-            }
-        } ).addOnFailureListener( new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d( "PAVM", "FAILURE docref.setNote" );
-            }
-        });
+            DocumentReference docref = db.collection( "notes" ).document( userid ).collection( "AudioNotes" ).document();
+            StorageReference filepath = storageReference.child(saveUrl);
+            Uri uri = Uri.fromFile(new File(fileName));
+            Map<String, Object> newNote = new HashMap<>();
+            newNote.put("title", title.getText().toString());
+            newNote.put( "url", saveUrl );
 
-        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                mProgress.dismiss();
-                text.setText("Uploaded");
-            }
-        });
-    }
+            docref.set( newNote ).addOnSuccessListener( new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d( "PAVM", "ONSUCCESS docref.setNote" );
+                }
+            } ).addOnFailureListener( new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d( "PAVM", "FAILURE docref.setNote" );
+                }
+            });
+
+            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    mProgress.dismiss();
+                    text.setText("Uploaded");
+                }
+            });
+        }
+        }
+
 
 }

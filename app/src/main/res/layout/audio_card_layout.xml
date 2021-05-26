@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/audioMenuIcon"
+                        android:id="@+id/menuIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,6 +97,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/menuIcon"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
