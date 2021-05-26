@@ -174,12 +174,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
 
-                        PaintInfo paintInfo = noteItem.getPaintInfo();
+                       /* PaintInfo paintInfo = noteItem.getPaintInfo();
                         Intent paintIntent = new Intent();
                         paintIntent.setAction(Intent.ACTION_VIEW);
                         Log.d("myTag", "This ssage");
                         paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
                         startActivity(paintIntent);
+*/
+
+                        PaintInfo paintInfo = noteItem.getPaintInfo();
+                        Intent paintIntent = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
+                        paintIntent.putExtra( "title", paintInfo.getTitle() );
+                        Uri a = paintInfo.getUri();
+                        paintIntent.putExtra("uri",paintInfo.getUri());
+                        startActivity( paintIntent );
+
+
                         /*
                         //Intent intent = new Intent();
                         //intent.setAction(Intent.ACTION_VIEW);
@@ -195,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-                        PaintView paintNote = noteItem.getPaintNoteItem();
                         Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
                         paintIntent1.putExtra( "title", paintInfo.getTitle() );
                         Uri a = paintInfo.getUri();

@@ -72,18 +72,23 @@ public class PaintActivity extends AppCompatActivity {
 
 
         imageView.setVisibility(View.INVISIBLE);
-        uriPath = data.getExtras().get("uriPath").toString();
+        uriPath = data.getExtras().get("uri").toString();
 
 
         if (!uriPath.equals(" ")){  // SI ja el tenim creat
             Log.d( "URISS", "URI DINS: " + uriPath);
             title.setText( data.getStringExtra( "title" ) );
-
+            /// INVALIDATE --------------------
             //Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
-            Uri uris = (Uri) data.getExtras().get("uriPath");
+            Uri uris = (Uri) data.getExtras().get("uri");
+            mImageUri = uris;
 
             //ImageView image = (ImageView) findViewById(R.id.imageView);
-            // image.setImageBitmap(bmp);
+            imageView.setVisibility(View.VISIBLE);
+
+            imageView.setImageURI(null);
+            imageView.setImageURI(mImageUri);
+            imageView.invalidate();
 
            /* Bitmap ass = null;
             try {
@@ -131,6 +136,8 @@ public class PaintActivity extends AppCompatActivity {
     }
 
 
+
+
     public String getStringTitle() {
         return title.getText().toString();
     }
@@ -143,6 +150,7 @@ public class PaintActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate( R.menu.paint_settings, menu );
+
         return super.onCreateOptionsMenu( menu );
     }
 

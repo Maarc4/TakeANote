@@ -51,8 +51,6 @@ public class PaintActivityViewModel extends AndroidViewModel {
 
         if (filePath != null) {
 
-
-
                 progressDialog.setTitle("Uploading...");
                 progressDialog.show();
                 String saveUrl = "images/" + userUID + "/" + UUID.randomUUID().toString() + ".jpg";

@@ -265,7 +265,6 @@ public class MainActivityViewModel extends AndroidViewModel {
                 break;
             case Constant.ITEM_PAINT_NOTE_VIEWTYPE:
                 PaintInfo pinfo = noteListItem.getPaintInfo();
-
                 db.collection( "notes" ).document( user.getUid() ).collection( "paintNotes" ).document( pinfo.getId() )
                         .get()
                         .addOnSuccessListener( new OnSuccessListener<DocumentSnapshot>() {
@@ -282,7 +281,21 @@ public class MainActivityViewModel extends AndroidViewModel {
                 } );
                 break;
             case Constant.ITEM_IMAGE_NOTE_VIEWTYPE:
-                break;
+                ImageInfo iinfo = noteListItem.getImageInfo();
+                db.collection( "notes" ).document( user.getUid() ).collection( "imageNotes" ).document( iinfo.getId() )
+                        .get()
+                        .addOnSuccessListener( new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                storageReference.child( documentSnapshot.getString( "url" ) ).delete();
+                                notesData.setValue( newData );
+                            }
+                        } ).addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText( getApplication().getApplicationContext(), "Error Deleting PAINT note!", Toast.LENGTH_SHORT ).show();
+                    }
+                } );
             case Constant.ITEM_AUDIO_NOTE_VIEWTYPE:
                 break;
             default:

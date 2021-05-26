@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -28,12 +29,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
 
 
 public class ImageActivity extends AppCompatActivity {
@@ -50,6 +61,7 @@ public class ImageActivity extends AppCompatActivity {
     private Button saveButton;
     private ImageView imatge;
     private EditText title;
+    String currentPhotoPath;
 
     private Uri mImageUri;
 
@@ -108,17 +120,6 @@ public class ImageActivity extends AppCompatActivity {
     }
 
 
-    public void take_photo(){
-        if(ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
-        != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(ImageActivity.this, new String[]{
-                Manifest.permission.CAMERA
-            },TAKE_PHOTO_REQUEST);
-        }
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent,TAKE_PHOTO_REQUEST);
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -160,26 +161,38 @@ public class ImageActivity extends AppCompatActivity {
 
 
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult( requestCode, resultCode, data );
-
 
         if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK){
             Handler handler = new Handler( Looper.getMainLooper() );
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mImageUri = data.getData();
+                    imatge.setImageURI(null);
                     imatge.setImageURI(mImageUri);
-                    //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                    //imatge.setImageBitmap(bitmap);
+                    imatge.invalidate();
                     imatge.setVisibility( View.VISIBLE );
                 }
-            },5000);
-
-
+            },1000);
 
         }
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
@@ -187,7 +200,6 @@ public class ImageActivity extends AppCompatActivity {
             imatge.setImageURI( mImageUri );
             imatge.setVisibility( View.VISIBLE );
         }
-
     }
 
     @Override
@@ -211,4 +223,33 @@ public class ImageActivity extends AppCompatActivity {
         startActivityForResult( intent, PICK_IMAGE_REQUEST );
     }
 
+    public void take_photo(){
+
+
+        if(ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(ImageActivity.this, new String[]{
+                    Manifest.permission.CAMERA
+            },TAKE_PHOTO_REQUEST);
+        }
+
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Create the File where the photo should go
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            Log.d("Error","ERROR PHOTO");
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            mImageUri = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()), BuildConfig.APPLICATION_ID + ".provider", photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+            startActivityForResult(intent, TAKE_PHOTO_REQUEST);
+        }
+
+
+    }
 }
