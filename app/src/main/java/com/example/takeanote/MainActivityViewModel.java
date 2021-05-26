@@ -16,13 +16,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.takeanote.model.ImageInfo;
+import com.example.takeanote.model.MapsInfo;
+import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
 import com.example.takeanote.model.PaintInfo;
 import com.example.takeanote.utils.Constant;
+import com.google.android.gms.common.util.ScopeUtil;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.common.collect.Maps;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class MainActivityViewModel extends AndroidViewModel {
 
@@ -153,6 +161,12 @@ public class MainActivityViewModel extends AndroidViewModel {
                         notesData.setValue( notes );
                     }
                 } ).addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText( getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT ).show();
+                    }
+                } );
+
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText( getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT ).show();
@@ -160,7 +174,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         } );
 
         //TEXT NOTES
-        db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" )
+         db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" )
                 .get()
                 .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -189,6 +203,82 @@ public class MainActivityViewModel extends AndroidViewModel {
             }
         } );
 
+         //MAPS NOTES
+        db.collection( "notes" ).document( user.getUid() ).collection( "myMaps" )
+                .get()
+                .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d( "MAVM", "List Empty" );
+                            return;
+                        } else {
+                            for (DocumentSnapshot q : queryDocumentSnapshots) {
+                                MapsInfo mapsInfo = q.toObject( MapsInfo.class );
+                                String id = q.getId();
+                                mapsInfo.setId( id );
+                                mapsInfo.setLatLng( new LatLng((double) q.get( "lat" ), (double) q.get("lng")) );
+                                mapsInfo.setAddress( q.get("address").toString() );
+                                NoteListItem noteListItem = new NoteListItem( mapsInfo );
+                                notes.add( noteListItem );
+                            }
+                            //notesData.postValue(notes);
+                        }
+                        notesData.setValue( notes );
+                        Log.d( "MAVM", "notes amb text? " + notes.size() );
+                    }
+                } ).addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText( getApplication().getApplicationContext(), "Error loading TEXT notes!", Toast.LENGTH_SHORT ).show();
+            }
+        } );
+        //Audio NOTES
+        db.collection( "notes" ).document( user.getUid() ).collection( "AudioNotes" )
+                .get()
+                .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d( "MAVM", "List Empty" );
+                            return;
+                        } else {
+                            Log.d("Entra", "Entra" );
+                            for (DocumentSnapshot q : queryDocumentSnapshots) {
+                                storageReference.child( q.getString( "url" ) )
+                                        .getDownloadUrl().
+                                        addOnSuccessListener( new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+
+                                                AudioInfo pi = q.toObject( AudioInfo.class );
+                                                pi.setUri(uri);
+                                                pi.setTitle( q.getString( "title" ) );
+                                                pi.setId( q.getId());
+                                                pi.setPath(q.getString("url"));
+                                                //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
+
+                                                // PaintView pv = q.toObject(PaintView.class);
+                                                NoteListItem noteListItem = new NoteListItem( pi );
+                                                notes.add( noteListItem );
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d( "MAVM ->ERROR", "PRINGAT" + e.getMessage() );
+                                    }
+                                } );
+                            }
+
+                        }
+                        notesData.setValue( notes );
+                    }
+                } ).addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText( getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT ).show();
+            }
+        } );
 
         return notesData;
     }
@@ -228,6 +318,12 @@ public class MainActivityViewModel extends AndroidViewModel {
                     if (!paintNote.getUri().toString().equals( paintToDelete.getUri().toString() )) {
                         newData.add( note );
                     }
+                } else if (note.getViewType() == Constant.ITEM_MAP_NOTE_VIEWTYPE) {
+                    MapsInfo map = note.getMaps();
+                    MapsInfo mapToDelete = noteListItem.getMaps();
+                    if (!map.getTitle().equals( mapToDelete.getTitle() )) {
+                        newData.add( note );
+                    }
                 }
                 //Borrar nota Image
                 else if (note.getViewType() == Constant.ITEM_IMAGE_NOTE_VIEWTYPE) {
@@ -236,20 +332,24 @@ public class MainActivityViewModel extends AndroidViewModel {
                     if (!imageNote.getUri().toString().equals( imageToDelete.getUri().toString() )) {
                         newData.add( note );
                     }
-                }/*
+                }
                 //Borrar nota Audio
-                else {
-
-                }*/
+                else if (note.getViewType() == Constant.ITEM_AUDIO_NOTE_VIEWTYPE) {
+                    AudioInfo AudioNote = note.getAudioNoteItem();
+                    AudioInfo AudioToDelete = noteListItem.getAudioNoteItem();
+                    if (!AudioNote.getUri().toString().equals( AudioToDelete.getUri().toString() )) {
+                        newData.add( note );
+                    }
+                }
             } else {
                 newData.add( note );
             }
         }
-
+        DocumentReference docRef;
         switch (viewType) {
             case Constant.ITEM_TEXT_NOTE_VIEWTYPE:
                 NoteUI textNote = noteListItem.getTextNoteItem();
-                DocumentReference docRef = db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" ).document( textNote.getId() );
+                docRef = db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" ).document( textNote.getId() );
                 docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -265,6 +365,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                 break;
             case Constant.ITEM_PAINT_NOTE_VIEWTYPE:
                 PaintInfo pinfo = noteListItem.getPaintInfo();
+
                 db.collection( "notes" ).document( user.getUid() ).collection( "paintNotes" ).document( pinfo.getId() )
                         .get()
                         .addOnSuccessListener( new OnSuccessListener<DocumentSnapshot>() {
@@ -272,11 +373,41 @@ public class MainActivityViewModel extends AndroidViewModel {
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 storageReference.child( documentSnapshot.getString( "url" ) ).delete();
                                 notesData.setValue( newData );
+                                DocumentReference docRef = db.collection( "notes" ).document( user.getUid() ).collection( "paintNotes" ).document( pinfo.getId() );
+                                docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText( getApplication().getApplicationContext(), "PaintNote deleted.", Toast.LENGTH_SHORT ).show();
+                                        notesData.setValue( newData );
+                                    }
+                                } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText( getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT ).show();
+                                    }
+                                } );
                             }
                         } ).addOnFailureListener( new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText( getApplication().getApplicationContext(), "Error Deleting PAINT note!", Toast.LENGTH_SHORT ).show();
+                    }
+                } );
+
+                break;
+            case Constant.ITEM_MAP_NOTE_VIEWTYPE:
+                MapsInfo mapsInfo = noteListItem.getMaps();
+                docRef = db.collection( "notes" ).document( user.getUid() ).collection( "myMaps" ).document( mapsInfo.getId() );
+                docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText( getApplication().getApplicationContext(), "Map deleted.", Toast.LENGTH_SHORT ).show();
+                        notesData.setValue( newData );
+                    }
+                } ).addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText( getApplication().getApplicationContext(), "FAILED to delete the map.", Toast.LENGTH_SHORT ).show();
                     }
                 } );
                 break;
@@ -297,11 +428,38 @@ public class MainActivityViewModel extends AndroidViewModel {
                     }
                 } );
             case Constant.ITEM_AUDIO_NOTE_VIEWTYPE:
+                AudioInfo aud = noteListItem.getAudioNoteItem();
+                db.collection( "notes" ).document( user.getUid() ).collection( "AudioNotes" ).document( aud.getId() )
+                        .get()
+                        .addOnSuccessListener( new OnSuccessListener<DocumentSnapshot>() {
+
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                storageReference.child( documentSnapshot.getString( "url" ) ).delete();
+                                notesData.setValue( newData );
+                                DocumentReference docRef = db.collection( "notes" ).document( user.getUid() ).collection( "AudioNotes" ).document( aud.getId() );
+                                docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText( getApplication().getApplicationContext(), "PaintNote deleted.", Toast.LENGTH_SHORT ).show();
+                                        notesData.setValue( newData );
+                                    }
+                                } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText( getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT ).show();
+                                    }
+                                } );
+                            }
+                        } ).addOnFailureListener( new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText( getApplication().getApplicationContext(), "Error Deleting Audio note!", Toast.LENGTH_SHORT ).show();
+                    }
+                } );
                 break;
             default:
-                throw new
-
-                        IllegalArgumentException();
+                throw new IllegalArgumentException();
         }
 
     }

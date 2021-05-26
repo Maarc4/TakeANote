@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.takeanote.MainActivity"
+    >
+    <item
+        android:id="@+id/Opt1"
+        android:orderInCategory="100"
+        android:title="opt1"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/Opt2"
+        android:orderInCategory="100"
+        android:title="opt2"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/Opt3"
+        android:orderInCategory="100"
+        android:title="opt3"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/Opt4"
+        android:orderInCategory="100"
+        android:title="opt4"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/Opt5"
+        android:orderInCategory="100"
+        android:title="opt5"
+        app:showAsAction="never" />
+
+</menu>

@@ -1,18 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.takeanote.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/alfabet"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="A-Z"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_order"
+        android:id="@+id/alfabet_reverse"
         android:orderInCategory="100"
-        android:title="Order Notes"
-        app:showAsAction="never">
-
-    </item>
+        android:title="Z-A"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/order_type"
+        android:orderInCategory="100"
+        android:title="Type"
+        app:showAsAction="never" />
 
 </menu>

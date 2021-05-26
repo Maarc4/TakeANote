@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:map="http://schemas.android.com/apk/res/android"
     android:background="@android:color/transparent"
-    android:orientation="vertical"
-    android:id="@+id/audio_layout">
+    android:orientation="vertical">
 
 
-
-<com.google.android.material.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +17,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="#7B1FA2"
         app:cardCornerRadius="0dp"
         app:cardElevation="5dp"
         app:contentPadding="0dp"
@@ -32,29 +30,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/audioPlayButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_play_24dp"
-                app:layout_constraintBottom_toTopOf="@+id/cardViewTitle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="299dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 app:layout_constraintBottom_toTopOf="@+id/cardViewTitle"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.171"
-                app:layout_constraintStart_toEndOf="@+id/audioPlayButton"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardViewTitle"
@@ -73,9 +57,22 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/mapNoteTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="@string/sample_title"
+                        android:textAlignment="viewStart"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/mapNoteAddress"
+                        app:layout_constraintEnd_toStartOf="@+id/mapMenuIcon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/menuIcon"
+                        android:id="@+id/mapMenuIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -85,19 +82,17 @@
                         tools:ignore="VectorDrawableCompat" />
 
                     <TextView
-                        android:id="@+id/audioNoteTitle"
+                        android:id="@+id/mapNoteAddress"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
-                        android:text="@string/sample_title"
+                        android:text="@string/address"
                         android:textAlignment="viewStart"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/menuIcon"
+                        app:layout_constraintEnd_toStartOf="@+id/mapMenuIcon"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
+                        app:layout_constraintTop_toBottomOf="@+id/mapNoteTitle" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

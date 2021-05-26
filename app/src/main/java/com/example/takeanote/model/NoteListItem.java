@@ -1,5 +1,6 @@
 package com.example.takeanote.model;
 
+import com.example.takeanote.AddAudio;
 import com.example.takeanote.PaintView;
 import com.example.takeanote.utils.Constant;
 
@@ -9,7 +10,10 @@ public class NoteListItem {
     private PaintView paintNoteItem;
     //private Audio audioNoteItem;
     private ImageInfo imageInfo;
+    private AudioInfo audioNoteItem;
+    //private Image imageNoteItem;
     private PaintInfo paintInfo;
+    private MapsInfo maps;
     private int viewType;
 
     public NoteListItem(NoteUI textNoteItem) {
@@ -27,14 +31,28 @@ public class NoteListItem {
         this.viewType = Constant.ITEM_PAINT_NOTE_VIEWTYPE;
     }
 
-    /*public NoteListItem(Audio audioNoteItem) {
+    public NoteListItem(MapsInfo mapsItem) {
+        this.maps = mapsItem;
+        this.viewType = Constant.ITEM_MAP_NOTE_VIEWTYPE;
+    }
+
+    //public NoteListItem(Audio audioNoteItem) {
+    public NoteListItem(AudioInfo audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
         this.viewType = Constant.ITEM_AUDIO_NOTE_VIEWTYPE;
-    }*/
+    }
 
     public NoteListItem(ImageInfo imageInfo) {
         this.imageInfo = imageInfo;
         this.viewType = Constant.ITEM_IMAGE_NOTE_VIEWTYPE;
+    }
+
+    public MapsInfo getMaps() {
+        return maps;
+    }
+
+    public void setMaps(MapsInfo maps) {
+        this.maps = maps;
     }
 
     public NoteUI getTextNoteItem() {
@@ -53,13 +71,13 @@ public class NoteListItem {
         this.paintNoteItem = paintNoteItem;
     }
 
-    /*public Audio getAudioNoteItem() {
+    public AudioInfo getAudioNoteItem() {
         return audioNoteItem;
     }
 
-    public void setAudioNoteItem(Audio audioNoteItem) {
+    public void setAudioNoteItem(AudioInfo audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
-    }*/
+    }
 
     public ImageInfo getImageInfo() {
         return imageInfo;
@@ -72,8 +90,6 @@ public class NoteListItem {
     public PaintInfo getPaintInfo() {
         return paintInfo;
     }
-
-
 
     public void setPaintInfo(PaintInfo paintInfo) {
         this.paintInfo = paintInfo;

@@ -1,5 +1,9 @@
 package com.example.takeanote.adapter;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -10,8 +14,11 @@ import androidx.annotation.NonNull;
 
 import com.example.takeanote.AddAudio;
 import com.example.takeanote.R;
+import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.utils.OnNoteTypeClickListener;
+
+import java.io.IOException;
 
 public class AudioNoteViewHolder extends BaseViewHolder {
 
@@ -20,41 +27,42 @@ public class AudioNoteViewHolder extends BaseViewHolder {
     TextView audioTitle;
     View view;
     OnNoteTypeClickListener listener;
+    private MediaPlayer mediaplayer;
 
     public AudioNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener) {
         super( itemView );
         audioTitle = itemView.findViewById( R.id.audioNoteTitle );
         audioPlayButton = itemView.findViewById( R.id.audioPlayButton );
         view = itemView; // Aixo es per manejar el click, pero amb material card potser es diferent
-        audioMenuItem = itemView.findViewById( R.id.audioMenuIcon );
+        audioMenuItem = itemView.findViewById( R.id.menuIcon );
         this.listener = listener;
     }
 
     @Override
     void setData(NoteListItem item) {
-       /* AddAudio audioNote = item.getAudioNoteItem();
+        AudioInfo audioNote = item.getAudioNoteItem();
         audioTitle.setText(audioNote.getTitle());
 
         audioPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Coming soon. Audio Play Button.", Toast.LENGTH_SHORT).show();
+                listener.onPlayClick(item,v);
             }
         });
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Coming soon AudioNote", Toast.LENGTH_SHORT).show();
-                //listener.onNoteClick(item);
+                //Toast.makeText(v.getContext(), "Coming soon AudioNote", Toast.LENGTH_SHORT).show();
+                listener.onNoteClick(item);
             }
         });
         audioMenuItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Coming soon AudioNote MenuOptions", Toast.LENGTH_SHORT).show();
-                //listener.onNoteMenuClick(item, v);
+                //Toast.makeText(v.getContext(), "Coming soon AudioNote MenuOptions", Toast.LENGTH_SHORT).show();
+                listener.onNoteMenuClick(item, v);
             }
         });
-    }*/
     }
-}
+    }
+

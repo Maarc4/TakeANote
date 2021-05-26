@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -150,7 +151,6 @@ public class PaintActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate( R.menu.paint_settings, menu );
-
         return super.onCreateOptionsMenu( menu );
     }
 
@@ -216,6 +216,7 @@ public class PaintActivity extends AppCompatActivity {
                     public void onChanged(String s) {
                         // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
+                        paintActivityViewModel.uploadImage( progressDialog, title.getText().toString());
                         if(!title.getText().toString().equals("")) {
                             paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
                             imageUri = paintActivityViewModel.ImageUri;
@@ -226,6 +227,20 @@ public class PaintActivity extends AppCompatActivity {
                         //onBackPressed();
                     }
                 } );
+                if (!title.getText().toString().isEmpty()){
+                    paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
+                            final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
+                            paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
+                            //onBackPressed();
+                        }
+                    } );
+                } else {
+                    Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
+                }
+
                 break;
             case android.R.id.home:
                 onBackPressed();

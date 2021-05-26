@@ -8,5 +8,7 @@ public interface OnNoteTypeClickListener {
     void onNoteClick(NoteListItem noteUI);
 
     void onNoteMenuClick(NoteListItem noteUI, View view);
+    void onPlayClick(NoteListItem noteUI, View view);
+
 }
 
