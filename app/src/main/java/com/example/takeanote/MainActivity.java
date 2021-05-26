@@ -9,6 +9,9 @@ import android.media.MediaPlayer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,6 +43,7 @@ import com.bumptech.glide.Glide;
 import com.example.takeanote.adapter.NotesAdapter;
 import com.example.takeanote.auth.Login;
 import com.example.takeanote.auth.Register;
+import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.ImageInfo;
 import com.example.takeanote.model.MapsInfo;
 import com.example.takeanote.model.AudioInfo;
@@ -159,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setUpAdapter(List<NoteListItem> allTypeNotes) {
+
         if (allTypeNotes == null) {
             allTypeNotes = new ArrayList<>();
         }
@@ -255,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         */
                         break;
+
+
                     /*case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
                         break;
                     case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
@@ -332,7 +339,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 original.addAll( finalAllTypeNotes );
                 adapter.orderRecyclerView( order );
             }
-        }, 1000);
+        }, 1000 );
+
     }
 
 

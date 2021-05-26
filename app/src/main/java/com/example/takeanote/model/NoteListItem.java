@@ -1,5 +1,7 @@
 package com.example.takeanote.model;
 
+import android.media.Image;
+
 import com.example.takeanote.AddAudio;
 import com.example.takeanote.PaintView;
 import com.example.takeanote.utils.Constant;
@@ -9,9 +11,9 @@ public class NoteListItem {
     private NoteUI textNoteItem;
     private PaintView paintNoteItem;
     //private Audio audioNoteItem;
-    private ImageInfo imageInfo;
-    private AudioInfo audioNoteItem;
     //private Image imageNoteItem;
+    private AudioInfo audioNoteItem;
+    private ImageInfo imageInfo;
     private PaintInfo paintInfo;
     private MapsInfo maps;
     private int viewType;

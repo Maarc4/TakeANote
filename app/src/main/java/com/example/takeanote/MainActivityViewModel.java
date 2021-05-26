@@ -18,6 +18,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.takeanote.model.ImageInfo;
 import com.example.takeanote.model.MapsInfo;
 import com.example.takeanote.model.AudioInfo;
+import com.example.takeanote.model.AudioInfo;
 import com.example.takeanote.model.NoteListItem;
 import com.example.takeanote.model.NoteUI;
 import com.example.takeanote.model.PaintInfo;
@@ -167,14 +168,10 @@ public class MainActivityViewModel extends AndroidViewModel {
                     }
                 } );
 
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText( getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT ).show();
-            }
-        } );
+
 
         //TEXT NOTES
-         db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" )
+        db.collection( "notes" ).document( user.getUid() ).collection( "myNotes" )
                 .get()
                 .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -200,6 +197,52 @@ public class MainActivityViewModel extends AndroidViewModel {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText( getApplication().getApplicationContext(), "Error loading TEXT notes!", Toast.LENGTH_SHORT ).show();
+            }
+        } );
+        //Audio NOTES
+        db.collection( "notes" ).document( user.getUid() ).collection( "AudioNotes" )
+                .get()
+                .addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d( "MAVM", "List Empty" );
+                            return;
+                        } else {
+                            Log.d("Entra", "Entra" );
+                            for (DocumentSnapshot q : queryDocumentSnapshots) {
+                                storageReference.child( q.getString( "url" ) )
+                                        .getDownloadUrl().
+                                        addOnSuccessListener( new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+
+                                                AudioInfo pi = q.toObject( AudioInfo.class );
+                                                pi.setUri(uri);
+                                                pi.setTitle( q.getString( "title" ) );
+                                                pi.setId( q.getId());
+                                                pi.setPath(q.getString("url"));
+                                                //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
+
+                                                // PaintView pv = q.toObject(PaintView.class);
+                                                NoteListItem noteListItem = new NoteListItem( pi );
+                                                notes.add( noteListItem );
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d( "MAVM ->ERROR", "PRINGAT" + e.getMessage() );
+                                    }
+                                } );
+                            }
+
+                        }
+                        notesData.setValue( notes );
+                    }
+                } ).addOnFailureListener( new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText( getApplication().getApplicationContext(), "Error loading PAINT notes!", Toast.LENGTH_SHORT ).show();
             }
         } );
 
@@ -365,7 +408,6 @@ public class MainActivityViewModel extends AndroidViewModel {
                 break;
             case Constant.ITEM_PAINT_NOTE_VIEWTYPE:
                 PaintInfo pinfo = noteListItem.getPaintInfo();
-
                 db.collection( "notes" ).document( user.getUid() ).collection( "paintNotes" ).document( pinfo.getId() )
                         .get()
                         .addOnSuccessListener( new OnSuccessListener<DocumentSnapshot>() {
