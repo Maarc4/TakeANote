@@ -20,8 +20,8 @@
                 android:title="@string/add_image" />
             <item
                 android:id="@+id/add_map_note"
-                android:icon="@drawable/ic_image_24dp"
-                android:title="Add Map Note" />
+                android:icon="@drawable/ic_map_24dp"
+                android:title="@string/add_map_note" />
         </menu>
 
     </item>

@@ -10,7 +10,7 @@
     <item
         android:id="@+id/action_order"
         android:orderInCategory="100"
-        android:title="Order Notes"
+        android:title="@string/order_notes"
         app:showAsAction="never">
 
     </item>

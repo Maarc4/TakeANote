@@ -67,5 +67,16 @@
     <string name="title_activity_maps">Map</string>
     <string name="address">Address</string>
     <string name="take_photo">Take photo</string>
+    <string name="add_map_note">Add Map Note</string>
+    <string name="order_notes">Order Notes</string>
+    <string name="order_a_z">A-Z</string>
+    <string name="order_z_a">Z-A</string>
+    <string name="order_type">Type</string>
+    <string name="maps_opt1">opt1</string>
+    <string name="maps_opt2">opt2</string>
+    <string name="maps_opt3">opt3</string>
+    <string name="maps_opt4">opt4</string>
+    <string name="maps_opt5">opt5</string>
+    <string name="mic_start_recording">Press the mic button \n to start recording</string>
 
 </resources>

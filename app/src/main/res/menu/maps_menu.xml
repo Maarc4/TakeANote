@@ -7,28 +7,28 @@
     <item
         android:id="@+id/Opt1"
         android:orderInCategory="100"
-        android:title="opt1"
+        android:title="@string/maps_opt1"
         app:showAsAction="never"
         />
     <item
         android:id="@+id/Opt2"
         android:orderInCategory="100"
-        android:title="opt2"
+        android:title="@string/maps_opt2"
         app:showAsAction="never" />
     <item
         android:id="@+id/Opt3"
         android:orderInCategory="100"
-        android:title="opt3"
+        android:title="@string/maps_opt3"
         app:showAsAction="never" />
     <item
         android:id="@+id/Opt4"
         android:orderInCategory="100"
-        android:title="opt4"
+        android:title="@string/maps_opt4"
         app:showAsAction="never" />
     <item
         android:id="@+id/Opt5"
         android:orderInCategory="100"
-        android:title="opt5"
+        android:title="@string/maps_opt5"
         app:showAsAction="never" />
 
 </menu>

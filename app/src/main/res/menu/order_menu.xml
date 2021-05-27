@@ -6,17 +6,17 @@
     <item
         android:id="@+id/alfabet"
         android:orderInCategory="100"
-        android:title="A-Z"
+        android:title="@string/order_a_z"
         app:showAsAction="never" />
     <item
         android:id="@+id/alfabet_reverse"
         android:orderInCategory="100"
-        android:title="Z-A"
+        android:title="@string/order_z_a"
         app:showAsAction="never" />
     <item
         android:id="@+id/order_type"
         android:orderInCategory="100"
-        android:title="Type"
+        android:title="@string/order_type"
         app:showAsAction="never" />
 
 </menu>

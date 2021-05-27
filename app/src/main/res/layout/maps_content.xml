@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:layout="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:layout="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <!--fragment to display our maps-->
-    <include
-        layout="@layout/activity_maps_fragment"
-        ></include>
+    <include layout="@layout/activity_maps_fragment" />
 
     <!--search view to search our location-->
     <androidx.appcompat.widget.SearchView

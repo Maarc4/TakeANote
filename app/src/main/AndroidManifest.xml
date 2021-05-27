@@ -22,9 +22,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-
-
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_icon"
         android:label="@string/app_name"
@@ -49,7 +46,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/Theme.TakeANote.NoActionBar"></activity>
+            android:theme="@style/Theme.TakeANote.NoActionBar"/>
         <activity
             android:name=".LoadScreen"
             android:theme="@style/Theme.TakeANote.NoActionBar">
@@ -85,7 +82,6 @@
             android:name=".ImageActivity"
             android:label="@string/title_activity_add_image_activity"
             android:theme="@style/Theme.TakeANote.NoActionBar">
-
         </activity>
 
         <provider
@@ -98,5 +94,4 @@
                 android:resource="@xml/provider_paths" />
         </provider>
     </application>
-
 </manifest>
