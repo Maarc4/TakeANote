@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case R.id.action_paint:
                         Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
-                        paintIntent1.putExtra("uriPath"," ");
+                        //paintIntent1.putExtra("uriPath"," ");
                         startActivity( paintIntent1);
                         break;
                     case R.id.action_audio:
@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         paintIntent.putExtra( "title", paintInfo.getTitle() );
                         Uri a = paintInfo.getUri();
                         paintIntent.putExtra("uri",paintInfo.getUri());
+                        paintIntent.putExtra("path",paintInfo.getUriPath());
                         startActivity( paintIntent );
 
 
@@ -312,12 +313,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Toast.makeText( MainActivity.this, "Reproduciendo", Toast.LENGTH_SHORT ).show();
                 }
+                /*
                 if(!aud.isRepro()){
                     mediaplayer.start();
                 }else{
                     mediaplayer.pause();
-                }
+                }*/
 
             }
             /*record.setOnClickListener(new View.OnClickListener() {

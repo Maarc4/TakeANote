@@ -9,6 +9,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
@@ -38,6 +42,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,23 +78,23 @@ public class PaintActivity extends AppCompatActivity {
 
 
         imageView.setVisibility(View.INVISIBLE);
-        uriPath = data.getExtras().get("uri").toString();
-
-
-        if (!uriPath.equals(" ")){  // SI ja el tenim creat
+        if (data.getExtras() != null) {
+            uriPath = data.getExtras().get("uri").toString();
             Log.d( "URISS", "URI DINS: " + uriPath);
             title.setText( data.getStringExtra( "title" ) );
             /// INVALIDATE --------------------
             //Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
             Uri uris = (Uri) data.getExtras().get("uri");
             mImageUri = uris;
+            Paint paint = new Paint();
 
+            paintView.invalidate();
             //ImageView image = (ImageView) findViewById(R.id.imageView);
-            imageView.setVisibility(View.VISIBLE);
+            /*imageView.setVisibility(View.VISIBLE);
 
             imageView.setImageURI(null);
             imageView.setImageURI(mImageUri);
-            imageView.invalidate();
+            imageView.invalidate();*/
 
            /* Bitmap ass = null;
             try {

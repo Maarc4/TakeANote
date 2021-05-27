@@ -107,11 +107,11 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                                 case 0:
                                     return i.getTextNoteItem().getTitle().toLowerCase().contains( search );
                                 case 1:
-                                case 3:
                                     return i.getPaintInfo().getTitle().toLowerCase().contains( search );
+                                case 3:
+                                    return i.getImageInfo().getTitle().toLowerCase().contains( search );
                                 case 2:
-                                    return Boolean.parseBoolean( null );
-                                //return i.getAudio().getTitle().toLowerCase().contains( search );
+                                    return i.getAudioNoteItem().getTitle().toLowerCase().contains( search );
                                 case 4:
                                     return i.getMaps().getTitle().toLowerCase().contains( search );
                                 default:
@@ -130,15 +130,19 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                             }
                             break;
                         case 1:
-                        case 3:
                             if (i.getPaintInfo().getTitle().toLowerCase().contains( search )) {
                                 mdata.add( i );
                             }
                             break;
-                        case 2:
-                            /*if (i.getAudio().getTitle().toLowerCase().contains( search )) {
+                        case 3:
+                            if (i.getImageInfo().getTitle().toLowerCase().contains( search )) {
                                 mdata.add( i );
-                            }*/
+                            }
+                            break;
+                        case 2:
+                            if (i.getAudioNoteItem().getTitle().toLowerCase().contains( search )) {
+                                mdata.add( i );
+                            }
                             break;
                         case 4:
                             if (i.getMaps().getTitle().toLowerCase().contains( search )) {
@@ -191,8 +195,10 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                     title1 = o1.getTextNoteItem().getTitle();
                     break;
                 case 1:
-                case 3:
                     title1 = o1.getPaintInfo().getTitle();
+                    break;
+                case 3:
+                    title1 = o1.getImageInfo().getTitle();
                     break;
                 case 2:
                     title1 = o1.getAudioNoteItem().getTitle();
@@ -208,8 +214,10 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                     title2 = o2.getTextNoteItem().getTitle();
                     break;
                 case 1:
-                case 3:
                     title2 = o2.getPaintInfo().getTitle();
+                    break;
+                case 3:
+                    title2 = o2.getImageInfo().getTitle();
                     break;
                 case 2:
                     title2 = o2.getAudioNoteItem().getTitle();

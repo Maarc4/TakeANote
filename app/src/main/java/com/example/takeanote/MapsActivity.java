@@ -166,7 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String title = t.getText().toString();
                 if (title.isEmpty()){
                     Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
-                } else if (address == null && title.equals( data.getExtras().get("title") )) {
+                } else if (address == null || title.equals( data.getExtras().get("title") )) {
                     Toast.makeText( getApplication().getApplicationContext(), "Nothing changed.", Toast.LENGTH_SHORT ).show();
                 } else {
                     if (data.getExtras() != null) {

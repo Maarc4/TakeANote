@@ -60,6 +60,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
                 Map<String, Object> newNote = new HashMap<>();
                 newNote.put("title", paintTitle);
                 newNote.put("url", saveUrl);
+                newNote.put("filepath", filePath);
 
                 docref.set(newNote).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
