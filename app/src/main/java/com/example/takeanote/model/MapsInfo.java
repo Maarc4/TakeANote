@@ -1,7 +1,5 @@
 package com.example.takeanote.model;
 
-import android.location.Address;
-
 import com.google.android.gms.maps.model.LatLng;
 
 public class MapsInfo {
@@ -10,10 +8,10 @@ public class MapsInfo {
     private LatLng latLng;
     private String address;
 
-    public MapsInfo(){
+    public MapsInfo() {
     }
 
-    public MapsInfo(String title, LatLng latLng){
+    public MapsInfo(String title, LatLng latLng) {
         this.title = title;
         this.latLng = latLng;
     }

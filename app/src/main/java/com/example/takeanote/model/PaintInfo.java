@@ -22,7 +22,7 @@ public class PaintInfo {
         this.uriPath = uri.getPath();
     }
 
-    public byte[] getBytes(){
+    public byte[] getBytes() {
         return this.bytes;
     }
 
@@ -49,11 +49,12 @@ public class PaintInfo {
     public String getTitle() {
         return title;
     }
-    public void setUriPath(String path){
+
+    public void setUriPath(String path) {
         this.uriPath = path;
     }
 
-    public String getUriPath(){
+    public String getUriPath() {
         return this.uriPath;
     }
 

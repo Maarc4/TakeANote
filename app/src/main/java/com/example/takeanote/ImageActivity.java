@@ -3,10 +3,8 @@ package com.example.takeanote;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,17 +28,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,16 +41,11 @@ import java.util.Objects;
 
 public class ImageActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    //EditText noteTitle, noteContent;
     MaterialToolbar toolbar;
-    //private AddNoteViewModel viewModel;
     private ImageActivityViewModel viewModel;
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int TAKE_PHOTO_REQUEST = 2;
-    private Button addImageButton;
-    private Button takePhotoButton;
-    private Button saveButton;
     private ImageView imatge;
     private EditText title;
     String currentPhotoPath;
@@ -68,57 +55,27 @@ public class ImageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_image);
+        toolbar = findViewById(R.id.addImage_toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        viewModel = new ViewModelProvider(this).get(ImageActivityViewModel.class);
 
 
-        super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_add_image );
-        toolbar = findViewById( R.id.addImage_toolbar );
-        setSupportActionBar( toolbar );
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
-
-        viewModel = new ViewModelProvider( this ).get( ImageActivityViewModel.class );
-
-        //viewModel = new ViewModelProvider(this).get(AddNoteViewModel.class);
-
-        takePhotoButton = findViewById(R.id.take_photo);
-        addImageButton = findViewById( R.id.select_image );
-        //saveButton = findViewById(R.id.save);
-        imatge = findViewById( R.id.selected_image );
-        title = findViewById( R.id.addImageTitle );
-
-
+        Button takePhotoButton = findViewById(R.id.take_photo);
+        Button addImageButton = findViewById(R.id.select_image);
+        imatge = findViewById(R.id.selected_image);
+        title = findViewById(R.id.addImageTitle);
         mImageUri = null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        imatge.setVisibility(View.INVISIBLE);
 
-
-        //noteContent = findViewById(R.id.addNoteContent);
-        //noteTitle = findViewById(R.id.addImageTitle);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled( true );
-
-        imatge.setVisibility( View.INVISIBLE );
-
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //DisplayMetrics metrics = new DisplayMetrics();
-        //getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        //ActivityCompat.requestPermissions(ImageActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-
-        addImageButton.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFileChooser();
-            }
-        } );
-
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                take_photo();
-            }
-        });
+        addImageButton.setOnClickListener(view -> openFileChooser());
+        takePhotoButton.setOnClickListener(view -> take_photo());
     }
-
 
 
     @Override
@@ -126,25 +83,16 @@ public class ImageActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.save:
-                final ProgressDialog progressDialog = new ProgressDialog( this );
-                //viewModel.uploadImage(progressDialog,  title.getText().toString());
-                //mImageUri = viewModel.ImageUri;
+                final ProgressDialog progressDialog = new ProgressDialog(this);
 
-                if(!title.getText().toString().equals("")) {
-                    if(mImageUri != null) {
-                        viewModel.uploadFile(mImageUri, getFileExtension(mImageUri), progressDialog, title.getText().toString()).observe(this, new Observer<Uri>() {
-                            @Override
-                            public void onChanged(Uri uri) {
-                                onBackPressed();
-                            }
-                        });
+                if (!title.getText().toString().equals("")) {
+                    if (mImageUri != null) {
+                        viewModel.uploadFile(mImageUri, getFileExtension(mImageUri), progressDialog, title.getText().toString()).observe(this, uri -> onBackPressed());
+                    } else {
+                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_introduce_img, Toast.LENGTH_SHORT).show();
                     }
-                    else{
-                        Toast.makeText(getApplication().getApplicationContext(), "Introduce an image  " , Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    Toast.makeText(getApplication().getApplicationContext(), "Introduce a title  " , Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_introduce_title, Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -153,22 +101,21 @@ public class ImageActivity extends AppCompatActivity {
                 break;
 
             default:
-                Toast.makeText( this, "Coming soon.", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
 
         }
-        return super.onOptionsItemSelected( item );
+        return super.onOptionsItemSelected(item);
     }
-
 
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat(getString(R.string.date_format)).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                getString(R.string.suffix_jpg),   /* suffix */
                 storageDir      /* directory */
         );
 
@@ -180,32 +127,29 @@ public class ImageActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult( requestCode, resultCode, data );
+        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK){
-            Handler handler = new Handler( Looper.getMainLooper() );
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    imatge.setImageURI(null);
-                    imatge.setImageURI(mImageUri);
-                    imatge.invalidate();
-                    imatge.setVisibility( View.VISIBLE );
-                }
-            },1000);
+        if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(() -> {
+                imatge.setImageURI(null);
+                imatge.setImageURI(mImageUri);
+                imatge.invalidate();
+                imatge.setVisibility(View.VISIBLE);
+            }, 1000);
 
         }
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             mImageUri = data.getData();
-            imatge.setImageURI( mImageUri );
-            imatge.setVisibility( View.VISIBLE );
+            imatge.setImageURI(mImageUri);
+            imatge.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate( R.menu.add_note_top_bar, menu );
+        inflater.inflate(R.menu.add_note_top_bar, menu);
         return true;
 
     }
@@ -213,26 +157,25 @@ public class ImageActivity extends AppCompatActivity {
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType( cR.getType( uri ) );
+        return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
     private void openFileChooser() {
         Intent intent = new Intent();
-        intent.setType( "image/*" );
-        intent.setAction( Intent.ACTION_GET_CONTENT );
-        startActivityForResult( intent, PICK_IMAGE_REQUEST );
+        intent.setType(getString(R.string.image_type));
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    public void take_photo(){
+    public void take_photo() {
 
 
-        if(ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ImageActivity.this, new String[]{
                     Manifest.permission.CAMERA
-            },TAKE_PHOTO_REQUEST);
+            }, TAKE_PHOTO_REQUEST);
         }
-
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create the File where the photo should go
@@ -241,7 +184,7 @@ public class ImageActivity extends AppCompatActivity {
             photoFile = createImageFile();
         } catch (IOException ex) {
             // Error occurred while creating the File
-            Log.d("Error","ERROR PHOTO");
+            Log.d("Error", "ERROR PHOTO");
         }
         // Continue only if the File was successfully created
         if (photoFile != null) {

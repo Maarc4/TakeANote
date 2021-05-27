@@ -1,6 +1,5 @@
 package com.example.takeanote;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -43,8 +42,6 @@ import com.example.takeanote.notes.NoteDetails;
 import com.example.takeanote.utils.Constant;
 import com.example.takeanote.utils.OnNoteTypeClickListener;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -57,8 +54,6 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle toggle;
-    private NavigationView nav_view;
     private RecyclerView listOfNotes;
     private MainActivityViewModel viewModel;
     private NotesAdapter adapter;
@@ -97,11 +92,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setUpViewModel();
         record = findViewById(R.id.audioPlayButton);
         drawerLayout = findViewById(R.id.drawer);
-        nav_view = findViewById(R.id.nav_view);
+        NavigationView nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
         viewModel.checkUserNav(nav_view);
 
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
@@ -115,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewModel.menuConf(email, username);
 
         //Escollir si nota dibuix o nota text
-        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_main);
+        FabSpeedDial fabSpeedDial = findViewById(R.id.fab_main);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
@@ -124,9 +119,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(new Intent(getApplicationContext(), AddNote.class));
                         break;
                     case R.id.action_paint:
-                        Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
-                        //paintIntent1.putExtra("uriPath"," ");
-                        startActivity( paintIntent1);
+                        Intent paintIntent1 = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
+                        startActivity(paintIntent1);
                         break;
                     case R.id.action_audio:
                         startActivity(new Intent(getApplicationContext(), AddAudio.class));
@@ -139,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         finish();
                         break;
                     default:
-                        Toast.makeText(MainActivity.this, "Coming soon.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -210,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
                         paintIntent.putExtra("title", paintInfo.getTitle());
                         Uri a = paintInfo.getUri();
-                        paintIntent.putExtra("uri",paintInfo.getUri());
-                        paintIntent.putExtra("path",paintInfo.getUriPath());
-                        startActivity( paintIntent );
+                        paintIntent.putExtra("uri", paintInfo.getUri());
+                        paintIntent.putExtra("path", paintInfo.getUriPath());
+                        startActivity(paintIntent);
 
 
                         /*
@@ -263,14 +257,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         finish();
                         break;
                     default:
-                        Toast.makeText(MainActivity.this, "Coming Soon. OnNoteClick", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onNoteMenuClick(NoteListItem noteItem, View view) {
                 PopupMenu menu = new PopupMenu(MainActivity.this.getApplicationContext(), view);
-                menu.getMenu().add("Delete").setOnMenuItemClickListener(item -> {
+                menu.getMenu().add(R.string.delete).setOnMenuItemClickListener(item -> {
                     viewModel.deleteNote(noteItem, noteItem.getViewType());
                     viewModel.init().observe(MainActivity.this, allTypeNotes -> {
                         setUpAdapter(allTypeNotes);
@@ -278,8 +272,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
                     return false;
                 });
-                //TODO: potser afegir share dsp de noteDetails i cambiar a material
-
                 menu.show();
             }
 
@@ -290,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (!mediaplayer.isPlaying()) {
 
                     String fileName = aud.getUri().toString();
-                    Log.d("minga", fileName);
+                    Log.d("MAct", fileName);
                     try {
                         mediaplayer.setDataSource(fileName);
                         mediaplayer.prepare();
@@ -298,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText( MainActivity.this, "Reproduciendo", Toast.LENGTH_SHORT ).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_playing, Toast.LENGTH_SHORT).show();
                 }
                 /*
                 if(!aud.isRepro()){
@@ -318,15 +310,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         Handler handler = new Handler(Looper.getMainLooper());
         List<NoteListItem> finalAllTypeNotes = allTypeNotes;
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                listOfNotes.setAdapter(adapter);
-                original = new ArrayList<>();
-                original.addAll(finalAllTypeNotes);
-                adapter.orderRecyclerView(order);
-            }
+        handler.postDelayed(() -> {
+            listOfNotes.setAdapter(adapter);
+            original = new ArrayList<>();
+            original.addAll(finalAllTypeNotes);
+            adapter.orderRecyclerView(order);
         }, 1000);
 
     }
@@ -346,7 +334,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent paintIntent1 = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
                 paintIntent1.putExtra("uriPath", " ");
                 startActivity(paintIntent1);
-
                 break;
 
             case R.id.add_audio_note:
@@ -381,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Toast.makeText(this, "Coming soon.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -395,9 +382,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //TODO: fer per poder canviar idioma manualment i altres ajuestes a concertar
         if (item.getItemId() == R.id.action_settings) {
-            Toast.makeText(MainActivity.this, "Settings Menu is Clicked.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.toast_settings_menu, Toast.LENGTH_SHORT).show();
         } else if (item.getItemId() == R.id.action_order) {
             PopupMenu popupMenu = new PopupMenu(this, this.findViewById(R.id.content_main_toolbar), Gravity.RIGHT);
             popupMenu.getMenuInflater().inflate(R.menu.order_menu, popupMenu.getMenu());
@@ -432,51 +418,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO possible traspas a viewmodel?
     public void displayAlert() {
         AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setTitle("Are you sure?")
-                .setMessage("You are logged in with Temporary Account. Loggin out will Delete All the notes.")
-                .setPositiveButton("Sync NoteUI", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(), Register.class));
-                        finish();
-                    }
-                }).setNegativeButton("Logout", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        viewModel.getUser().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                startActivity(new Intent(getApplicationContext(), LoadScreen.class));
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                            }
-                        });
-                    }
-                });
+                .setTitle(R.string.alert_sure)
+                .setMessage(R.string.alert_logged_temp_acc)
+                .setPositiveButton(R.string.alert_sync, (dialog, which) -> {
+                    startActivity(new Intent(getApplicationContext(), Register.class));
+                    finish();
+                }).setNegativeButton(R.string.log_out, (dialog, which) -> viewModel.getUser().delete()
+                        .addOnSuccessListener(aVoid -> {
+                            startActivity(new Intent(getApplicationContext(), LoadScreen.class));
+                            finish();
+                        }).addOnFailureListener(e -> {
+                        }));
         warning.show();
     }
 
     //TODO possible traspas a viewmodel
     public void showWarning() {
         final AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setMessage("Linking Existing Account Will delete all the temp notes. Create New Account To Save them.")
-                .setPositiveButton("Save Notes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(), Register.class));
-                    }
-                }).setNegativeButton("Its Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(getApplicationContext(), Login.class));
-                    }
-                });
-
+                .setMessage(R.string.warging_link_Acc)
+                .setPositiveButton(R.string.warning_save_notes, (dialog, which) -> startActivity(new Intent(getApplicationContext(), Register.class)))
+                .setNegativeButton(R.string.warning_ok, (dialog, which) -> startActivity(new Intent(getApplicationContext(), Login.class)));
         warning.show();
     }
 

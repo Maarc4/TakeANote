@@ -3,7 +3,6 @@ package com.example.takeanote.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -11,22 +10,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.takeanote.MainActivity;
 import com.example.takeanote.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
 
-    Button loginNow;
-    TextView forgetPass, createAcc;
-    TextInputEditText lEmail, lPassword;
-    TextInputLayout emailLayout, pwdLayout;
-    ProgressBar progressBar;
+    private TextInputEditText lEmail, lPassword;
+    private TextInputLayout emailLayout, pwdLayout;
+    private ProgressBar progressBar;
     private LoginViewModel loginViewModel;
 
 
@@ -35,16 +30,16 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Login to TakeANote");
+        getSupportActionBar().setTitle(R.string.login_takeANote);
 
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-        loginNow = findViewById(R.id.loginBtn);
+        Button loginNow = findViewById(R.id.loginBtn);
 
-        forgetPass = findViewById(R.id.forgotPasword);
-        createAcc = findViewById(R.id.createAccount);
+        TextView forgetPass = findViewById(R.id.forgotPasword);
+        TextView createAcc = findViewById(R.id.createAccount);
 
-        lEmail = findViewById( R.id.email);
+        lEmail = findViewById(R.id.email);
         lPassword = findViewById(R.id.lPassword);
 
         emailLayout = findViewById(R.id.emailLayout);
@@ -52,35 +47,15 @@ public class Login extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar3);
 
-        loginNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginViewModel.login(lEmail, lPassword, emailLayout, pwdLayout, progressBar)
-                        .observe(Login.this, new Observer<FirebaseUser>() {
-                    @Override
-                    public void onChanged(FirebaseUser user) {
-                        startActivity( new Intent( getApplicationContext(), MainActivity.class ) );
-                        finish();
-                    }
-                });
-            }
-        });
+        loginNow.setOnClickListener(v -> loginViewModel.login(lEmail, lPassword, emailLayout, pwdLayout, progressBar)
+                .observe(Login.this, user -> {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                }));
 
-        createAcc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Register.class));
-            }
-        });
+        createAcc.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Register.class)));
 
-        //TODO: Fer forgot password que envii un correu al user amb la pwd olvidada amb link per recuperar pwd al app(potser es molt dificil)
-        forgetPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(Login.this, "Coming soon.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        forgetPass.setOnClickListener(v -> Toast.makeText(Login.this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show());
     }
 
 
