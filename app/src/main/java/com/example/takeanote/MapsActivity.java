@@ -164,10 +164,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
             case R.id.save:
                 String title = t.getText().toString();
-                if (title.isEmpty() || address == null) {
+                if (title.isEmpty()) {
                     Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
-                } else if (data.getExtras() != null && title.equals( data.getExtras().get("title") ) && address.toString().equals( data.getExtras().getString( "address" ) )) {
-                    Toast.makeText( getApplication().getApplicationContext(), "Nothing changed.", Toast.LENGTH_SHORT ).show();
+                } else if (address == null || data.getExtras() != null && title.equals( data.getExtras().get("title") ) && address.toString().equals( data.getExtras().getString( "address" ) )) {
+                    if (address == null && data.getExtras() == null) {
+                        Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
+                    } else {
+                        Toast.makeText( getApplication().getApplicationContext(), "Nothing changed.", Toast.LENGTH_SHORT ).show();
+                    }
+
                 }else {
                     if (data.getExtras() != null) {
                         viewModel.updateMaps( t.getText().toString(), latLng, data.getExtras().get("address").toString() , data.getExtras().get("id").toString() )
