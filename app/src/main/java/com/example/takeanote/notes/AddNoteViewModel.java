@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,10 +24,10 @@ import java.util.Map;
 
 public class AddNoteViewModel extends AndroidViewModel {
 
-    FirebaseFirestore db;
-    FirebaseUser user;
+    private final FirebaseFirestore db;
+    private final FirebaseUser user;
 
-    private MutableLiveData<Map<String, Object>> note;
+    private final MutableLiveData<Map<String, Object>> note;
 
     public AddNoteViewModel(@NonNull Application application) {
         super( application );
@@ -42,10 +43,7 @@ public class AddNoteViewModel extends AndroidViewModel {
 
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
-            Toast.makeText( getApplication().getApplicationContext(), "Cannot SAVE with an empty field.", Toast.LENGTH_SHORT ).show();
-            //Intent intent = new Intent(getApplication().getApplicationContext(), AddNote.class);
-            //activity.startActivity(intent);
-            //activity.finish();
+            Toast.makeText( getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT ).show();
             return note;
         }
 
@@ -57,21 +55,14 @@ public class AddNoteViewModel extends AndroidViewModel {
         newNote.put( "content", nContent );
         newNote.put( "type", "textNote" );
 
-        docref.set( newNote ).addOnSuccessListener( new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText( getApplication().getApplicationContext(), "Note Added to database.", Toast.LENGTH_SHORT ).show();
-                note.setValue( newNote );
-                progressBarSave.setVisibility( View.INVISIBLE );
-                //onBackPressed();
-            }
-        } ).addOnFailureListener( new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText( getApplication().getApplicationContext(), "FAILED to add note to database.", Toast.LENGTH_SHORT ).show();
-                progressBarSave.setVisibility( View.VISIBLE );
-            }
-        } );
+        docref.set( newNote ).addOnSuccessListener(aVoid -> {
+            Toast.makeText( getApplication().getApplicationContext(), R.string.toast_note_added_db, Toast.LENGTH_SHORT ).show();
+            note.setValue( newNote );
+            progressBarSave.setVisibility( View.INVISIBLE );
+        }).addOnFailureListener(e -> {
+            Toast.makeText( getApplication().getApplicationContext(), R.string.toast_note_add_failed_db, Toast.LENGTH_SHORT ).show();
+            progressBarSave.setVisibility( View.VISIBLE );
+        });
         return note;
     }
 

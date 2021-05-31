@@ -24,13 +24,13 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private List<NoteListItem> mdata;
     private List<NoteListItem> original;
-    private OnNoteTypeClickListener listener;
-    private List<MapView> mapViewList;
+    private final OnNoteTypeClickListener listener;
+    private final List<MapView> mapViewList;
 
     public NotesAdapter(List<NoteListItem> mdata, OnNoteTypeClickListener listener) {
         this.mdata = mdata;
         this.original = new ArrayList<>();
-        this.original.addAll( mdata );
+        this.original.addAll(mdata);
         this.listener = listener;
         this.mapViewList = new ArrayList<>();
     }
@@ -38,28 +38,28 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d( "NAda", "OnCreateViewHolder" );
+        Log.d("NAda", "OnCreateViewHolder");
         View view;
         switch (viewType) {
             case (Constant.ITEM_TEXT_NOTE_VIEWTYPE):
-                Log.d( "NAda", "TEXT NOTE" );
-                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.note_card_layout, parent, false );
-                return new TextNoteViewHolder( view, listener );
+                Log.d("NAda", "TEXT NOTE");
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card_layout, parent, false);
+                return new TextNoteViewHolder(view, listener);
             case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
-                Log.d( "NAda", "PAINT NOTE" );
-                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.paint_card_layout, parent, false );
-                return new PaintNoteViewHolder( view, listener );
+                Log.d("NAda", "PAINT NOTE");
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.paint_card_layout, parent, false);
+                return new PaintNoteViewHolder(view, listener);
             case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
-                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.audio_card_layout, parent, false );
-                return new AudioNoteViewHolder( view, listener );
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_card_layout, parent, false);
+                return new AudioNoteViewHolder(view, listener);
             case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
-                Log.d( "NAda", "IMAGE NOTE" );
-                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.image_card_layout, parent, false );
-                return new ImageNoteViewHolder( view, listener );
+                Log.d("NAda", "IMAGE NOTE");
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_card_layout, parent, false);
+                return new ImageNoteViewHolder(view, listener);
             case (Constant.ITEM_MAP_NOTE_VIEWTYPE):
-                view = LayoutInflater.from( parent.getContext() ).inflate( R.layout.map_card_layout, parent, false );
-                MapsViewHolder map = new MapsViewHolder( view, listener );
-                mapViewList.add( map.getMapView() );
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.map_card_layout, parent, false);
+                MapsViewHolder map = new MapsViewHolder(view, listener);
+                mapViewList.add(map.getMapView());
                 return map;
 
             default:
@@ -69,12 +69,12 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.setData( mdata.get( position ) );
+        holder.setData(mdata.get(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mdata.get( position ).getViewType();
+        return mdata.get(position).getViewType();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         if (mdata != null) {
             return mdata.size();
         } else {
-            Log.d( "SIZE", "List Empty" );
+            Log.d("SIZE", "List Empty");
             return 0;
         }
     }
@@ -97,56 +97,56 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         mdata.size();
         if (search.length() == 0) {
             mdata.clear();
-            mdata.addAll( original );
+            mdata.addAll(original);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 mdata.clear();
                 List<NoteListItem> collect = original.stream()
-                        .filter( i -> {
+                        .filter(i -> {
                             switch (i.getViewType()) {
                                 case 0:
-                                    return i.getTextNoteItem().getTitle().toLowerCase().contains( search );
+                                    return i.getTextNoteItem().getTitle().toLowerCase().contains(search);
                                 case 1:
-                                    return i.getPaintInfo().getTitle().toLowerCase().contains( search );
+                                    return i.getPaintInfo().getTitle().toLowerCase().contains(search);
                                 case 3:
-                                    return i.getImageInfo().getTitle().toLowerCase().contains( search );
+                                    return i.getImageInfo().getTitle().toLowerCase().contains(search);
                                 case 2:
-                                    return i.getAudioNoteItem().getTitle().toLowerCase().contains( search );
+                                    return i.getAudioNoteItem().getTitle().toLowerCase().contains(search);
                                 case 4:
-                                    return i.getMaps().getTitle().toLowerCase().contains( search );
+                                    return i.getMaps().getTitle().toLowerCase().contains(search);
                                 default:
-                                    return Boolean.parseBoolean( null );
+                                    return Boolean.parseBoolean(null);
                             }
-                        } )
-                        .collect( Collectors.toList() );
-                mdata.addAll( collect );
+                        })
+                        .collect(Collectors.toList());
+                mdata.addAll(collect);
             } else {
                 mdata.clear();
                 for (NoteListItem i : original) {
                     switch (i.getViewType()) {
                         case 0:
-                            if (i.getTextNoteItem().getTitle().toLowerCase().contains( search )) {
-                                mdata.add( i );
+                            if (i.getTextNoteItem().getTitle().toLowerCase().contains(search)) {
+                                mdata.add(i);
                             }
                             break;
                         case 1:
-                            if (i.getPaintInfo().getTitle().toLowerCase().contains( search )) {
-                                mdata.add( i );
+                            if (i.getPaintInfo().getTitle().toLowerCase().contains(search)) {
+                                mdata.add(i);
                             }
                             break;
                         case 3:
-                            if (i.getImageInfo().getTitle().toLowerCase().contains( search )) {
-                                mdata.add( i );
+                            if (i.getImageInfo().getTitle().toLowerCase().contains(search)) {
+                                mdata.add(i);
                             }
                             break;
                         case 2:
-                            if (i.getAudioNoteItem().getTitle().toLowerCase().contains( search )) {
-                                mdata.add( i );
+                            if (i.getAudioNoteItem().getTitle().toLowerCase().contains(search)) {
+                                mdata.add(i);
                             }
                             break;
                         case 4:
-                            if (i.getMaps().getTitle().toLowerCase().contains( search )) {
-                                mdata.add( i );
+                            if (i.getMaps().getTitle().toLowerCase().contains(search)) {
+                                mdata.add(i);
                             }
                             break;
                         default:
@@ -162,21 +162,21 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         List<NoteListItem> temp = new ArrayList<>();
         switch (option) {
             case 0:
-                temp = order( temp );
+                order(temp);
                 mdata.clear();
-                mdata.addAll( temp );
+                mdata.addAll(temp);
                 notifyDataSetChanged();
                 break;
             case 1:
-                temp = order( temp );
-                Collections.reverse( temp );
+                order(temp);
+                Collections.reverse(temp);
                 mdata.clear();
-                mdata.addAll( temp );
+                mdata.addAll(temp);
                 notifyDataSetChanged();
                 break;
 
             case 2:
-                Collections.sort( mdata, (o1, o2) -> String.valueOf( o1.getViewType() ).compareTo( String.valueOf( o2.getViewType() ) ) );
+                Collections.sort(mdata, (o1, o2) -> String.valueOf(o1.getViewType()).compareTo(String.valueOf(o2.getViewType())));
                 notifyDataSetChanged();
                 break;
             default:
@@ -185,10 +185,10 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     }
 
-    private List<NoteListItem> order(List<NoteListItem> temp) {
+    private void order(List<NoteListItem> temp) {
         temp.clear();
-        temp.addAll( mdata );
-        Collections.sort( temp, (o1, o2) -> {
+        temp.addAll(mdata);
+        Collections.sort(temp, (o1, o2) -> {
             String title1 = null, title2 = null;
             switch (o1.getViewType()) {
                 case 0:
@@ -229,9 +229,8 @@ public class NotesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                     break;
             }
 
-            return title1.compareTo( title2 );
-        } );
-        return temp;
+            return title1.compareTo(title2);
+        });
     }
 
     public List<NoteListItem> getMdata() {

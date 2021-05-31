@@ -4,9 +4,9 @@ import android.net.Uri;
 
 public class ImageInfo {
 
-    Uri uri;
-    String title;
-    String id;
+    private Uri uri;
+    private String title;
+    private String id;
 
     public ImageInfo() {
     }
@@ -15,7 +15,6 @@ public class ImageInfo {
         this.uri = uri;
         this.title = title;
     }
-
 
 
     public Uri getUri() {

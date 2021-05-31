@@ -8,12 +8,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.takeanote.R;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,11 +23,11 @@ import java.util.regex.Pattern;
 
 public class RegistrerViewModel extends AndroidViewModel {
 
-    FirebaseAuth auth;
-    private MutableLiveData<Boolean> registrat;
+    private final FirebaseAuth auth;
+    private final MutableLiveData<Boolean> registrat;
 
     public RegistrerViewModel(@NonNull Application application) {
-        super( application );
+        super(application);
         auth = FirebaseAuth.getInstance();
         registrat = new MutableLiveData<>();
     }
@@ -43,72 +42,60 @@ public class RegistrerViewModel extends AndroidViewModel {
         String userPass = pwd.getText().toString();
         String userConfPass = pwdConf.getText().toString();
         int errors = 0;
-        nameLayout.setError( null );
-        emailLayout.setError( null );
-        pwdLayout.setError( null );
-        pwdConfLayout.setError( null );
+        nameLayout.setError(null);
+        emailLayout.setError(null);
+        pwdLayout.setError(null);
+        pwdConfLayout.setError(null);
         // Comprovar i setejar errors
         if (userName.isEmpty()) {
-            nameLayout.setError( "Cannot be empty." );
+            nameLayout.setError(getApplication().getResources().getString(R.string.error_empty));
             errors++;
         }
-        //TODO: fer que error i toggle pwd no es sobreposin o posar un on text changed o algo aixi
         if (userPass.isEmpty()) {
-            pwdLayout.setError( "Cannot be empty." );
+            pwdLayout.setError(getApplication().getResources().getString(R.string.error_empty));
             errors++;
-        } else if (!isPwdSecure( userPass )) {
-            pwdLayout.setError( "Password not secure enought. Must contain at least 8 characters," +
-                    " one upercase letter, one lower case letter, one digit and no blank space" );
+        } else if (!isPwdSecure(userPass)) {
+            pwdLayout.setError(getApplication().getResources().getString(R.string.error_pwd_security));
         }
         if (userConfPass.isEmpty()) {
-            pwdConfLayout.setError( "Cannot be empty." );
+            pwdConfLayout.setError(getApplication().getResources().getString(R.string.error_empty));
             errors++;
-        } else if (!userPass.equals( userConfPass )) {
-            pwdConfLayout.setError( "Passwords do not match" );
+        } else if (!userPass.equals(userConfPass)) {
+            pwdConfLayout.setError(getApplication().getResources().getString(R.string.error_pwd_match));
             errors++;
         }
         if (userEmail.isEmpty()) {
-            emailLayout.setError( "Cannot be empty." );
+            emailLayout.setError(getApplication().getResources().getString(R.string.error_empty));
             errors++;
-        } else if (!isEmailValid( userEmail )) {
-            emailLayout.setError( "Email not valid" );
+        } else if (!isEmailValid(userEmail)) {
+            emailLayout.setError(getApplication().getResources().getString(R.string.error_email_not_valid));
             errors++;
         }
         if (errors != 0) {
-            //Toast.makeText(Register.this, "ESTA PASANT AMB ERROR REGISTER", Toast.LENGTH_SHORT).show();
             return registrat;
         }
 
-        AuthCredential credential = EmailAuthProvider.getCredential( userEmail, userPass );
-        auth.getCurrentUser().linkWithCredential( credential ).addOnSuccessListener( new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                Toast.makeText( getApplication().getApplicationContext(), "Notes are Syncced", Toast.LENGTH_SHORT ).show();
-                //activity.startActivity(new Intent(activity.getApplicationContext(), MainActivity.class));
-                FirebaseUser usr = auth.getCurrentUser();
-                UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
-                        .setDisplayName( userName )
-                        .build();
-                usr.updateProfile( request );
-                registrat.setValue( true );
-            }
-        } ).addOnFailureListener( new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //TODO: canviar per comprovar pwd abans
-                if (e.getMessage().contains( "email" )) emailLayout.setError( e.getMessage() );
-                //if (e.getMessage().contains("password")) pwdLayout.setError(e.getMessage());
-            }
-        } );
+        AuthCredential credential = EmailAuthProvider.getCredential(userEmail, userPass);
+        auth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(authResult -> {
+            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_notes_synced, Toast.LENGTH_SHORT).show();
+            FirebaseUser usr = auth.getCurrentUser();
+            UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(userName)
+                    .build();
+            usr.updateProfile(request);
+            registrat.setValue(true);
+        }).addOnFailureListener(e -> {
+            if (e.getMessage().contains("email")) emailLayout.setError(e.getMessage());
+        });
         return registrat;
     }
 
     private boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher( email ).matches();
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPwdSecure(String pwd) {
-        Pattern password = Pattern.compile( "^" +
+        Pattern password = Pattern.compile("^" +
                 "(?=.*[0-9])" +         //at least 1 digit
                 "(?=.*[a-z])" +         //at least 1 lower case letter
                 "(?=.*[A-Z])" +         //at least 1 upper case letter
@@ -116,8 +103,8 @@ public class RegistrerViewModel extends AndroidViewModel {
                 //"(?=.*[@#$%^&+=])" +    //at least 1 special character
                 "(?=\\S+$)" +           //no white spaces
                 ".{8,}" +               //at least 8 characters
-                "$" );
-        return password.matcher( pwd ).matches();
+                "$");
+        return password.matcher(pwd).matches();
     }
 
 }

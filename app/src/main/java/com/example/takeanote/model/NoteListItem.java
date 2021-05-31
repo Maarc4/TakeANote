@@ -1,8 +1,5 @@
 package com.example.takeanote.model;
 
-import android.media.Image;
-
-import com.example.takeanote.AddAudio;
 import com.example.takeanote.PaintView;
 import com.example.takeanote.utils.Constant;
 
