@@ -406,17 +406,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.setOriginal(original);
-                adapter.filter(query);
-                adapter.orderRecyclerView(order);
+                if(adapter != null){
+                    adapter.setOriginal(original);
+                    adapter.filter(query);
+                    adapter.orderRecyclerView(order);
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.setOriginal(original);
-                adapter.filter(newText);
-                adapter.orderRecyclerView(order);
+                if(adapter != null){
+                    adapter.setOriginal(original);
+                    adapter.filter(newText);
+                    adapter.orderRecyclerView(order);
+                }
                 return false;
             }
         });

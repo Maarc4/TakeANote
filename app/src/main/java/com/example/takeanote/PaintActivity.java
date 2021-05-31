@@ -187,19 +187,6 @@ public class PaintActivity extends AppCompatActivity {
                 paintView.setBrushColor(color);
                 break;
             case R.id.save:
-
-                paintActivityViewModel.saveView(paintView).observe(this, s -> {
-                    // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
-                    final ProgressDialog progressDialog = new ProgressDialog(PaintActivity.this);
-                    paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
-                    if (!title.getText().toString().equals("")) {
-                        paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
-                        imageUri = paintActivityViewModel.ImageUri;
-                    } else {
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_introduce_title, Toast.LENGTH_SHORT).show();
-                    }
-                    //onBackPressed();
-                });
                 if (!title.getText().toString().isEmpty()) {
                     paintActivityViewModel.saveView(paintView).observe(this, s -> {
                         // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
