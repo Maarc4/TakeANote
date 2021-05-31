@@ -443,6 +443,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText( getApplication().getApplicationContext(), "Map deleted.", Toast.LENGTH_SHORT ).show();
                         notesData.setValue( newData );
+
                     }
                 } ).addOnFailureListener( new OnFailureListener() {
                     @Override
@@ -460,6 +461,19 @@ public class MainActivityViewModel extends AndroidViewModel {
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 storageReference.child( documentSnapshot.getString( "url" ) ).delete();
                                 notesData.setValue( newData );
+                                DocumentReference docRef = db.collection( "notes" ).document( user.getUid() ).collection( "imageNotes" ).document( iinfo.getId() );
+                                docRef.delete().addOnSuccessListener( new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText( getApplication().getApplicationContext(), "Imagenote deleted.", Toast.LENGTH_SHORT ).show();
+                                        notesData.setValue( newData );
+                                    }
+                                } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText( getApplication().getApplicationContext(), "FAILED to delete the note.", Toast.LENGTH_SHORT ).show();
+                                    }
+                                } );
                             }
                         } ).addOnFailureListener( new OnFailureListener() {
                     @Override
@@ -467,6 +481,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                         Toast.makeText( getApplication().getApplicationContext(), "Error Deleting PAINT note!", Toast.LENGTH_SHORT ).show();
                     }
                 } );
+                break;
             case Constant.ITEM_AUDIO_NOTE_VIEWTYPE:
                 AudioInfo aud = noteListItem.getAudioNoteItem();
                 db.collection( "notes" ).document( user.getUid() ).collection( "AudioNotes" ).document( aud.getId() )

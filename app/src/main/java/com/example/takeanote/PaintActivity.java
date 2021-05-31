@@ -18,7 +18,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -46,9 +48,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
+
+import static android.view.View.VISIBLE;
 
 public class PaintActivity extends AppCompatActivity {
     Intent data;
@@ -78,23 +84,22 @@ public class PaintActivity extends AppCompatActivity {
 
 
         imageView.setVisibility(View.INVISIBLE);
+
         if (data.getExtras() != null) {
             uriPath = data.getExtras().get("uri").toString();
             Log.d( "URISS", "URI DINS: " + uriPath);
             title.setText( data.getStringExtra( "title" ) );
             /// INVALIDATE --------------------
             //Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
-            Uri uris = (Uri) data.getExtras().get("uri");
-            mImageUri = uris;
-            Paint paint = new Paint();
 
-            paintView.invalidate();
-            //ImageView image = (ImageView) findViewById(R.id.imageView);
-            /*imageView.setVisibility(View.VISIBLE);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
 
-            imageView.setImageURI(null);
-            imageView.setImageURI(mImageUri);
-            imageView.invalidate();*/
+
+
+            //imageView.setImageURI(null);
+           //imageView.setImageURI(mImageUri);
+            //imageView.invalidate();
 
            /* Bitmap ass = null;
             try {
@@ -139,7 +144,13 @@ public class PaintActivity extends AppCompatActivity {
         width = PaintView.BRUSH_SIZE;
         color = PaintView.DEFAULT_COLOR;
         ActivityCompat.requestPermissions( PaintActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1 );
+
+
     }
+
+
+
+
 
 
 
@@ -216,12 +227,12 @@ public class PaintActivity extends AppCompatActivity {
                 break;
             case R.id.save:
 
-                paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
+                /*paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
                         // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                        paintActivityViewModel.uploadImage( progressDialog, title.getText().toString());
+                        //paintActivityViewModel.uploadImage( progressDialog, title.getText().toString());
                         if(!title.getText().toString().equals("")) {
                             paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
                             imageUri = paintActivityViewModel.ImageUri;
@@ -231,7 +242,7 @@ public class PaintActivity extends AppCompatActivity {
                         }
                         //onBackPressed();
                     }
-                } );
+                } );*/
                 if (!title.getText().toString().isEmpty()){
                     paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
                         @Override
