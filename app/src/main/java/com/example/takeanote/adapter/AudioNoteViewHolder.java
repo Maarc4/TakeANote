@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,10 @@ public class AudioNoteViewHolder extends BaseViewHolder {
     ImageButton audioPlayButton;
     ImageView audioMenuItem;
     TextView audioTitle;
+    SeekBar seekBar;
     View view;
     OnNoteTypeClickListener listener;
-    private MediaPlayer mediaplayer;
+
 
     public AudioNoteViewHolder(@NonNull View itemView, OnNoteTypeClickListener listener) {
         super(itemView);

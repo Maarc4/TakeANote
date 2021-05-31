@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private androidx.appcompat.widget.SearchView search;
     private List<NoteListItem> original;
     private int order;
-    private MediaPlayer mediaplayer;
-    private ImageButton record;
+
+    //private ImageButton record;
 
     @Override
     protected void onPostResume() {
@@ -88,9 +88,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         order = -1;
         listOfNotes = findViewById(R.id.listOfNotes);
         listOfNotes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mediaplayer = new MediaPlayer();
+
         setUpViewModel();
-        record = findViewById(R.id.audioPlayButton);
+        //record = findViewById(R.id.audioPlayButton);
         drawerLayout = findViewById(R.id.drawer);
         NavigationView nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
@@ -162,12 +162,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(textIntent);
                         break;
                     case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
-                        AudioInfo textAudio = noteItem.getAudioNoteItem();
+                        /*AudioInfo textAudio = noteItem.getAudioNoteItem();
                         Intent textIn = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
                         textIn.putExtra("title", textAudio.getTitle());
                         textIn.putExtra("noteId", textAudio.getId());
                         textIn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(textIn);
+                        startActivity(textIn);*/
                         break;
                    /* case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
                         PaintInfo paintInfo = noteItem.getPaintInfo();
@@ -208,36 +208,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         paintIntent.putExtra("path", paintInfo.getUriPath());
                         startActivity(paintIntent);
 
-
-                        /*
-                        //Intent intent = new Intent();
-                        //intent.setAction(Intent.ACTION_VIEW);
-                        //intent.setDataAndType(PaintActivity.imageUri, "image/*");
-                        //startActivity(intent);
-                        PaintInfo paintInfo = noteItem.getPaintInfo();
-                        //Intent paintIntent = new Intent();
-                        //paintIntent.setAction();
-
-                        Log.d("myTag", "This is my message");
-                        //paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
-                        //startActivity(paintIntent);
-
-
-
-                        Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
-                        paintIntent1.putExtra( "title", paintInfo.getTitle() );
-                        Uri a = paintInfo.getUri();
-                        paintIntent1.putExtra("uriPath",paintInfo.getUri());
-                        Bitmap bmp = paintInfo.getBmp();
-                        paintIntent1.putExtra("bitmap",paintInfo.getBmp());
-
-
-
-                        Log.d( "URISS", "URI FORA: " + a );
-                        paintIntent1.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-                        startActivity( paintIntent1 );
-
-                        */
                         break;
 
 
@@ -277,35 +247,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onPlayClick(NoteListItem audio, View view) {
-
+                MediaPlayer mediaplayer = new MediaPlayer();
                 AudioInfo aud = audio.getAudioNoteItem();
                 if (!mediaplayer.isPlaying()) {
-
                     String fileName = aud.getUri().toString();
                     Log.d("MAct", fileName);
                     try {
                         mediaplayer.setDataSource(fileName);
                         mediaplayer.prepare();
-                    } catch (IOException e) {
+                        Log.d("Holaaa", fileName);
+                        mediaplayer.start();
+                    }catch (IOException e) {
                         e.printStackTrace();
                     }
+
                 } else {
                     Toast.makeText(MainActivity.this, R.string.toast_playing, Toast.LENGTH_SHORT).show();
                 }
-                /*
-                if(!aud.isRepro()){
-                    mediaplayer.start();
-                }else{
-                    mediaplayer.pause();
-                }*/
 
             }
-            /*record.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mediaplayer.start();
-                }
-            });*/
+
 
         });
         Handler handler = new Handler(Looper.getMainLooper());
