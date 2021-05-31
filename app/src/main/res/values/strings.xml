@@ -57,7 +57,7 @@
     <string name="maps_opt4" translatable="false">opt4</string>
     <string name="maps_opt5" translatable="false">opt5</string>
     <string name="mic_start_recording">Press the mic button   to start recording</string>
-    <string name="maps_address">Address: </string>
+    <string name="maps_address">\Address: \</string>
     <string name="create_new_account">Create New Account</string>
     <string name="error_pwd_not_correct">The password is not correct</string>
     <string name="login_takeANote">Login to TakeANote</string>
@@ -141,4 +141,5 @@
     <string name="toast_not_saved">ERROR NOT SAVED</string>
     <string name="toast_introduce_img">Introduce an image </string>
     <string name="toast_introduce_title">Introduce a title </string>
+    <string name="Welcome">\Welcome back \</string>
 </resources>

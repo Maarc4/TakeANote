@@ -62,7 +62,7 @@
     <string name="order_notes">Ordenar notes</string>
     <string name="order_type">Tipus</string>
     <string name="mic_start_recording">Presiona el botó per a començar a grabar</string>
-    <string name="maps_address">Direcció:</string>
+    <string name="maps_address">\Direcció: \</string>
     <string name="create_new_account">Crear nou compte</string>
     <string name="error_empty">No pot estar buit</string>
     <string name="error_pwd_security">La contrasenya no és suficientment segura. Ha de contenir com a mínim 8 caràcters, una majúscula, una minúscula, un número i cap espai</string>

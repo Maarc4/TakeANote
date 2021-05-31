@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         MaterialToolbar toolbar = findViewById(R.id.content_main_toolbar);
         setSupportActionBar(toolbar);
-        order = -1;
+        order = 2;
         listOfNotes = findViewById(R.id.listOfNotes);
         listOfNotes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
