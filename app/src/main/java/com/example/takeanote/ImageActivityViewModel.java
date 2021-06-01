@@ -110,7 +110,7 @@ public class ImageActivityViewModel extends AndroidViewModel {
                     .addOnProgressListener(snapshot -> {
                         double progress = (100.0 * snapshot.getBytesTransferred() / snapshot
                                 .getTotalByteCount());
-                        progressDialog.setMessage(getApplication().getResources().getString(R.string.toast_uploaded) + (int) progress + "%");
+                        progressDialog.setMessage(getApplication().getResources().getString(R.string.uploading) + (int) progress + "%");
                     });
 
         } else {

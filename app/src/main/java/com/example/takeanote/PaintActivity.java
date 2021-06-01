@@ -74,7 +74,7 @@ public class PaintActivity extends AppCompatActivity {
 
         imageView.setVisibility(View.INVISIBLE);
         if (data.getExtras() != null) {
-            String uriPath = data.getExtras().get("uri").toString();
+            String uriPath = data.getExtras().get("uriPath").toString();
             Log.d("URISS", "URI DINS: " + uriPath);
             title.setText(data.getStringExtra("title"));
         }

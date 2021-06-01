@@ -255,8 +255,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.add_drawing_note:
-                Intent paintIntent1 = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
-                paintIntent1.putExtra("uriPath", " ");
+                Intent paintIntent1 = new Intent(getApplicationContext(), PaintActivity.class);
+                paintIntent1.putExtra("uriPath", "  ");
                 startActivity(paintIntent1);
                 break;
 

@@ -151,7 +151,6 @@ public class AddAudio extends AppCompatActivity {
         mrecorder.stop();
         mrecorder.release();
         mrecorder = null;
-
     }
 
     @Override
