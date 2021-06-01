@@ -28,6 +28,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.takeanote.notes.AddNoteViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -56,12 +57,7 @@ public class AddAudio extends AppCompatActivity {
     private String fileName = null;
     private boolean isrecording = false;
     MaterialToolbar toolbar;
-    FirebaseStorage storage;
-    FirebaseFirestore db;
-    StorageReference storageReference;
-    String userid;
-    private ProgressDialog mProgress;
-
+    private AddAudioViewModel viewModel;
 
 
     @Override
@@ -71,21 +67,19 @@ public class AddAudio extends AppCompatActivity {
         fileName = getExternalCacheDir().getAbsolutePath();
         fileName += ("/audio_recorded.3gp");
         setContentView(R.layout.activity_add_audio);
+
+        viewModel = new ViewModelProvider(this).get(AddAudioViewModel.class);
+
+
         recorder = findViewById(R.id.record_btn);
         text = findViewById(R.id.record_filename);
         recorder2 = findViewById(R.id.record2_btn);
         View b = findViewById(R.id.record2_btn);
         b.setVisibility(View.GONE);
         title = findViewById(R.id.AudioTitle);
-        this.storage = FirebaseStorage.getInstance();
-        this.userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        db = FirebaseFirestore.getInstance();
 
         toolbar = findViewById(R.id.audioToolbar);
         setSupportActionBar(toolbar);
-        mProgress = new ProgressDialog(this);
-
 
         time = findViewById(R.id.record_timer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -117,8 +111,7 @@ public class AddAudio extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-
-                uploadAudio();
+                viewModel.uploadAudio(fileName, title.getText().toString());
                 break;
 
             case android.R.id.home:
@@ -167,33 +160,4 @@ public class AddAudio extends AppCompatActivity {
         inflater.inflate(R.menu.add_note_top_bar, menu);
         return true;
     }
-
-    private void uploadAudio() {
-        String nTitle = title.getText().toString();
-
-        if (nTitle.isEmpty()) {
-            text.setText(getApplication().getResources().getString(R.string.toast_empty_field));
-        }else{
-            mProgress.setMessage(getApplication().getResources().getString(R.string.uploading));
-            mProgress.show();
-            String saveUrl = getApplication().getResources().getString(R.string.audio_type) + userid + "/" + UUID.randomUUID().toString() + getApplication().getResources().getString(R.string.suffix_3gp);
-
-            DocumentReference docref = db.collection( "notes" ).document( userid ).collection( "AudioNotes" ).document();
-            StorageReference filepath = storageReference.child(saveUrl);
-            Uri uri = Uri.fromFile(new File(fileName));
-            Map<String, Object> newNote = new HashMap<>();
-            newNote.put("title", title.getText().toString());
-            newNote.put( "url", saveUrl );
-
-            docref.set( newNote ).addOnSuccessListener(aVoid -> Log.d( "PAVM", "ONSUCCESS docref.setNote" ))
-                    .addOnFailureListener(e -> Log.d( "PAVM", "FAILURE docref.setNote" ));
-
-            filepath.putFile(uri).addOnSuccessListener(taskSnapshot -> {
-                mProgress.dismiss();
-                text.setText(getApplication().getResources().getString(R.string.toast_uploaded));
-            });
-        }
-    }
-
-
 }
