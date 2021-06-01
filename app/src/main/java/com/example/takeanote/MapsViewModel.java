@@ -36,7 +36,7 @@ public class MapsViewModel extends AndroidViewModel {
 
     public LiveData<Map<String, Object>> updateMaps(String title, LatLng latLng, String address, String id) {
         if (title.isEmpty()) {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
             return map;
         }
         DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myMaps").document(id);
@@ -47,17 +47,17 @@ public class MapsViewModel extends AndroidViewModel {
         newNote.put("address", address);
 
         docref.update(newNote).addOnSuccessListener(aVoid -> {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_map_updated_db, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_map_updated_db), Toast.LENGTH_SHORT).show();
             map.setValue(newNote);
         }).addOnFailureListener(e -> {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_map_update_db, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_map_update_db), Toast.LENGTH_SHORT).show();
         });
         return map;
     }
 
     public LiveData<Map<String, Object>> saveMaps(String title, LatLng latLng, String address) {
         if (title.isEmpty()) {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
             return map;
         }
         DocumentReference docref = db.collection("notes").document(user.getUid()).collection("myMaps").document();
@@ -69,10 +69,10 @@ public class MapsViewModel extends AndroidViewModel {
         newNote.put("type", "mapNote");
 
         docref.set(newNote).addOnSuccessListener(aVoid -> {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_map_added_db, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_map_added_db), Toast.LENGTH_SHORT).show();
             map.setValue(newNote);
         }).addOnFailureListener(e -> {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_add_map_db, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_add_map_db), Toast.LENGTH_SHORT).show();
         });
         return map;
     }

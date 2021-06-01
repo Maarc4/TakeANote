@@ -76,34 +76,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     popupMenu.getMenuInflater().inflate(R.menu.maps_menu, popupMenu.getMenu());
                     if (addressList != null && !addressList.isEmpty()) {
                         viewModel.confItems(popupMenu, addressList);
-                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.Opt1:
-                                        address = addressList.get(0);
-                                        break;
-                                    case R.id.Opt2:
-                                        address = addressList.get(1);
-                                        break;
-                                    case R.id.Opt3:
-                                        address = addressList.get(2);
-                                        break;
-                                    case R.id.Opt4:
-                                        address = addressList.get(3);
-                                        break;
-                                    case R.id.Opt5:
-                                        address = addressList.get(4);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                                mMap.clear();
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(t.getText().toString()));
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                                return true;
+                        popupMenu.setOnMenuItemClickListener(item -> {
+                            switch (item.getItemId()) {
+                                case R.id.Opt1:
+                                    address = addressList.get(0);
+                                    break;
+                                case R.id.Opt2:
+                                    address = addressList.get(1);
+                                    break;
+                                case R.id.Opt3:
+                                    address = addressList.get(2);
+                                    break;
+                                case R.id.Opt4:
+                                    address = addressList.get(3);
+                                    break;
+                                case R.id.Opt5:
+                                    address = addressList.get(4);
+                                    break;
+                                default:
+                                    break;
                             }
+                            latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                            mMap.clear();
+                            mMap.addMarker(new MarkerOptions().position(latLng).title(t.getText().toString()));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                            return true;
                         });
                         popupMenu.show();
                     }
@@ -154,12 +151,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.save:
                 String title = t.getText().toString();
                 if (title.isEmpty()) {
-                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
                 } else if (address == null || data.getExtras() != null && title.equals(data.getExtras().get("title")) && address.toString().equals(data.getExtras().getString("address"))) {
                     if (address == null && data.getExtras() == null) {
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_nothing_changed, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_nothing_changed), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
@@ -184,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
 
             default:
-                Toast.makeText(this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

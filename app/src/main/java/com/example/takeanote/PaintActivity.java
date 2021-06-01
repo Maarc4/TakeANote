@@ -57,14 +57,8 @@ public class PaintActivity extends AppCompatActivity {
     private PaintView paintView;
     private int width;
     private int color;
-    private MaterialToolbar toolbar;
     private EditText title;
     private PaintActivityViewModel paintActivityViewModel;
-    private ImageView imageView;
-    private Bitmap bitmap;
-    public static Uri imageUri;
-    private Uri mImageUri;
-    private String uriPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,58 +68,15 @@ public class PaintActivity extends AppCompatActivity {
 
         paintView = findViewById(R.id.paintView);
         title = findViewById(R.id.PaintTitle);
-        toolbar = findViewById(R.id.paintToolbar);
-        imageView = findViewById(R.id.imageView4);
+        MaterialToolbar toolbar = findViewById(R.id.paintToolbar);
+        ImageView imageView = findViewById(R.id.imageView4);
 
 
         imageView.setVisibility(View.INVISIBLE);
         if (data.getExtras() != null) {
-            uriPath = data.getExtras().get("uri").toString();
+            String uriPath = data.getExtras().get("uri").toString();
             Log.d("URISS", "URI DINS: " + uriPath);
             title.setText(data.getStringExtra("title"));
-            /// INVALIDATE --------------------
-            //Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
-            Uri uris = (Uri) data.getExtras().get("uri");
-            mImageUri = uris;
-            Paint paint = new Paint();
-
-            paintView.invalidate();
-            //ImageView image = (ImageView) findViewById(R.id.imageView);
-            /*imageView.setVisibility(View.VISIBLE);
-
-            imageView.setImageURI(null);
-            imageView.setImageURI(mImageUri);
-            imageView.invalidate();*/
-
-           /* Bitmap ass = null;
-            try {
-                ass = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uris);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            paintView.setCanvas(new Canvas(ass));*/
-
-           /* Drawable d = null;//= new DrawableContainer();
-
-            InputStream inputStream = null;
-            try {
-                inputStream = getContentResolver().openInputStream(uris);
-                d = Drawable.createFromStream(inputStream, uris.toString() );
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            //Uri imgUri = Uri.parse(uriPath);
-            //imageView.setImageURI(null);
-            //imageView.setImageURI(imgUri);
-
-
-            //imageView.setImageBitmap(other);
-            //imageView.setImageURI(Uri.parse(uriPath));
-            //imageView.setImageDrawable(d);
-
-            paintView.setBackground(d);*/
-            //imageView.setVisibility(View.VISIBLE);
         }
 
 
@@ -148,10 +99,6 @@ public class PaintActivity extends AppCompatActivity {
 
     public String getStringTitle() {
         return title.getText().toString();
-    }
-
-    public void setImageUri(Uri imageUri) {
-        this.mImageUri = imageUri;
     }
 
     @Override
@@ -219,13 +166,11 @@ public class PaintActivity extends AppCompatActivity {
             case R.id.save:
                 if (!title.getText().toString().isEmpty()) {
                     paintActivityViewModel.saveView(paintView).observe(this, s -> {
-                        // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
                         final ProgressDialog progressDialog = new ProgressDialog(PaintActivity.this);
                         paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
-                        //onBackPressed();
                     });
                 } else {
-                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
                 }
 
                 break;

@@ -141,7 +141,6 @@
     <string name="toast_not_saved">ERROR NOT SAVED</string>
     <string name="toast_introduce_img">Introduce an image </string>
     <string name="toast_introduce_title">Introduce a title </string>
-    <string name="Welcome">\Welcome back \</string>
-    <string name="audio_type">audios/</string>
-    <string name="suffix_3gp">.3gp</string>
+    <string name="audio_type" translatable="false">audios/</string>
+    <string name="suffix_3gp" translatable="false">.3gp</string>
 </resources>

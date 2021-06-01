@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         viewModel.init().observe(this, allTypeNotes -> {
             setUpAdapter(allTypeNotes);
-            //adapter.notifyDataSetChanged();
         });
 
     }
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         finish();
                         break;
                     default:
-                        Toast.makeText(MainActivity.this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -181,16 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("myTag", "This ssage");
                         paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
                         startActivity(paintIntent);
-
-
-                        /*PaintInfo paintInfo = noteItem.getPaintInfo();
-                        Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
-                        paintIntent.putExtra("title", paintInfo.getTitle());
-                        Uri a = paintInfo.getUri();
-                        paintIntent.putExtra("uri", paintInfo.getUri());
-                        paintIntent.putExtra("path", paintInfo.getUriPath());
-                        startActivity(paintIntent);*/
-
                         break;
 
                     case (Constant.ITEM_MAP_NOTE_VIEWTYPE):
@@ -200,12 +189,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         mapsIntetnt.putExtra("latlng", maps.getLatLng());
                         mapsIntetnt.putExtra("id", maps.getId());
                         mapsIntetnt.putExtra("address", maps.getAddress());
-                        //mapsIntetnt.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
                         startActivity(mapsIntetnt);
                         finish();
                         break;
                     default:
-                        Toast.makeText(MainActivity.this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -216,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     viewModel.deleteNote(noteItem, noteItem.getViewType());
                     viewModel.init().observe(MainActivity.this, allTypeNotes -> {
                         setUpAdapter(allTypeNotes);
-                        //adapter.notifyDataSetChanged();
                     });
                     return false;
                 });
@@ -240,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_playing, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getApplication().getResources().getString(R.string.toast_playing), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -307,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Toast.makeText(this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -324,27 +311,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (item.getItemId() == R.id.action_order) {
             PopupMenu popupMenu = new PopupMenu(this, this.findViewById(R.id.content_main_toolbar), Gravity.RIGHT);
             popupMenu.getMenuInflater().inflate(R.menu.order_menu, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.alfabet:
-                            order = 0;
-                            adapter.orderRecyclerView(order);
-                            break;
-                        case R.id.alfabet_reverse:
-                            order = 1;
-                            adapter.orderRecyclerView(order);
-                            break;
-                        case R.id.order_type:
-                            order = 2;
-                            adapter.orderRecyclerView(order);
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
+            popupMenu.setOnMenuItemClickListener(item1 -> {
+                switch (item1.getItemId()) {
+                    case R.id.alfabet:
+                        order = 0;
+                        adapter.orderRecyclerView(order);
+                        break;
+                    case R.id.alfabet_reverse:
+                        order = 1;
+                        adapter.orderRecyclerView(order);
+                        break;
+                    case R.id.order_type:
+                        order = 2;
+                        adapter.orderRecyclerView(order);
+                        break;
+                    default:
+                        break;
                 }
+                return true;
             });
             popupMenu.show();
 
@@ -355,12 +339,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO possible traspas a viewmodel?
     public void displayAlert() {
         AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setTitle(R.string.alert_sure)
-                .setMessage(R.string.alert_logged_temp_acc)
-                .setPositiveButton(R.string.alert_sync, (dialog, which) -> {
+                .setTitle(getApplication().getResources().getString(R.string.alert_sure))
+                .setMessage(getApplication().getResources().getString(R.string.alert_logged_temp_acc))
+                .setPositiveButton(getApplication().getResources().getString(R.string.alert_sync), (dialog, which) -> {
                     startActivity(new Intent(getApplicationContext(), Register.class));
                     finish();
-                }).setNegativeButton(R.string.log_out, (dialog, which) -> viewModel.getUser().delete()
+                }).setNegativeButton(getApplication().getResources().getString(R.string.log_out), (dialog, which) -> viewModel.getUser().delete()
                         .addOnSuccessListener(aVoid -> {
                             startActivity(new Intent(getApplicationContext(), LoadScreen.class));
                             finish();
@@ -372,9 +356,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO possible traspas a viewmodel
     public void showWarning() {
         final AlertDialog.Builder warning = new AlertDialog.Builder(this)
-                .setMessage(R.string.warging_link_Acc)
-                .setPositiveButton(R.string.warning_save_notes, (dialog, which) -> startActivity(new Intent(getApplicationContext(), Register.class)))
-                .setNegativeButton(R.string.warning_ok, (dialog, which) -> startActivity(new Intent(getApplicationContext(), Login.class)));
+                .setMessage(getApplication().getResources().getString(R.string.warging_link_Acc))
+                .setPositiveButton(getApplication().getResources().getString(R.string.warning_save_notes), (dialog, which) -> startActivity(new Intent(getApplicationContext(), Register.class)))
+                .setNegativeButton(getApplication().getResources().getString(R.string.warning_ok), (dialog, which) -> startActivity(new Intent(getApplicationContext(), Login.class)));
         warning.show();
     }
 

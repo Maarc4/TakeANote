@@ -74,9 +74,6 @@ public class MainActivityViewModel extends AndroidViewModel {
                                         ii.setUri(uri);
                                         ii.setTitle(q.getString("title"));
                                         ii.setId(q.getId());
-
-                                        ///pi.setTitle(q.getString("title")); //No hi ha re guardat al title
-                                        /// PaintView pv = q.toObject(PaintView.class);
                                         NoteListItem noteListItem = new NoteListItem(ii);
 
                                         notes.add(noteListItem);
@@ -84,7 +81,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                         }
                     }
                     notesData.setValue(notes);
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_load_img, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_load_img), Toast.LENGTH_SHORT).show());
 
         //PAINT NOTES
         db.collection("notes").document(user.getUid()).collection("paintNotes")
@@ -104,16 +101,13 @@ public class MainActivityViewModel extends AndroidViewModel {
                                         pi.setTitle(q.getString("title"));
                                         pi.setId(q.getId());
                                         pi.setUriPath(q.getString("filepath"));
-                                        //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
-
-                                        // PaintView pv = q.toObject(PaintView.class);
                                         NoteListItem noteListItem = new NoteListItem(pi);
                                         notes.add(noteListItem);
                                     }).addOnFailureListener(e -> Log.d("MAVM ->ERROR", e.getMessage()));
                         }
                     }
                     notesData.setValue(notes);
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_load_paint, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_load_paint), Toast.LENGTH_SHORT).show());
 
 
         //TEXT NOTES
@@ -136,7 +130,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                     }
                     notesData.setValue(notes);
                     Log.d("MAVM", "notes amb text? " + notes.size());
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_load_text, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_load_text), Toast.LENGTH_SHORT).show());
 
         //MAPS NOTES
         db.collection("notes").document(user.getUid()).collection("myMaps")
@@ -158,7 +152,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                     }
                     notesData.setValue(notes);
                     Log.d("MAVM", "notes amb text? " + notes.size());
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_load_map, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_load_map), Toast.LENGTH_SHORT).show());
 
         //Audio NOTES
         db.collection("notes").document(user.getUid()).collection("AudioNotes")
@@ -178,15 +172,13 @@ public class MainActivityViewModel extends AndroidViewModel {
                                         pi.setTitle(q.getString("title"));
                                         pi.setId(q.getId());
                                         pi.setPath(q.getString("url"));
-                                        //pi.setTitle(q.getString("title")); //No hi ha re guardat al title
-                                        // PaintView pv = q.toObject(PaintView.class);
                                         NoteListItem noteListItem = new NoteListItem(pi);
                                         notes.add(noteListItem);
                                     }).addOnFailureListener(e -> Log.d("MAVM ->ERROR", e.getMessage()));
                         }
                     }
                     notesData.setValue(notes);
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_load_audio, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_load_audio), Toast.LENGTH_SHORT).show());
         return notesData;
     }
 
@@ -253,9 +245,9 @@ public class MainActivityViewModel extends AndroidViewModel {
                 NoteUI textNote = noteListItem.getTextNoteItem();
                 docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(textNote.getId());
                 docRef.delete().addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_note_deleted, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_note_deleted), Toast.LENGTH_SHORT).show();
                     notesData.setValue(newData);
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_delete, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_delete), Toast.LENGTH_SHORT).show());
                 break;
 
             case Constant.ITEM_PAINT_NOTE_VIEWTYPE:
@@ -267,19 +259,19 @@ public class MainActivityViewModel extends AndroidViewModel {
                             notesData.setValue(newData);
                             DocumentReference docRef1 = db.collection("notes").document(user.getUid()).collection("paintNotes").document(pinfo.getId());
                             docRef1.delete().addOnSuccessListener(aVoid -> {
-                                Toast.makeText(getApplication().getApplicationContext(), R.string.toast_paint_deleted, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_paint_deleted), Toast.LENGTH_SHORT).show();
                                 notesData.setValue(newData);
-                            }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_delete_paint, Toast.LENGTH_SHORT).show());
-                        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_delete_paint, Toast.LENGTH_SHORT).show());
+                            }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_delete_paint), Toast.LENGTH_SHORT).show());
+                        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_delete_paint), Toast.LENGTH_SHORT).show());
                 break;
 
             case Constant.ITEM_MAP_NOTE_VIEWTYPE:
                 MapsInfo mapsInfo = noteListItem.getMaps();
                 docRef = db.collection("notes").document(user.getUid()).collection("myMaps").document(mapsInfo.getId());
                 docRef.delete().addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_map_deleted, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_map_deleted), Toast.LENGTH_SHORT).show();
                     notesData.setValue(newData);
-                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_delete_map, Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_delete_map), Toast.LENGTH_SHORT).show());
                 break;
 
             case Constant.ITEM_IMAGE_NOTE_VIEWTYPE:
@@ -289,7 +281,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                         .addOnSuccessListener(documentSnapshot -> {
                             storageReference.child(documentSnapshot.getString("url")).delete();
                             notesData.setValue(newData);
-                        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_delete_img, Toast.LENGTH_SHORT).show());
+                        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_delete_img), Toast.LENGTH_SHORT).show());
 
             case Constant.ITEM_AUDIO_NOTE_VIEWTYPE:
                 AudioInfo aud = noteListItem.getAudioNoteItem();
@@ -303,11 +295,11 @@ public class MainActivityViewModel extends AndroidViewModel {
                                 notesData.setValue(newData);
                                 DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("AudioNotes").document(aud.getId());
                                 docRef.delete().addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_audio_deleted, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_audio_deleted), Toast.LENGTH_SHORT).show();
                                     notesData.setValue(newData);
-                                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_delete_audio, Toast.LENGTH_SHORT).show());
+                                }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_delete_audio), Toast.LENGTH_SHORT).show());
                             }
-                        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error_delete_audio, Toast.LENGTH_SHORT).show());
+                        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_delete_audio), Toast.LENGTH_SHORT).show());
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -319,7 +311,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         if (user.isAnonymous()) {
             return true;
         } else {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_connected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_connected), Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -338,7 +330,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     public void menuConf(TextView email, TextView username) {
         if (user.isAnonymous()) {
             email.setVisibility(View.INVISIBLE);
-            username.setText(R.string.temp_account);
+            username.setText(getApplication().getResources().getString(R.string.temp_account));
         } else {
             email.setText(user.getEmail());
             username.setText(user.getDisplayName());

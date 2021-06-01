@@ -46,9 +46,9 @@ public class PaintActivityViewModel extends AndroidViewModel {
     public void uploadImage(ProgressDialog progressDialog, String paintTitle) {
 
         if (filePath != null) {
-            progressDialog.setTitle(R.string.uploading);
+            progressDialog.setTitle(getApplication().getResources().getString(R.string.uploading));
             progressDialog.show();
-            String saveUrl = R.string.image_type + userUID + "/" + UUID.randomUUID().toString() + R.string.suffix_jpg;
+            String saveUrl = getApplication().getResources().getString(R.string.image_type) + userUID + "/" + UUID.randomUUID().toString() + getApplication().getResources().getString(R.string.suffix_jpg);
 
             // Guardem la nota a firebase per
             DocumentReference docref = db.collection("notes").document(userUID).collection("paintNotes").document();
@@ -68,11 +68,11 @@ public class PaintActivityViewModel extends AndroidViewModel {
             ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(taskSnapshot -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_uploaded, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_uploaded), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnProgressListener(taskSnapshot -> {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
@@ -100,7 +100,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
             filePath = imgSaved;
             observableFilePath.setValue(imgSaved);
         } else {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_not_saved, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_not_saved), Toast.LENGTH_SHORT).show();
         }
         paintView.destroyDrawingCache();
         return observableFilePath;

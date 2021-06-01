@@ -37,7 +37,7 @@ public class LoadScreenViewModel extends AndroidViewModel {
             } else {
                 // create new anonymous acount
                 finalAuth.signInAnonymously().addOnSuccessListener(authResult -> tempAuth.setValue(finalAuth))
-                        .addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), R.string.toast_error + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        .addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error) + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
         }, 2000);

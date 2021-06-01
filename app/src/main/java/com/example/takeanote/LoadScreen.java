@@ -16,9 +16,9 @@ public class LoadScreen extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(LoadScreenViewModel.class);
         viewModel.login().observe(this, firebaseAuth -> {
             if (viewModel.getUser().isAnonymous()) {
-                Toast.makeText(LoadScreen.this, getString( R.string.login_temp) , Toast.LENGTH_LONG).show();
+                Toast.makeText(LoadScreen.this, getApplication().getResources().getString(R.string.login_temp) , Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(LoadScreen.this, getString( R.string.Welcome) + viewModel.getUser().getDisplayName() + "!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoadScreen.this, getApplication().getResources().getString(R.string.toast_welcome) + viewModel.getUser().getDisplayName() + "!!", Toast.LENGTH_LONG).show();
             }
 
             startActivity(new Intent(getApplicationContext(), MainActivity.class));

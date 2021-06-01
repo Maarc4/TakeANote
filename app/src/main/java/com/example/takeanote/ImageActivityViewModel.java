@@ -47,7 +47,7 @@ public class ImageActivityViewModel extends AndroidViewModel {
         if (filePath != null) {
             progressDialog.setTitle(getApplication().getResources().getString(R.string.uploading));
             progressDialog.show();
-            String saveUrl = R.string.image_type + userUID + "/" + UUID.randomUUID().toString() + R.string.suffix_jpg;
+            String saveUrl = getApplication().getResources().getString(R.string.image_type) + userUID + "/" + UUID.randomUUID().toString() + getApplication().getResources().getString(R.string.suffix_jpg);
 
             // Guardem la nota a firebase per
             DocumentReference docref = db.collection("notes").document(userUID).collection("imageNotes").document();
@@ -65,16 +65,16 @@ public class ImageActivityViewModel extends AndroidViewModel {
             ref.putFile(Uri.parse(filePath))
                     .addOnSuccessListener(taskSnapshot -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_uploaded, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_uploaded), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnProgressListener(taskSnapshot -> {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                 .getTotalByteCount());
-                        progressDialog.setMessage(R.string.toast_uploaded + (int) progress + "%");
+                        progressDialog.setMessage(getApplication().getResources().getString(R.string.toast_uploaded) + (int) progress + "%");
                     });
 
         }
@@ -84,9 +84,9 @@ public class ImageActivityViewModel extends AndroidViewModel {
     public LiveData<Uri> uploadFile(Uri mImageUri, String extension, ProgressDialog progressDialog, String title) {
         ImageUri = mImageUri;
         if (mImageUri != null) {
-            progressDialog.setTitle(R.string.uploading);
+            progressDialog.setTitle(getApplication().getResources().getString(R.string.uploading));
             progressDialog.show();
-            String saveUrl = R.string.image_type + userUID + "/" + UUID.randomUUID().toString() + R.string.suffix_jpg;
+            String saveUrl = getApplication().getResources().getString(R.string.image_type) + userUID + "/" + UUID.randomUUID().toString() + getApplication().getResources().getString(R.string.suffix_jpg);
             DocumentReference docref = db.collection("notes").document(userUID).collection("imageNotes").document();
             Map<String, Object> newNote = new HashMap<>();
             newNote.put("title", title);
@@ -101,20 +101,20 @@ public class ImageActivityViewModel extends AndroidViewModel {
                     .addOnSuccessListener(taskSnapshot -> {
                         progressDialog.dismiss();
                         newUri.setValue(mImageUri);
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_uploaded, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_uploaded), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnProgressListener(snapshot -> {
                         double progress = (100.0 * snapshot.getBytesTransferred() / snapshot
                                 .getTotalByteCount());
-                        progressDialog.setMessage(R.string.toast_uploaded + (int) progress + "%");
+                        progressDialog.setMessage(getApplication().getResources().getString(R.string.toast_uploaded) + (int) progress + "%");
                     });
 
         } else {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_file_not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_file_not_selected), Toast.LENGTH_SHORT).show();
         }
 
         return newUri;
