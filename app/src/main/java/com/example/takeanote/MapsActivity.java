@@ -134,6 +134,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             latLng = (LatLng) bun.get("latlng");
             mMap.addMarker(new MarkerOptions().position(latLng).title(bun.get("title").toString()));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
+            try {
+                addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                address = addressList.get(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             address = null;
         }
@@ -151,17 +158,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.save:
                 String title = t.getText().toString();
                 if (title.isEmpty()) {
-                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
-                } else if (address == null || data.getExtras() != null && title.equals(data.getExtras().get("title")) && address.toString().equals(data.getExtras().getString("address"))) {
-                    if (address == null && data.getExtras() == null) {
-                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_nothing_changed), Toast.LENGTH_SHORT).show();
-                    }
-
+                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+                } else if (address == null) {
+                    Toast.makeText( getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT ).show();
+                } else if (data.getExtras() != null && title.equals( data.getExtras().get( "title" ) ) &&
+                        address.getAddressLine(address.getMaxAddressLineIndex()).equals( data.getExtras().getString( "address" ) )) {
+                    Toast.makeText( getApplication().getApplicationContext(), R.string.toast_nothing_changed, Toast.LENGTH_SHORT ).show();
                 } else {
                     if (data.getExtras() != null) {
-                        viewModel.updateMaps(t.getText().toString(), latLng, data.getExtras().get("address").toString(), data.getExtras().get("id").toString())
+                        viewModel.updateMaps(t.getText().toString(), latLng, address.getAddressLine(address.getMaxAddressLineIndex()), data.getExtras().get("id").toString())
                                 .observe(this, stringObjectMap -> {
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                     finish();
