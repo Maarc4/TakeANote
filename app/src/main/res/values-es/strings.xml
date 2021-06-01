@@ -62,7 +62,7 @@
     <string name="order_notes">Ordenar notas</string>
     <string name="order_type">Tipo</string>
     <string name="mic_start_recording">Pulsa el botón para empezar a grabar</string>
-    <string name="maps_address">Dirección:</string>
+    <string name="maps_address">\Dirección: \</string>
     <string name="create_new_account">Crear nueva cuenta</string>
     <string name="error_empty">No puede estar vacío</string>
     <string name="error_pwd_security">La contraseña no es suficientemente segura. Debe contener como mínimo 8 caracteres, una mayuscula, una minuscula, un numero y ningun espacio</string>

@@ -65,7 +65,6 @@ public class PaintActivity extends AppCompatActivity {
     public static Uri imageUri;
     private Uri mImageUri;
     private String uriPath;
-    //TODO moure permisos a main
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,25 +79,23 @@ public class PaintActivity extends AppCompatActivity {
 
 
         imageView.setVisibility(View.INVISIBLE);
-
         if (data.getExtras() != null) {
             uriPath = data.getExtras().get("uri").toString();
             Log.d("URISS", "URI DINS: " + uriPath);
             title.setText(data.getStringExtra("title"));
             /// INVALIDATE --------------------
             //Bitmap bmp = (Bitmap) data.getExtras().get("bitmap");
-
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+            Uri uris = (Uri) data.getExtras().get("uri");
+            mImageUri = uris;
+            Paint paint = new Paint();
 
             paintView.invalidate();
             //ImageView image = (ImageView) findViewById(R.id.imageView);
             /*imageView.setVisibility(View.VISIBLE);
 
-
-            //imageView.setImageURI(null);
-           //imageView.setImageURI(mImageUri);
-            //imageView.invalidate();
+            imageView.setImageURI(null);
+            imageView.setImageURI(mImageUri);
+            imageView.invalidate();*/
 
            /* Bitmap ass = null;
             try {
@@ -147,12 +144,6 @@ public class PaintActivity extends AppCompatActivity {
 
 
     }
-
-
-
-
-
-
 
 
     public String getStringTitle() {
@@ -226,18 +217,13 @@ public class PaintActivity extends AppCompatActivity {
                 paintView.setBrushColor(color);
                 break;
             case R.id.save:
-
-
-                if (!title.getText().toString().isEmpty()){
-                    paintActivityViewModel.saveView( paintView ).observe( this, new Observer<String>() {
-                        @Override
-                        public void onChanged(String s) {
-                            // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
-                            final ProgressDialog progressDialog = new ProgressDialog( PaintActivity.this );
-                            paintActivityViewModel.uploadImage( progressDialog, title.getText().toString() );
-                            //onBackPressed();
-                        }
-                    } );
+                if (!title.getText().toString().isEmpty()) {
+                    paintActivityViewModel.saveView(paintView).observe(this, s -> {
+                        // paintView.setTitle(findViewById(R.id.paintNoteTitle).toString());
+                        final ProgressDialog progressDialog = new ProgressDialog(PaintActivity.this);
+                        paintActivityViewModel.uploadImage(progressDialog, title.getText().toString());
+                        //onBackPressed();
+                    });
                 } else {
                     Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
                 }

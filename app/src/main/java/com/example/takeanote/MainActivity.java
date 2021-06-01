@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         MaterialToolbar toolbar = findViewById(R.id.content_main_toolbar);
         setSupportActionBar(toolbar);
-        order = -1;
+        order = 2;
         listOfNotes = findViewById(R.id.listOfNotes);
         listOfNotes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
@@ -433,17 +433,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.setOriginal(original);
-                adapter.filter(query);
-                adapter.orderRecyclerView(order);
+                if(adapter != null){
+                    adapter.setOriginal(original);
+                    adapter.filter(query);
+                    adapter.orderRecyclerView(order);
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.setOriginal(original);
-                adapter.filter(newText);
-                adapter.orderRecyclerView(order);
+                if(adapter != null){
+                    adapter.setOriginal(original);
+                    adapter.filter(newText);
+                    adapter.orderRecyclerView(order);
+                }
                 return false;
             }
         });
