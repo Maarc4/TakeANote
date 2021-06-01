@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private androidx.appcompat.widget.SearchView search;
     private List<NoteListItem> original;
     private int order;
-    private MediaPlayer mediaplayer;
     private ImageButton record;
 
     @Override
@@ -162,23 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(textIntent);
                         break;
                     case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
-                        /*AudioInfo textAudio = noteItem.getAudioNoteItem();
-                        Intent textIn = new Intent(MainActivity.this.getApplicationContext(), NoteDetails.class);
-                        textIn.putExtra("title", textAudio.getTitle());
-                        textIn.putExtra("noteId", textAudio.getId());
-                        textIn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(textIn);*/
                         break;
-                   /* case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
-                        PaintInfo paintInfo = noteItem.getPaintInfo();
-                        Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
-                        paintIntent.putExtra("title",paintInfo.getTitle());
-                        Log.d("MAact",paintInfo.getBmp().toString());
-                        paintIntent.putExtra("bitmap",paintInfo.getBmp());
-                        startActivity(paintIntent);
-                        //Toast.makeText( MainActivity.this, "Edit PAINT note -> Coming in the next update.", Toast.LENGTH_SHORT ).show();
-                        break;
-                   */
 
                     case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
                         ImageInfo imageInfo = noteItem.getImageInfo();
@@ -197,50 +180,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         paintIntent.setAction(Intent.ACTION_VIEW);
                         Log.d("myTag", "This ssage");
                         paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
-
-
-                        Uri a = paintInfo.getUri();
-                        Log.d( "URISS", "URI FORA: " + a );
-
                         startActivity(paintIntent);
 
 
-                        /*
-                        //Intent intent = new Intent();
-                        //intent.setAction(Intent.ACTION_VIEW);
-                        //intent.setDataAndType(PaintActivity.imageUri, "image/*");
-                        //startActivity(intent);
-                        PaintInfo paintInfo = noteItem.getPaintInfo();
-                        //Intent paintIntent = new Intent();
-                        //paintIntent.setAction();
-
-                        Log.d("myTag", "This is my message");
-                        //paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
-                        //startActivity(paintIntent);
-
-
-
-                        Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
-                        paintIntent1.putExtra( "title", paintInfo.getTitle() );
+                        /*PaintInfo paintInfo = noteItem.getPaintInfo();
+                        Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
+                        paintIntent.putExtra("title", paintInfo.getTitle());
                         Uri a = paintInfo.getUri();
-                        paintIntent1.putExtra("uriPath",paintInfo.getUri());
-                        Bitmap bmp = paintInfo.getBmp();
-                        paintIntent1.putExtra("bitmap",paintInfo.getBmp());
+                        paintIntent.putExtra("uri", paintInfo.getUri());
+                        paintIntent.putExtra("path", paintInfo.getUriPath());
+                        startActivity(paintIntent);*/
 
-
-
-                        Log.d( "URISS", "URI FORA: " + a );
-                        paintIntent1.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-                        startActivity( paintIntent1 );
-
-                        */
                         break;
 
-
-                    /*case (Constant.ITEM_AUDIO_NOTE_VIEWTYPE):
-                        break;
-                    case (Constant.ITEM_IMAGE_NOTE_VIEWTYPE):
-                       break;*/
                     case (Constant.ITEM_MAP_NOTE_VIEWTYPE):
                         MapsInfo maps = noteItem.getMaps();
                         Intent mapsIntetnt = new Intent(MainActivity.this.getApplicationContext(), MapsActivity.class);
@@ -321,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent paintIntent1 = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
                 paintIntent1.putExtra("uriPath", " ");
                 startActivity(paintIntent1);
-
                 break;
 
             case R.id.add_audio_note:
