@@ -53,7 +53,7 @@ public class NoteDetailsViewModel extends AndroidViewModel {
         nContent = content.getText().toString();
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
             return info;
         }
 
@@ -66,18 +66,14 @@ public class NoteDetailsViewModel extends AndroidViewModel {
         note.put("content", nContent);
 
         docref.update(note).addOnSuccessListener(aVoid -> {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_note_add_failed_db, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_note_add_failed_db), Toast.LENGTH_SHORT).show();
             List<String> list = new ArrayList<>();
             list.add(nTitle);
             list.add(nContent);
             info.setValue(list);
-            //progressBarSave.setVisibility(View.INVISIBLE);
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), R.string.toast_note_add_failed_db, Toast.LENGTH_SHORT).show();
-                progressBarSave.setVisibility(View.VISIBLE);
-            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_note_add_failed_db), Toast.LENGTH_SHORT).show();
+            progressBarSave.setVisibility(View.VISIBLE);
         });
         return info;
 
@@ -87,18 +83,10 @@ public class NoteDetailsViewModel extends AndroidViewModel {
 
         List<String> listEmpty = new ArrayList<>();
         DocumentReference docRef = db.collection("notes").document(user.getUid()).collection("myNotes").document(docID);
-        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getApplication().getApplicationContext(), R.string.toast_note_deleted, Toast.LENGTH_SHORT).show();
-                info.setValue(listEmpty);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplication().getApplicationContext(), R.string.toast_failed_delete, Toast.LENGTH_SHORT).show();
-            }
-        });
+        docRef.delete().addOnSuccessListener(aVoid -> {
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_note_deleted), Toast.LENGTH_SHORT).show();
+            info.setValue(listEmpty);
+        }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_delete), Toast.LENGTH_SHORT).show());
         return info;
     }
 

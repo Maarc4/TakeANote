@@ -35,10 +35,7 @@ public class ImageNoteViewHolder extends BaseViewHolder {
     @Override
     void setData(NoteListItem item) {
         ImageInfo imageInfo = item.getImageInfo();
-        //PaintView paintNote = item.getPaintNoteItem();
         imageTitle.setText(imageInfo.getTitle());
-        //paintContent.setImageBitmap(paintInfo.getBmp());
-        //Glide.with(itemView.getContext()).load(paintInfo.getBmp()).into(paintContent);
         Glide.with(itemView.getContext()).load(imageInfo.getUri()).into(imageContent);
         view.setOnClickListener(v -> listener.onNoteClick(item));
         imageMenuItem.setOnClickListener(v -> listener.onNoteMenuClick(item, v));

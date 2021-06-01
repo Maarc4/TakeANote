@@ -43,7 +43,7 @@ public class AddNoteViewModel extends AndroidViewModel {
 
 
         if (nTitle.isEmpty() || nContent.isEmpty()) {
-            Toast.makeText( getApplication().getApplicationContext(), R.string.toast_empty_field, Toast.LENGTH_SHORT ).show();
+            Toast.makeText( getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT ).show();
             return note;
         }
 
@@ -56,11 +56,11 @@ public class AddNoteViewModel extends AndroidViewModel {
         newNote.put( "type", "textNote" );
 
         docref.set( newNote ).addOnSuccessListener(aVoid -> {
-            Toast.makeText( getApplication().getApplicationContext(), R.string.toast_note_added_db, Toast.LENGTH_SHORT ).show();
+            Toast.makeText( getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_note_added_db), Toast.LENGTH_SHORT ).show();
             note.setValue( newNote );
             progressBarSave.setVisibility( View.INVISIBLE );
         }).addOnFailureListener(e -> {
-            Toast.makeText( getApplication().getApplicationContext(), R.string.toast_note_add_failed_db, Toast.LENGTH_SHORT ).show();
+            Toast.makeText( getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_note_add_failed_db), Toast.LENGTH_SHORT ).show();
             progressBarSave.setVisibility( View.VISIBLE );
         });
         return note;

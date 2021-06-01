@@ -77,7 +77,7 @@ public class RegistrerViewModel extends AndroidViewModel {
 
         AuthCredential credential = EmailAuthProvider.getCredential(userEmail, userPass);
         auth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(authResult -> {
-            Toast.makeText(getApplication().getApplicationContext(), R.string.toast_notes_synced, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_notes_synced), Toast.LENGTH_SHORT).show();
             FirebaseUser usr = auth.getCurrentUser();
             UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                     .setDisplayName(userName)

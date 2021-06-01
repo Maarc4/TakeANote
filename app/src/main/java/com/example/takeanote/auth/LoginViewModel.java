@@ -44,11 +44,11 @@ public class LoginViewModel extends AndroidViewModel {
         pwdLayout.setError(null);
 
         if (mPassword.isEmpty()) {
-            pwdLayout.setError("Cannot be empty.");
+            pwdLayout.setError(getApplication().getResources().getString(R.string.error_empty));
             errors++;
         }
         if (!isEmailValid(mEmail)) {
-            emailLayout.setError("Email is not valid.");
+            emailLayout.setError(getApplication().getResources().getString(R.string.error_email_not_valid));
             errors++;
         }
         if (errors != 0) {
@@ -62,12 +62,12 @@ public class LoginViewModel extends AndroidViewModel {
                     if (currentUser.isAnonymous()) {
 
                         db.collection("notes").document(currentUser.getUid()).delete().addOnSuccessListener(aVoid ->
-                                Toast.makeText(getApplication().getApplicationContext(), R.string.toast_temp_notes_deleted, Toast.LENGTH_SHORT).show());
+                                Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_temp_notes_deleted), Toast.LENGTH_SHORT).show());
                         // delete Temp user
                         currentUser.delete().addOnSuccessListener(aVoid ->
-                                Toast.makeText(getApplication().getApplicationContext(), R.string.toast_temp_user_deleted, Toast.LENGTH_SHORT).show());
+                                Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_temp_user_deleted), Toast.LENGTH_SHORT).show());
                     }
-                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_success, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_success), Toast.LENGTH_SHORT).show();
                     user.setValue(FirebaseAuth.getInstance().getCurrentUser());
                 }).addOnFailureListener(e -> {
             if (e.getClass().equals(FirebaseAuthInvalidUserException.class)) {

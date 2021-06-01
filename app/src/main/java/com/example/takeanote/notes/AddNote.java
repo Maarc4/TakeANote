@@ -49,7 +49,7 @@ public class AddNote extends AppCompatActivity {
                 break;
 
             default:
-                Toast.makeText(this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

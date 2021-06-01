@@ -55,7 +55,7 @@ public class Login extends AppCompatActivity {
 
         createAcc.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Register.class)));
 
-        forgetPass.setOnClickListener(v -> Toast.makeText(Login.this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show());
+        forgetPass.setOnClickListener(v -> Toast.makeText(Login.this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show());
     }
 
 

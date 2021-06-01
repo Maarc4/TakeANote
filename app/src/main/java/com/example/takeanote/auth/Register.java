@@ -30,7 +30,7 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        getSupportActionBar().setTitle(R.string.create_new_account);
+        getSupportActionBar().setTitle(getApplication().getResources().getString(R.string.create_new_account));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         registrerViewModel = new ViewModelProvider(this).get(RegistrerViewModel.class);

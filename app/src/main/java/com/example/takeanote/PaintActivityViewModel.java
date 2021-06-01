@@ -77,7 +77,7 @@ public class PaintActivityViewModel extends AndroidViewModel {
                     .addOnProgressListener(taskSnapshot -> {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                 .getTotalByteCount());
-                        progressDialog.setMessage(R.string.uploading + (int) progress + "%");
+                        progressDialog.setMessage(getApplication().getResources().getString(R.string.uploading) + (int) progress + "%");
                     });
 
         }

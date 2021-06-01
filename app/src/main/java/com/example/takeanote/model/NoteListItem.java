@@ -7,8 +7,6 @@ public class NoteListItem {
 
     private NoteUI textNoteItem;
     private PaintView paintNoteItem;
-    //private Audio audioNoteItem;
-    //private Image imageNoteItem;
     private AudioInfo audioNoteItem;
     private ImageInfo imageInfo;
     private PaintInfo paintInfo;
@@ -35,7 +33,6 @@ public class NoteListItem {
         this.viewType = Constant.ITEM_MAP_NOTE_VIEWTYPE;
     }
 
-    //public NoteListItem(Audio audioNoteItem) {
     public NoteListItem(AudioInfo audioNoteItem) {
         this.audioNoteItem = audioNoteItem;
         this.viewType = Constant.ITEM_AUDIO_NOTE_VIEWTYPE;

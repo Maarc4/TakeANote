@@ -89,10 +89,10 @@ public class ImageActivity extends AppCompatActivity {
                     if (mImageUri != null) {
                         viewModel.uploadFile(mImageUri, getFileExtension(mImageUri), progressDialog, title.getText().toString()).observe(this, uri -> onBackPressed());
                     } else {
-                        Toast.makeText(getApplication().getApplicationContext(), R.string.toast_introduce_img, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_introduce_img), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplication().getApplicationContext(), R.string.toast_introduce_title, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_introduce_title), Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -101,7 +101,7 @@ public class ImageActivity extends AppCompatActivity {
                 break;
 
             default:
-                Toast.makeText(this, R.string.toast_coming_soon, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getApplication().getResources().getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show();
 
         }
         return super.onOptionsItemSelected(item);
@@ -110,12 +110,12 @@ public class ImageActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat(getString(R.string.date_format)).format(new Date());
+        String timeStamp = new SimpleDateFormat(getApplication().getResources().getString(R.string.date_format)).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                getString(R.string.suffix_jpg),   /* suffix */
+                getApplication().getResources().getString(R.string.suffix_jpg),   /* suffix */
                 storageDir      /* directory */
         );
 
@@ -162,7 +162,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private void openFileChooser() {
         Intent intent = new Intent();
-        intent.setType(getString(R.string.image_type));
+        intent.setType(getApplication().getResources().getString(R.string.image_type));
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }

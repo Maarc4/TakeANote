@@ -64,7 +64,7 @@
     <string name="date_format" translatable="false">yyyyMMdd_HHmmss</string>
     <string name="suffix_jpg" translatable="false">.jpg</string>
     <string name="image_type" translatable="false">image/*</string>
-    <string name="uploading">Uploading…</string>
+    <string name="uploading">Uploading...</string>
     <string name="login_temp">Logged in With Temporary Account.</string>
     <string name="alert_sure">Are you sure?</string>
     <string name="alert_logged_temp_acc">You are logged in with Temporary Account. Loggin out will Delete All the notes.</string>
@@ -142,4 +142,6 @@
     <string name="toast_introduce_img">Introduce an image </string>
     <string name="toast_introduce_title">Introduce a title </string>
     <string name="Welcome">\Welcome back \</string>
+    <string name="audio_type">audios/</string>
+    <string name="suffix_3gp">.3gp</string>
 </resources>

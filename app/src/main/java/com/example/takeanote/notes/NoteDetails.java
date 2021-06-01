@@ -77,12 +77,7 @@ public class NoteDetails extends AppCompatActivity {
 
     public void deleteNote() {
         String docId = data.getStringExtra("noteId");
-        noteDetailsViewModel.deleteNote(docId).observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> strings) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
+        noteDetailsViewModel.deleteNote(docId).observe(this, strings -> startActivity(new Intent(getApplicationContext(), MainActivity.class)));
     }
 
     @Override

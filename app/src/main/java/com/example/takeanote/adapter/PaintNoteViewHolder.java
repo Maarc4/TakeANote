@@ -32,10 +32,7 @@ public class PaintNoteViewHolder extends BaseViewHolder {
     @Override
     void setData(NoteListItem item) {
         PaintInfo paintInfo = item.getPaintInfo();
-        //PaintView paintNote = item.getPaintNoteItem();
         paintTitle.setText(paintInfo.getTitle());
-        //paintContent.setImageBitmap(paintInfo.getBmp());
-        //Glide.with(itemView.getContext()).load(paintInfo.getBmp()).into(paintContent);
         Glide.with(itemView.getContext()).load(paintInfo.getUri()).into(paintContent);
         view.setOnClickListener(v -> listener.onNoteClick(item));
         paintMenuItem.setOnClickListener(v -> listener.onNoteMenuClick(item, v));
