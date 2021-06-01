@@ -76,6 +76,7 @@ public class AddAudio extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mProgress = new ProgressDialog(this);
 
+        viewModel = new ViewModelProvider(this).get(AddAudioViewModel.class);
 
         time = findViewById(R.id.record_timer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
