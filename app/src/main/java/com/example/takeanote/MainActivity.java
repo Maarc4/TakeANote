@@ -343,9 +343,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_settings) {
-            Toast.makeText(MainActivity.this, R.string.toast_settings_menu, Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.action_order) {
+        if (item.getItemId() == R.id.action_order) {
             PopupMenu popupMenu = new PopupMenu(this, this.findViewById(R.id.content_main_toolbar), Gravity.RIGHT);
             popupMenu.getMenuInflater().inflate(R.menu.order_menu, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

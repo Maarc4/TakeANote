@@ -61,11 +61,6 @@ public class NoteDetails extends AppCompatActivity {
                 deleteNote();
                 break;
 
-            case R.id.share:
-                //TODO: Fer share un cop haguem fet tot lo que toca
-                Toast.makeText(this, R.string.toast_share_button_clicked, Toast.LENGTH_SHORT).show();
-                break;
-
             case R.id.save:
                 saveNote();
                 break;
