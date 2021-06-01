@@ -66,8 +66,8 @@ public class AddAudio extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        fileName = getExternalCacheDir().getAbsolutePath();
-        fileName += ("/audio_recorded.3gp");
+       // fileName = getExternalCacheDir().getAbsolutePath();
+        //fileName += ("/audio_recorded.3gp");
         setContentView(R.layout.activity_add_audio);
         recorder = findViewById(R.id.record_btn);
         text = findViewById(R.id.record_filename);
