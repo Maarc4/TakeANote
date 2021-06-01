@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private androidx.appcompat.widget.SearchView search;
     private List<NoteListItem> original;
     private int order;
-
-    //private ImageButton record;
+    private MediaPlayer mediaplayer;
+    private ImageButton record;
 
     @Override
     protected void onPostResume() {
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listOfNotes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         setUpViewModel();
-        //record = findViewById(R.id.audioPlayButton);
+        record = findViewById(R.id.audioPlayButton);
         drawerLayout = findViewById(R.id.drawer);
         NavigationView nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
@@ -192,22 +192,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     case (Constant.ITEM_PAINT_NOTE_VIEWTYPE):
 
-                       /* PaintInfo paintInfo = noteItem.getPaintInfo();
+                        PaintInfo paintInfo = noteItem.getPaintInfo();
                         Intent paintIntent = new Intent();
                         paintIntent.setAction(Intent.ACTION_VIEW);
                         Log.d("myTag", "This ssage");
                         paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
-                        startActivity(paintIntent);
-*/
 
-                        PaintInfo paintInfo = noteItem.getPaintInfo();
-                        Intent paintIntent = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
-                        paintIntent.putExtra("title", paintInfo.getTitle());
+
                         Uri a = paintInfo.getUri();
-                        paintIntent.putExtra("uri", paintInfo.getUri());
-                        paintIntent.putExtra("path", paintInfo.getUriPath());
+                        Log.d( "URISS", "URI FORA: " + a );
+
                         startActivity(paintIntent);
 
+
+                        /*
+                        //Intent intent = new Intent();
+                        //intent.setAction(Intent.ACTION_VIEW);
+                        //intent.setDataAndType(PaintActivity.imageUri, "image/*");
+                        //startActivity(intent);
+                        PaintInfo paintInfo = noteItem.getPaintInfo();
+                        //Intent paintIntent = new Intent();
+                        //paintIntent.setAction();
+
+                        Log.d("myTag", "This is my message");
+                        //paintIntent.setDataAndType(paintInfo.getUri(), "image/*");
+                        //startActivity(paintIntent);
+
+
+
+                        Intent paintIntent1 = new Intent( MainActivity.this.getApplicationContext(), PaintActivity.class );
+                        paintIntent1.putExtra( "title", paintInfo.getTitle() );
+                        Uri a = paintInfo.getUri();
+                        paintIntent1.putExtra("uriPath",paintInfo.getUri());
+                        Bitmap bmp = paintInfo.getBmp();
+                        paintIntent1.putExtra("bitmap",paintInfo.getBmp());
+
+
+
+                        Log.d( "URISS", "URI FORA: " + a );
+                        paintIntent1.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+                        startActivity( paintIntent1 );
+
+                        */
                         break;
 
 
@@ -295,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent paintIntent1 = new Intent(MainActivity.this.getApplicationContext(), PaintActivity.class);
                 paintIntent1.putExtra("uriPath", " ");
                 startActivity(paintIntent1);
+
                 break;
 
             case R.id.add_audio_note:

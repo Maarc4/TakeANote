@@ -312,6 +312,7 @@ public class MainActivityViewModel extends AndroidViewModel {
             default:
                 throw new IllegalArgumentException();
         }
+
     }
 
     public boolean sync() {
@@ -343,6 +344,7 @@ public class MainActivityViewModel extends AndroidViewModel {
             username.setText(user.getDisplayName());
         }
     }
+
 
     public FirebaseUser getUser() {
         return user;
