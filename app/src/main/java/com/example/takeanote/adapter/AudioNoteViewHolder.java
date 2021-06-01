@@ -1,8 +1,10 @@
 package com.example.takeanote.adapter;
 
+import android.media.MediaPlayer;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ public class AudioNoteViewHolder extends BaseViewHolder {
     ImageButton audioPlayButton;
     ImageView audioMenuItem;
     TextView audioTitle;
+    SeekBar seekBar;
     View view;
     OnNoteTypeClickListener listener;
 
@@ -35,9 +38,25 @@ public class AudioNoteViewHolder extends BaseViewHolder {
         AudioInfo audioNote = item.getAudioNoteItem();
         audioTitle.setText(audioNote.getTitle());
 
-        audioPlayButton.setOnClickListener(v -> listener.onPlayClick(item, v));
-        view.setOnClickListener(v -> listener.onNoteClick(item));
-        audioMenuItem.setOnClickListener(v -> listener.onNoteMenuClick(item, v));
+        audioPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onPlayClick(item, v);
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(v.getContext(), "Coming soon AudioNote", Toast.LENGTH_SHORT).show();
+                listener.onNoteClick(item);
+            }
+        });
+        audioMenuItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(v.getContext(), "Coming soon AudioNote MenuOptions", Toast.LENGTH_SHORT).show();
+                listener.onNoteMenuClick(item, v);
+            }
+        });
     }
 }
-

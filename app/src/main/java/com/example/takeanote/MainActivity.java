@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private androidx.appcompat.widget.SearchView search;
     private List<NoteListItem> original;
     private int order;
-    private ImageButton record;
 
     @Override
     protected void onPostResume() {
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listOfNotes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         setUpViewModel();
-        record = findViewById(R.id.audioPlayButton);
         drawerLayout = findViewById(R.id.drawer);
         NavigationView nav_view = findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(this);
@@ -223,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("Holaaa", fileName);
                         mediaplayer.start();
                     }catch (IOException e) {
-                        e.printStackTrace();
+                        Log.d("errorMAct", e.getMessage());
                     }
 
                 } else {

@@ -56,14 +56,20 @@ public class AddAudio extends AppCompatActivity {
     private String fileName = null;
     private boolean isrecording = false;
     MaterialToolbar toolbar;
+    FirebaseStorage storage;
+    FirebaseFirestore db;
+    StorageReference storageReference;
+    String userid;
     private ProgressDialog mProgress;
-    private AddAudioViewModel viewModel;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        fileName = getExternalCacheDir().getAbsolutePath();
+        fileName += ("/audio_recorded.3gp");
         setContentView(R.layout.activity_add_audio);
         recorder = findViewById(R.id.record_btn);
         text = findViewById(R.id.record_filename);
@@ -71,12 +77,15 @@ public class AddAudio extends AppCompatActivity {
         View b = findViewById(R.id.record2_btn);
         b.setVisibility(View.GONE);
         title = findViewById(R.id.AudioTitle);
+        this.storage = FirebaseStorage.getInstance();
+        this.userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        db = FirebaseFirestore.getInstance();
 
         toolbar = findViewById(R.id.audioToolbar);
         setSupportActionBar(toolbar);
         mProgress = new ProgressDialog(this);
 
-        viewModel = new ViewModelProvider(this).get(AddAudioViewModel.class);
 
         time = findViewById(R.id.record_timer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -99,6 +108,7 @@ public class AddAudio extends AppCompatActivity {
                 b.setVisibility(View.INVISIBLE);
                 text.setText(getApplication().getResources().getString(R.string.recording_finished));
                 isrecording = false;
+
             }
         });
     }
@@ -107,6 +117,7 @@ public class AddAudio extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
+
                 uploadAudio();
                 break;
 
@@ -120,6 +131,7 @@ public class AddAudio extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
     private void startRecording() {
@@ -158,20 +170,30 @@ public class AddAudio extends AppCompatActivity {
 
     private void uploadAudio() {
         String nTitle = title.getText().toString();
+
         if (nTitle.isEmpty()) {
             text.setText(getApplication().getResources().getString(R.string.toast_empty_field));
-        } else {
+        }else{
             mProgress.setMessage(getApplication().getResources().getString(R.string.uploading));
             mProgress.show();
-            viewModel.uploadAudio( fileName, nTitle ).observe( this, new Observer<String>() {
-                @Override
-                public void onChanged(String s) {
-                    mProgress.dismiss();
-                    text.setText(getApplication().getResources().getString(R.string.toast_uploaded));
-                    onBackPressed();
-                }
-            } );
+            String saveUrl = getApplication().getResources().getString(R.string.audio_type) + userid + "/" + UUID.randomUUID().toString() + getApplication().getResources().getString(R.string.suffix_3gp);
+
+            DocumentReference docref = db.collection( "notes" ).document( userid ).collection( "AudioNotes" ).document();
+            StorageReference filepath = storageReference.child(saveUrl);
+            Uri uri = Uri.fromFile(new File(fileName));
+            Map<String, Object> newNote = new HashMap<>();
+            newNote.put("title", title.getText().toString());
+            newNote.put( "url", saveUrl );
+
+            docref.set( newNote ).addOnSuccessListener(aVoid -> Log.d( "PAVM", "ONSUCCESS docref.setNote" ))
+                    .addOnFailureListener(e -> Log.d( "PAVM", "FAILURE docref.setNote" ));
+
+            filepath.putFile(uri).addOnSuccessListener(taskSnapshot -> {
+                mProgress.dismiss();
+                text.setText(getApplication().getResources().getString(R.string.toast_uploaded));
+            });
         }
     }
+
 
 }
