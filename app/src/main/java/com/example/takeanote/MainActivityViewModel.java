@@ -281,6 +281,11 @@ public class MainActivityViewModel extends AndroidViewModel {
                         .addOnSuccessListener(documentSnapshot -> {
                             storageReference.child(documentSnapshot.getString("url")).delete();
                             notesData.setValue(newData);
+                            DocumentReference docRef1 = db.collection("notes").document(user.getUid()).collection("paintNotes").document(iinfo.getId());
+                            docRef1.delete().addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_paint_deleted), Toast.LENGTH_SHORT).show();
+                                notesData.setValue(newData);
+                            }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_failed_delete_paint), Toast.LENGTH_SHORT).show());
                         }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_delete_img), Toast.LENGTH_SHORT).show());
                 break;
 
