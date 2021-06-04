@@ -111,7 +111,11 @@ public class AddAudio extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                viewModel.uploadAudio(fileName, title.getText().toString());
+                if (title.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_empty_field), Toast.LENGTH_SHORT).show();
+                } else {
+                    viewModel.uploadAudio(fileName, title.getText().toString());
+                }
                 break;
 
             case android.R.id.home:

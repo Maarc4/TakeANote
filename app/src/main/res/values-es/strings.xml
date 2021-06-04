@@ -119,4 +119,5 @@
     <string name="toast_map_added_db">Mapa añadido a la base de datos</string>
     <string name="toast_failed_add_map_db">Error al añadir mapa a la base de datos</string>
     <string name="toast_not_saved">ERROR: NO GUARDADO</string>
+    <string name="audio_saved">Audio Guardado</string>
 </resources>

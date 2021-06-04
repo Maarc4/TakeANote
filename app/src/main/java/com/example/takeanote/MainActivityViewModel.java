@@ -282,6 +282,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                             storageReference.child(documentSnapshot.getString("url")).delete();
                             notesData.setValue(newData);
                         }).addOnFailureListener(e -> Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString(R.string.toast_error_delete_img), Toast.LENGTH_SHORT).show());
+                break;
 
             case Constant.ITEM_AUDIO_NOTE_VIEWTYPE:
                 AudioInfo aud = noteListItem.getAudioNoteItem();

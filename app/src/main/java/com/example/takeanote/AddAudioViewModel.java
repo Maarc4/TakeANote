@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -68,7 +69,7 @@ public class AddAudioViewModel extends AndroidViewModel {
         filepath.putFile( uri ).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                Toast.makeText(getApplication().getApplicationContext(), getApplication().getResources().getString( R.string.audio_saved), Toast.LENGTH_SHORT).show();
             }
         } );
         return newAudio;

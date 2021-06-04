@@ -143,4 +143,5 @@
     <string name="toast_introduce_title">Introduce a title </string>
     <string name="audio_type" translatable="false">audios/</string>
     <string name="suffix_3gp" translatable="false">.3gp</string>
+    <string name="audio_saved">Audio Saved</string>
 </resources>
