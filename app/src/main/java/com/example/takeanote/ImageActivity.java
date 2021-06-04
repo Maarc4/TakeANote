@@ -73,6 +73,13 @@ public class ImageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imatge.setVisibility(View.INVISIBLE);
 
+        if (ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ImageActivity.this, new String[]{
+                    Manifest.permission.CAMERA
+            }, TAKE_PHOTO_REQUEST);
+        }
+
         addImageButton.setOnClickListener(view -> openFileChooser());
         takePhotoButton.setOnClickListener(view -> take_photo());
     }
@@ -168,14 +175,6 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     public void take_photo() {
-
-
-        if (ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ImageActivity.this, new String[]{
-                    Manifest.permission.CAMERA
-            }, TAKE_PHOTO_REQUEST);
-        }
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create the File where the photo should go
